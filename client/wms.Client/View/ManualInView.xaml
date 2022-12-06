@@ -70,7 +70,21 @@
                         <!--<ComboBox VerticalAlignment="Top" Margin="10"    materialDesign:HintAssist.Hint="输入或扫描物料号或储位号" Style="{StaticResource MaterialDesignComboBox}" Width="200" Height="40" IsTextSearchEnabled="True" IsEditable="True" Name="ComBarCode" KeyUp="{Binding ScanBarcodeCommand}">
                             
                         </ComboBox>-->
-
+                        <!--<TextBox
+                            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                            VerticalAlignment="Top"
+                            Margin="0 10 10 10"  
+                            Name="BarCode"
+                            Width="500"
+                            Height="40"
+                            AcceptsReturn="False"
+                            TextWrapping="Wrap"
+                            Text="{Binding SearchBarcode, UpdateSourceTrigger=PropertyChanged}"
+                            materialDesign:HintAssist.Hint="请输入物料编码或物料名称" FontSize="16" >
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>-->
                         <controls:SearchableTextBox x:Name="BarCode" Grid.Row="0" Width="500" Height="40"
                                    VerticalAlignment="Top"
                                    IsShowSearchIcon="False"
@@ -95,9 +109,9 @@
                                 Width="90"
                                 Margin="5"
                                 ToolTip="扫描物料条码或储位号" 
-                                 Background="{Binding ScanColor}"
+                                Background="{Binding ScanColor}"
                                 Command="{Binding ScanBarcodeKeyDownCommand}"
-                                CommandParameter="{Binding SearchBarcode}" Click="Button_Click">
+                                CommandParameter="{Binding SearchBarcode}" >
                         扫描
                     </Button>
 
@@ -609,7 +623,7 @@
                         FontSize="14"
                         ToolTip="Resource name: MaterialDesignRaisedButton" 
                         IsDefault="true" 
-                           Background="{Binding SecondStepColor}"
+                        Background="{Binding SecondStepColor}"
                         IsEnabled="{Binding IsCancel}"
                         Command="{Binding HandShelfCommand}"
                         CommandParameter="{Binding InQuantity}">
@@ -631,7 +645,7 @@
                         <Button Margin="10 0 0 0" Height="80" FontSize="14" Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="存入托盘" 
                             CommandParameter="{Binding}"   
                             Background="{Binding FourthStepColor}"
-                            Command="{Binding RunningTakeInCommand}" >
+                            Command="{Binding RunningTakeInCommand}" Name="button_in" Click="button_in_Click" >
                             ④存入托盘
                         </Button>
                     </StackPanel>

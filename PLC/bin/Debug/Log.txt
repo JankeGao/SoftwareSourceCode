@@ -6620,3 +6620,251 @@ ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultTyp
 
 ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/8 22:47:32 , IPlcServer.ResetAlarm is called , duration: 231.5219 
 
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:02:04 , IPlcServer.ResetAlarm is called , duration: 266.3435 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:39 , IPlcServer.GetPlcDeivceStatus is called , duration: 18.1281 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:39 , IPlcServer.GetAlarmInformation is called , duration: 11.5296 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:42 , IPlcServer.GetPlcDeivceStatus is called , duration: 11.0355 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:42 , IPlcServer.GetAlarmInformation is called , duration: 11.0517 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:45 , IPlcServer.GetPlcDeivceStatus is called , duration: 11.912 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:45 , IPlcServer.GetAlarmInformation is called , duration: 15.5401 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:48 , IPlcServer.GetPlcDeivceStatus is called , duration: 5.9306 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:48 , IPlcServer.GetAlarmInformation is called , duration: 15.2751 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:51 , IPlcServer.GetPlcDeivceStatus is called , duration: 19.4634 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:51 , IPlcServer.GetAlarmInformation is called , duration: 9.9456 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:54 , IPlcServer.GetPlcDeivceStatus is called , duration: 11.1752 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:54 , IPlcServer.GetAlarmInformation is called , duration: 10.7943 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:06:57 , IPlcServer.GetPlcDeivceStatus is called , duration: 15.1705 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:06:57 , IPlcServer.GetAlarmInformation is called , duration: 19.1576 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:07:00 , IPlcServer.GetPlcDeivceStatus is called , duration: 9.061 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:07:00 , IPlcServer.GetAlarmInformation is called , duration: 8.0694 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:07:03 , IPlcServer.GetPlcDeivceStatus is called , duration: 10.2084 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:07:03 , IPlcServer.GetAlarmInformation is called , duration: 20.2294 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:07:06 , IPlcServer.GetPlcDeivceStatus is called , duration: 8.7038 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:07:06 , IPlcServer.GetAlarmInformation is called , duration: 8.9417 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:07:09 , IPlcServer.GetPlcDeivceStatus is called , duration: 7.5953 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:07:09 , IPlcServer.GetAlarmInformation is called , duration: 8.9923 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:07:12 , IPlcServer.GetPlcDeivceStatus is called , duration: 13.8605 
+
+ClientIP ::1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:07:12 , IPlcServer.GetAlarmInformation is called , duration: 8.9697 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:33 , IPlcServer.GetPlcDeivceStatus is called , duration: 14.0109 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:33 , IPlcServer.GetAlarmInformation is called , duration: 11.1109 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:36 , IPlcServer.GetPlcDeivceStatus is called , duration: 21.767 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:36 , IPlcServer.GetAlarmInformation is called , duration: 8.4272 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:39 , IPlcServer.GetPlcDeivceStatus is called , duration: 12.4603 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:39 , IPlcServer.GetAlarmInformation is called , duration: 15.4972 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:42 , IPlcServer.GetPlcDeivceStatus is called , duration: 17.6282 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:42 , IPlcServer.GetAlarmInformation is called , duration: 18.942 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:45 , IPlcServer.GetPlcDeivceStatus is called , duration: 16.5138 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:45 , IPlcServer.GetAlarmInformation is called , duration: 8.0723 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:48 , IPlcServer.GetPlcDeivceStatus is called , duration: 11.1168 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:48 , IPlcServer.GetAlarmInformation is called , duration: 20.0207 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:51 , IPlcServer.GetPlcDeivceStatus is called , duration: 16.3154 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:51 , IPlcServer.GetAlarmInformation is called , duration: 10.3242 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:54 , IPlcServer.GetPlcDeivceStatus is called , duration: 16.7576 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:54 , IPlcServer.GetAlarmInformation is called , duration: 8.5294 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:08:57 , IPlcServer.GetPlcDeivceStatus is called , duration: 19.1932 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:08:57 , IPlcServer.GetAlarmInformation is called , duration: 18.4205 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:00 , IPlcServer.GetPlcDeivceStatus is called , duration: 15.8942 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:00 , IPlcServer.GetAlarmInformation is called , duration: 10.1791 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:03 , IPlcServer.GetPlcDeivceStatus is called , duration: 12.6156 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:03 , IPlcServer.GetAlarmInformation is called , duration: 9.2308 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:06 , IPlcServer.GetPlcDeivceStatus is called , duration: 10.3443 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:06 , IPlcServer.GetAlarmInformation is called , duration: 8.9631 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:09 , IPlcServer.GetPlcDeivceStatus is called , duration: 9.6166 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:09 , IPlcServer.GetAlarmInformation is called , duration: 8.8585 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:12 , IPlcServer.GetPlcDeivceStatus is called , duration: 16.4188 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:12 , IPlcServer.GetAlarmInformation is called , duration: 20.0464 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:15 , IPlcServer.GetPlcDeivceStatus is called , duration: 10.3027 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:15 , IPlcServer.GetAlarmInformation is called , duration: 18.91 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:18 , IPlcServer.GetPlcDeivceStatus is called , duration: 17.5324 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:18 , IPlcServer.GetAlarmInformation is called , duration: 19.9786 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:21 , IPlcServer.GetPlcDeivceStatus is called , duration: 19.1513 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:21 , IPlcServer.GetAlarmInformation is called , duration: 7.6461 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:24 , IPlcServer.GetPlcDeivceStatus is called , duration: 8.1293 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:24 , IPlcServer.GetAlarmInformation is called , duration: 8.86 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:27 , IPlcServer.GetPlcDeivceStatus is called , duration: 24.4486 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:27 , IPlcServer.GetAlarmInformation is called , duration: 19.6945 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:30 , IPlcServer.GetPlcDeivceStatus is called , duration: 14.5858 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:30 , IPlcServer.GetAlarmInformation is called , duration: 9.3037 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:30 , IPlcServer.ResetAlarm is called , duration: 232.3589 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:33 , IPlcServer.GetPlcDeivceStatus is called , duration: 13.8688 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:33 , IPlcServer.GetAlarmInformation is called , duration: 9.8714 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:36 , IPlcServer.GetPlcDeivceStatus is called , duration: 14.8959 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:36 , IPlcServer.GetAlarmInformation is called , duration: 20.3345 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:39 , IPlcServer.GetPlcDeivceStatus is called , duration: 16.0781 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:39 , IPlcServer.GetAlarmInformation is called , duration: 18.8932 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:42 , IPlcServer.GetPlcDeivceStatus is called , duration: 8.153 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:42 , IPlcServer.GetAlarmInformation is called , duration: 7.9401 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:09:45 , IPlcServer.GetPlcDeivceStatus is called , duration: 14.8117 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PCL无报警","ResultType":1,"Success":false},at 2022/9/27 14:09:45 , IPlcServer.GetAlarmInformation is called , duration: 17.8785 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/9/27 14:28:35 , IPlcServer.ResetAlarm is called , duration: 252.7462 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:18:37 , IPlcServer.StartRunningContainer is called , duration: 11.9989 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:18:37 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:20:50 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:26:41 , IPlcServer.StartRunningContainer is called , duration: 1.0084 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:31:12 , IPlcServer.StartRunningContainer is called , duration: 0.5198 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:31:12 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:31:15 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:31:31 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:35:36 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:35:36 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:35:38 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 14:29:42 , IPlcServer.StartRunningContainer is called , duration: 16.5346 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 14:29:42 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"发送命令成功","ResultType":1,"Success":true},at 2022/11/14 14:29:52 , IPlcServer.StartRunningContainer is called , duration: 42.8904 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:07 , IPlcServer.StartRunningContainer is called , duration: 15.8746 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:07 , IPlcServer.StartRunningContainer is called , duration: 3.0114 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:08 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:08 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:18 , IPlcServer.StartRunningContainer is called , duration: 0.2419 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:41:18 , IPlcServer.StartRunningContainer is called , duration: 2.5598 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:41:30 , IPlcServer.StartRunningContainer is called , duration: 5.076 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:45:09 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:45:09 , IPlcServer.StartRunningContainer is called , duration: 2.0837 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:45:11 , IPlcServer.StartRunningContainer is called , duration: 2.3853 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:45:16 , IPlcServer.StartRestoreContainer is called , duration: 4.0056 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:47:06 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:47:06 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:47:13 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:47:13 , IPlcServer.StartRunningContainer is called , duration: 1.0322 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:47:16 , IPlcServer.StartRunningContainer is called , duration: 6.0766 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:47:32 , IPlcServer.StartRestoreContainer is called , duration: 2.9928 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:50:52 , IPlcServer.StartRunningContainer is called , duration: 3.0467 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:51:03 , IPlcServer.StartRestoreContainer is called , duration: 3.9869 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:23:13 , IPlcServer.StartRunningContainer is called , duration: 26.048 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:23:13 , IPlcServer.StartRunningContainer is called , duration: 1.052 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:27:44 , IPlcServer.StartRunningContainer is called , duration: 13.6228 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:27:44 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:30:03 , IPlcServer.StartRunningContainer is called , duration: 151395.4832 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:39:18 , IPlcServer.StartRestoreContainer is called , duration: 8935.3922 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:44:23 , IPlcServer.StartRunningContainer is called , duration: 3.0001 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:44:23 , IPlcServer.StartRunningContainer is called , duration: 0.2122 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:44:56 , IPlcServer.StartRunningContainer is called , duration: 13.026 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:44:56 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:45:09 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:45:09 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:45:11 , IPlcServer.StartRunningContainer is called , duration: 4.0079 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:46:03 , IPlcServer.StartRestoreContainer is called , duration: 3.9987 
+

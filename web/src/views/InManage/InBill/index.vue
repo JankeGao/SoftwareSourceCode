@@ -55,7 +55,7 @@
           :on-exceed="handleExceed"
         >
           <el-button type="primary">
-            <i class="el-icon-upload" /> 导入
+            <i class="el-icon-upload" /> {{ $t('baseBtn.importBtn') }}
           </el-button>
         </el-upload>
         <el-button

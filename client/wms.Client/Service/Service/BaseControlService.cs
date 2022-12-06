@@ -67,7 +67,17 @@ namespace wms.Client.Service.Service
             var r = await baseService.GetRequest<DataResult>(new ResetAlarmRequest(), RestSharp.Method.POST);
             return r;
         }
-
+        /// <summary>
+        /// 点击扫描按钮
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        //public async Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model)
+        //{
+        //    BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+        //    var r = await baseService.GetRequest<DataResult>(new EmergencyDoorSettingRequest(), RestSharp.Method.POST);
+        //    return r;
+        //}
         /// <summary>
         /// 控制货柜运转
         /// </summary>
@@ -492,7 +502,6 @@ namespace wms.Client.Service.Service
             return r;
         }
 
-
         /// <summary>
         /// 获取M650状态
         /// </summary>
@@ -505,7 +514,18 @@ namespace wms.Client.Service.Service
         }
 
         /// <summary>
-        /// 获取M650状态
+        /// 获取M651状态
+        /// </summary>
+        /// <returns></returns>
+        public async Task<DataResult> SetM651True()
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            var r = await baseService.GetRequest<DataResult>(new SetM651TrueRequest(), RestSharp.Method.POST);
+            return r;
+        }
+
+        /// <summary>
+        /// 获取M654状态
         /// </summary>
         /// <returns></returns>
         public async Task<DataResult> SetM654True()

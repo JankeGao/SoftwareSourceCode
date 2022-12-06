@@ -5055,3 +5055,157 @@ ClientIP ::1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":
 
 ClientIP ::1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/9/15 21:18:03 , IPlcServer.ResetAlarm is called , duration: 0 
 
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:15:04 , IPlcServer.StartRunningContainer is called , duration: 12.0745 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:15:04 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:15:06 , IPlcServer.StartRunningContainer is called , duration: 0.9909 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:16:55 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:16:55 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:17:00 , IPlcServer.StartRunningContainer is called , duration: 0.9996 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:17:00 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"PLC未连接","ResultType":1,"Success":false},at 2022/10/27 15:17:02 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:25 , IPlcServer.StartRunningContainer is called , duration: 20.6922 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:25 , IPlcServer.StartRunningContainer is called , duration: 0.564 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:38:27 , IPlcServer.StartRunningContainer is called , duration: 600.8408 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:41 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:41 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"取出动作尚未结束","ResultType":1,"Success":false},at 2022/10/27 15:38:41 , IPlcServer.StartRunningContainer is called , duration: 10.8147 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:46 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:46 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:53 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:38:53 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:11 , IPlcServer.StartRunningContainer is called , duration: 0.9998 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:11 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:39:11 , IPlcServer.StartRunningContainer is called , duration: 598.6892 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:39:15 , IPlcServer.StartRestoreContainer is called , duration: 74.3735 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:21 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:21 , IPlcServer.StartRunningContainer is called , duration: 1 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"存入动作尚未结束","ResultType":1,"Success":false},at 2022/10/27 15:39:21 , IPlcServer.StartRunningContainer is called , duration: 26.6812 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:25 , IPlcServer.StartRunningContainer is called , duration: 0.9994 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:25 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"存入动作尚未结束","ResultType":1,"Success":false},at 2022/10/27 15:39:25 , IPlcServer.StartRunningContainer is called , duration: 20.607 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:28 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:28 , IPlcServer.StartRunningContainer is called , duration: 0.9998 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:32 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:39:32 , IPlcServer.StartRunningContainer is called , duration: 0.9996 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:40:59 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:40:59 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:41:09 , IPlcServer.StartRunningContainer is called , duration: 593.1933 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:41:16 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:41:16 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"取出动作尚未结束","ResultType":1,"Success":false},at 2022/10/27 15:41:32 , IPlcServer.StartRunningContainer is called , duration: 10.5244 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:41:48 , IPlcServer.StartRestoreContainer is called , duration: 72.7947 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:41:50 , IPlcServer.StartRunningContainer is called , duration: 0.9898 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:41:50 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:44:11 , IPlcServer.StartRunningContainer is called , duration: 599.4712 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:45:38 , IPlcServer.StartRunningContainer is called , duration: 1.9999 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/10/27 15:45:38 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:45:46 , IPlcServer.StartRunningContainer is called , duration: 602.6703 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/10/27 15:45:49 , IPlcServer.StartRestoreContainer is called , duration: 83.2499 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:22:23 , IPlcServer.StartRunningContainer is called , duration: 12.3843 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:22:24 , IPlcServer.StartRunningContainer is called , duration: 2.4467 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:22:58 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:22:58 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:26:39 , IPlcServer.StartRunningContainer is called , duration: 0.9977 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:26:39 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:26:50 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:26:50 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:29:49 , IPlcServer.StartRunningContainer is called , duration: 1.0037 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 11:29:49 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/7 14:11:35 , IPlcServer.StartRunningContainer is called , duration: 623.5907 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/7 14:11:39 , IPlcServer.StartRestoreContainer is called , duration: 82.8316 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:35 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:35 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:41 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:41 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:46 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:46 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:50 , IPlcServer.StartRunningContainer is called , duration: 0.9956 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:12:50 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:16:37 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/7 14:16:37 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:59:05 , IPlcServer.StartRunningContainer is called , duration: 14.9991 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 15:59:05 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 15:59:09 , IPlcServer.StartRunningContainer is called , duration: 5.0008 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:07:09 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:07:09 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:07:12 , IPlcServer.StartRunningContainer is called , duration: 2.9998 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:08:15 , IPlcServer.StartRunningContainer is called , duration: 0 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"托盘序号不可为0，请核查数据","ResultType":1,"Success":false},at 2022/11/14 16:08:15 , IPlcServer.StartRunningContainer is called , duration: 1.1067 
+
+ClientIP 127.0.0.1 :30060,Response {"Data":null,"Message":"操作成功！","ResultType":1,"Success":true},at 2022/11/14 16:08:19 , IPlcServer.StartRunningContainer is called , duration: 3.0002 
+

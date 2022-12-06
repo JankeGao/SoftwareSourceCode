@@ -59,8 +59,8 @@
                     <TextBlock Text="{Binding AlarmStatus}" FontSize="18" VerticalAlignment="Center" Foreground="#6C757D"/>
                 </StackPanel>
             </Grid>
-            <Grid Margin="5" Grid.Row="3">
-                <TextBlock Margin="4" Text="{Binding AlarmStatusCap}" FontSize="18" VerticalAlignment="Center" Foreground="#F56C6C"/>
+            <Grid Margin="5 0 0 0" Grid.Row="3">
+                <TextBlock Margin="4 0 0 0" Text="{Binding AlarmStatusCap}" FontSize="15" VerticalAlignment="Center" Foreground="#F56C6C"/>
             </Grid>
             <Button Grid.Row="4"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"

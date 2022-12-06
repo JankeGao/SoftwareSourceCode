@@ -50,7 +50,7 @@
               <span>{{ scope.row.InCode }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料名称'" align="center" show-overflow-tooltip>
+          <el-table-column :label="'物料名称'" width="110" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.MaterialName }}</span>
             </template>

@@ -1,198 +1,198 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-      <el-tab-pane label="垂直行程学习" name="first">
+      <el-tab-pane :label=" $t('basicInformation.verticalStrokeLearning') " name="first">
         <el-steps :active="firstActive" finish-status="success">
-          <el-step title="步骤 1" description="开始垂直行程学习" />
-          <el-step title="步骤 2" description="监视M340 on表示学习结束,并弹框显示前部托架数和后部托架数" />
-          <el-step title="步骤 3" description="确认垂直行程学习结束" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.beginVerticalStrokeLearning') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.monitoringTheM340') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.endOfTheVertical') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="firstNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="firstNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="水平行程学习" name="second">
+      <el-tab-pane :label=" $t('basicInformation.horizontalStrokeLearning') " name="second">
         <el-steps :active="secondActive" finish-status="success">
-          <el-step title="步骤 1" description="开始水平行程学习" />
-          <el-step title="步骤 2" description="监视水平学习状态" />
-          <el-step title="步骤 3" description="确认水平行程学习结束" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.theLevelOfLearning') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.monitoringLevelLearning') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.endOfTheLevel') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="secondNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="secondNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="自动门行程学习" name="third">
+      <el-tab-pane :label=" $t('basicInformation.automaticDoorTravelLearning') " name="third">
         <el-steps :active="thirdActive" finish-status="success">
-          <el-step title="步骤 1" description="开始自动门行程学习" />
-          <el-step title="步骤 2" description="监视自动门学习状态" />
-          <el-step title="步骤 3" description="确认自动门行程学习结束" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.automaticLearning') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.automaticLearningState') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.automaticLearningEnd') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="thirdNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="thirdNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="托盘扫描" name="fourth">
+      <el-tab-pane :label=" $t('basicInformation.trayScanned') " name="fourth">
         <el-steps :active="fourthActive" finish-status="success">
-          <el-step title="步骤 1" description="开始托盘扫描" />
-          <el-step title="步骤 2" description="监视托盘扫描状态,当扫描结束时,显示前后部托盘数" />
-          <el-step title="步骤 3" description="开始定义" />
-          <el-step title="步骤 4" description="监视托盘到达位标示位M392 ON后弹出对话框,输入托盘号,点击确认后对话框关闭" />
-          <el-step title="步骤 5" description="继续定义下一个" />
-          <el-step title="步骤 6" description="监视M395,ON表示全部完成,OFF 后回到第四步" />
-          <el-step title="步骤 7" description="确认全部托盘定义完成" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.startTrayScan') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.monitorTrayScanStatus') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.startDefining') "></el-step>
+          <el-step :title=" $t('basicInformation.step4') " :description=" $t('basicInformation.monitorTheTray') "></el-step>
+          <el-step :title=" $t('basicInformation.step5') " :description=" $t('basicInformation.defineTheNextOne') "></el-step>
+          <el-step :title=" $t('basicInformation.step6') " :description=" $t('basicInformation.monitorM395') "></el-step>
+          <el-step :title=" $t('basicInformation.step7') " :description=" $t('basicInformation.completeAllPallets') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="fourthNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="fourthNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="自动存取托盘" name="five">
+      <el-tab-pane :label=" $t('basicInformation.automaticAccessTray') " name="five">
         <el-steps :active="fiveActive" finish-status="success">
-          <el-step title="步骤 1" description="往D650写入托盘序号" />
-          <el-step title="步骤 2" description="查询M650 在D651中显示托盘所在托架号" />
-          <el-step title="步骤 3" description="启动M651" />
-          <el-step title="步骤 4" description="在D652中显示物料高度" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.writeTraySerialNumberToD650') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.queryM650') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.startTheM651') "></el-step>
+          <el-step :title=" $t('basicInformation.step4') " :description=" $t('basicInformation.displayMaterialHeightInD652') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="fiveNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="fiveNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="添加托盘" name="six">
+      <el-tab-pane :label=" $t('basicInformation.addTheTray') " name="six">
         <el-steps :active="sixActive" finish-status="success">
-          <el-step title="步骤 1" description="往D700写入需要添加的托盘序号" />
-          <el-step title="步骤 2" description="按钮M700开始执行" />
-          <el-step title="步骤 3" description="扫描物料高度M701,OFF空间不足,ON空间足够" />
-          <el-step title="步骤 4" description="确认添加M702" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.writeTheSerialNumberOfTrayD700') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.buttonM700ToStartExecution') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.scanMaterialHeightM701') "></el-step>
+          <el-step :title=" $t('basicInformation.step4') " :description=" $t('basicInformation.confirmThatM702IsAdded') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="sixNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="sixNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="删除托盘" name="seven">
+      <el-tab-pane :label=" $t('basicInformation.deleteTheTray') " name="seven">
         <el-steps :active="sevenActive" finish-status="success">
-          <el-step title="步骤 1" description="往D750写入需要删除的托盘序号" />
-          <el-step title="步骤 2" description="按钮M750开始执行" />
-          <el-step title="步骤 3" description="在D751中显示托盘所在托架号" />
-          <el-step title="步骤 4" description="开始运行设备M751" />
-          <el-step title="步骤 5" description="监视托盘到位标示位M752 TRUE到位" />
-          <el-step title="步骤 6" description="确认删除或取消删除" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.writeTheTraySerialNumberToBeDeletedToD750') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.buttonM750ToStartExecution') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.displayTrayTrayNumberInD751') "></el-step>
+          <el-step :title=" $t('basicInformation.step4') " :description=" $t('basicInformation.startRunningDeviceM751') "></el-step>
+          <el-step :title=" $t('basicInformation.step5') " :description=" $t('basicInformation.monitoringTrayInPlaceMarkerM752TRUEInPlace') "></el-step>
+          <el-step :title=" $t('basicInformation.step6') " :description=" $t('basicInformation.confirmOrCancelTheDeletion') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="sevenNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="sevenNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
-      <el-tab-pane label="整理存储空间" name="eight">
+      <el-tab-pane :label=" $t('basicInformation.defragmentStorageSpace') " name="eight">
         <el-steps :active="eightActive" finish-status="success">
-          <el-step title="步骤 1" description="按下开始整理" />
-          <el-step title="步骤 2" description="监视M801 TRUE时显示空间利用率" />
-          <el-step title="步骤 3" description="确认整理完毕" />
+          <el-step :title=" $t('basicInformation.step1') " :description=" $t('basicInformation.pressToStartSorting') "></el-step>
+          <el-step :title=" $t('basicInformation.step2') " :description=" $t('basicInformation.monitorM801') "></el-step>
+          <el-step :title=" $t('basicInformation.step3') " :description=" $t('basicInformation.confirmFinishing') "></el-step>
         </el-steps>
-        <el-button style="margin-top: 12px;" @click="eightNext">下一步</el-button>
+        <el-button style="margin-top: 12px;" @click="eightNext">{{ $t('basicInformation.theNextStep') }}</el-button>
       </el-tab-pane>
     </el-tabs>
     <el-dialog
       v-el-drag-dialog
-      title="前部和后部托架数"
+      :title=" $t('basicInformation.numberOfFrontAndRearBrackets') "
       :visible.sync="dialogFirst"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>前部托架数:{{ firstNumber }}</span>
-      <span>后部托架数:{{ lastNumber }}</span>
+      <span>{{ $t('basicInformation.numberOfFrontBrackets') }}:{{firstNumber}}</span>
+      <span>{{ $t('basicInformation.numberOfRearBrackets') }}:{{lastNumber}}</span>
     </el-dialog>
     <el-dialog
       v-el-drag-dialog
-      title="前部和后部托盘数"
+      :title=" $t('basicInformation.numberOfTraysInFrontAndRear') "
       :visible.sync="dialogFourth"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>前部托盘数:{{ frontPallets }}</span>
-      <span>后部托盘数:{{ rearPallets }}</span>
+      <span>{{ $t('basicInformation.numberOfFrontPallets') }}:{{frontPallets}}</span>
+      <span>{{ $t('basicInformation.numberOfRearTrays') }}:{{rearPallets}}</span>
     </el-dialog>
     <el-dialog
       v-el-drag-dialog
-      title="开始定义 写入托盘号"
+      :title=" $t('basicInformation.startdefiningWriteTrayNumber') "
       :visible.sync="dialogFourthWrite"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托盘号</span>
+      <span>{{ $t('basicInformation.thePalletNo') }}</span>
       <el-input v-model="RunningContainer.TrayCode" class="dialog-input" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmWriteD392()">确认</el-button>
+        <el-button @click="confirmWriteD392()" type="primary">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
     <el-dialog
       v-el-drag-dialog
-      title="写入目标托盘号"
+      :title=" $t('basicInformation.writeTheDestinationTrayNumber') "
       :visible.sync="dialogFiveWrite"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托盘号</span>
+      <span>{{ $t('basicInformation.thePalletNo') }}</span>
       <el-input v-model="RunningContainer.TrayCode" class="dialog-input" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmWriteD650()">确认</el-button>
+        <el-button @click="confirmWriteD650()" type="primary">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="D651中显示的托架号"
+      :title=" $t('basicInformation.theBracketNumberShownInD651') "
       :visible.sync="dialogFiveShelfCode"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托架号:{{ shlefCode }}</span>
+      <span>{{ $t('basicInformation.bracket') }}:{{shlefCode}}</span>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="D652中显示的高度"
+      :title=" $t('basicInformation.theHeightShownInD652') "
       :visible.sync="dialogFiveHeightCode"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>高度:{{ heightCode }}</span>
+      <span>{{ $t('basicInformation.height') }}:{{heightCode}}</span>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="写入目标托盘号"
+      :title=" $t('basicInformation.writeTheDestinationTrayNumber') "
       :visible.sync="dialogSixWrite"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托盘号</span>
+      <span>{{ $t('basicInformation.thePalletNo') }}</span>
       <el-input v-model="RunningContainer.TrayCode" class="dialog-input" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmWriteD700()">确认</el-button>
+        <el-button @click="confirmWriteD700()" type="primary">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="写入需要删除的目标托盘号"
+      :title=" $t('basicInformation.targetTrayNumber') "
       :visible.sync="dialogSevenWrite"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托盘号</span>
+      <span>{{ $t('basicInformation.thePalletNo') }}</span>
       <el-input v-model="RunningContainer.TrayCode" class="dialog-input" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmWriteD750()">确认</el-button>
+        <el-button @click="confirmWriteD750()" type="primary">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="确认删除或取消删除"
+      title=" $t('basicInformation.confirmOrCancelTheDeletion') "
       :visible.sync="dialogSevenDelete"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>托盘号</span>
+      <span>{{ $t('basicInformation.thePalletNo') }}</span>
       <el-input v-model="RunningContainer.TrayCode" class="dialog-input" />
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="confirmM753()">确认删除</el-button>
-        <el-button type="primary" @click="confirmM754()">取消删除</el-button>
+        <el-button @click="confirmM753()" type="primary">{{ $t('baseBtn.confirmDelete') }}</el-button>
+        <el-button @click="confirmM754()" type="primary">{{ $t('baseBtn.cancelDelete') }}</el-button>
       </div>
     </el-dialog>
 
     <el-dialog
       v-el-drag-dialog
-      title="空间利用率"
+      :title=" $t('basicInformation.spaceUtilization') "
       :visible.sync="dialogEight"
       :width="'40%'"
       :close-on-click-modal="false"
     >
-      <span>空间利用率:{{ spaceUserRate }}</span>
+      <span>{{ $t('basicInformation.spaceUtilization') }}:{{spaceUserRate}}</span>
     </el-dialog>
   </div>
 </template>
@@ -296,8 +296,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '开始垂直学习失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartVerticalLearning') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -314,8 +314,8 @@ export default {
           var resData = JSON.parse(res.data.Content)
           if (resData.Success) {
             this.$message({
-              title: '成果',
-              message: '结束垂直学习成功' + resData.Message,
+              title: this.$t('basicTips.achievements'),
+              message: this.$t('basicTips.endVerticalLearningSuccessfully') + resData.Message,
               type: 'success',
               duration: 2000
             })
@@ -324,8 +324,8 @@ export default {
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '开始垂直学习失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.endVerticalLearningFailure') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -356,8 +356,8 @@ export default {
                   clearInterval(_this.firstTimer)// 满足条件时 停止计时
                   _this.secondActive++
                   _this.$message({
-                    title: '成功',
-                    message: '水平学习行程已结束',
+                    title: this.$t('messageTips.Succeed'),
+                    message: this.$t('basicTips.theHorizontalLearningJourneyHasEnded'),
                     type: 'success',
                     duration: 2000
                   })
@@ -366,8 +366,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '开始水平学习行程失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartHorizontalLearningJourney') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -384,8 +384,8 @@ export default {
           var resData = JSON.parse(res.data.Content)
           if (resData.Success) {
             this.$message({
-              title: '成果',
-              message: '结束水平行程学习成功' + resData.Message,
+              title: this.$t('basicTips.achievements'),
+              message: this.$t('basicTips.endHorizontalJourneyLearningSuccessful') + resData.Message,
               type: 'success',
               duration: 2000
             })
@@ -394,8 +394,8 @@ export default {
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '结束水平行程学习失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.endHorizontalJourneyLearningFailure') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -423,8 +423,8 @@ export default {
                   _this.thirdActive++
                   clearInterval(_this.firstTimer)// 满足条件时 停止计时
                   _this.$message({
-                    title: '成功',
-                    message: '自动门学习行程已结束',
+                    title: this.$t('messageTips.Succeed'),
+                    message: this.$t('basicTips.theAutomaticDoorLearningJourneyHasEnded'),
                     type: 'success',
                     duration: 2000
                   })
@@ -433,8 +433,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '开始自动门学习行程失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartAutomaticDoorLearningJourney') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -451,8 +451,8 @@ export default {
           var resData = JSON.parse(res.data.Content)
           if (resData.Success) {
             this.$message({
-              title: '成果',
-              message: '结束自动门行程学习成功' + resData.Message,
+              title: this.$t('basicTips.achievements'),
+              message: this.$t('basicTips.endAutomaticDoorTravelLearningSuccessful') + resData.Message,
               type: 'success',
               duration: 2000
             })
@@ -461,8 +461,8 @@ export default {
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '结束水平行程学习失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.endHorizontalJourneyLearningFailure') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -504,8 +504,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '启动托盘扫描失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartTrayScan') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -531,8 +531,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '开始定义失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.startDefinitionFailed') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -562,8 +562,8 @@ export default {
                 }, 5000)
               } else {
                 this.$message({
-                  title: '失败',
-                  message: '获取M395状态失败' + data.Message,
+                  title: this.$t('messageTips.Failure'),
+                  message: this.$t('basicTips.failedToGetM395Status') + data.Message,
                   type: 'error',
                   duration: 2000
                 })
@@ -571,8 +571,8 @@ export default {
             })
           } else {
             this.$message({
-              title: '失败',
-              message: '开始垂直学习失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartVerticalLearning') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -584,8 +584,8 @@ export default {
           var resData = JSON.parse(res.data.Content)
           if (resData.Success) {
             this.$message({
-              title: '成功',
-              message: '结束托盘扫描成功' + resData.Message,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('basicTips.trayScanEndedSuccessfully') + resData.Message,
               type: 'success',
               duration: 2000
             })
@@ -594,8 +594,8 @@ export default {
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '结束托盘扫描失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToEndTrayScan') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -615,8 +615,8 @@ export default {
             var resData = JSON.parse(res.data.Content)
             if (resData.Success) {
               this.$message({
-                title: '成功',
-                message: '写入托盘号成功' + resData.Message,
+                title: this.$t('messageTips.Succeed'),
+                message: this.$t('basicTips.trayNumberWrittenSuccessfully') + resData.Message,
                 type: 'success',
                 duration: 2000
               })
@@ -624,8 +624,8 @@ export default {
               this.dialogFourthWrite = false
             } else {
               this.$message({
-                title: '失败',
-                message: '写入托盘号失败' + resData.Message,
+                title: this.$t('messageTips.Failure'),
+                message: this.$t('basicTips.trayNumberWrittenSuccessfully') + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -633,8 +633,8 @@ export default {
           })
         } else {
           this.$message({
-            title: '失败',
-            message: '写入托盘号失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.trayNumberWrittenSuccessfully') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -656,8 +656,8 @@ export default {
                 this.fiveActive++
               } else {
                 this.$message({
-                  title: '失败',
-                  message: '获取托架号失败' + resData.Message,
+                  title: this.$t('messageTips.Failure'),
+                  message: this.$t('basicTips.failedToGetTheCarrierNumber') + resData.Message,
                   type: 'error',
                   duration: 2000
                 })
@@ -665,8 +665,8 @@ export default {
             })
           } else {
             this.$message({
-              title: '失败',
-              message: '获取状态失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToGetStatus') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -679,8 +679,8 @@ export default {
             this.fiveActive++
           } else {
             this.$message({
-              title: '失败',
-              message: '启动失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('systemManagementTips.startFailed') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -695,8 +695,8 @@ export default {
             this.fiveActive++
           } else {
             this.$message({
-              title: '失败',
-              message: '获取高度失败' + data.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToGetHeight') + data.Message,
               type: 'error',
               duration: 2000
             })
@@ -716,8 +716,8 @@ export default {
           this.dialogFiveWrite = false
         } else {
           this.$message({
-            title: '失败',
-            message: '写入托盘号失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.trayNumberWrittenFailure') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -733,15 +733,15 @@ export default {
           if (resData.Success) {
             this.sixActive++
             this.$message({
-              title: '成功',
-              message: '启动成功' + resData.Message,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('systemManagementTips.startSucceed') + resData.Message,
               type: 'success',
               duration: 2000
             })
           } else {
             this.$message({
-              title: '失败',
-              message: '启动失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('systemManagementTips.startFailed') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -755,16 +755,16 @@ export default {
               this.sixActive++
             } else {
               this.$message({
-                title: '失败',
-                message: '空间不足' + resData.Message,
+                title: this.$t('messageTips.Failure'),
+                message: this.$t('basicTips.insufficientSpace') + resData.Message,
                 type: 'error',
                 duration: 2000
               })
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '获取状态失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToGetStatus') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -775,16 +775,16 @@ export default {
           var data = JSON.parse(res.data.Content)
           if (data.Success) {
             this.$message({
-              title: '成功',
-              message: '确认添加成功' + data.Message,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('basicTips.confirmToAddSuccessfully') + data.Message,
               type: 'success',
               duration: 2000
             })
             this.sixActive++
           } else {
             this.$message({
-              title: '失败',
-              message: '确认添加失败' + data.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.confirmToAddFailure') + data.Message,
               type: 'error',
               duration: 2000
             })
@@ -804,8 +804,8 @@ export default {
           this.dialogSixWrite = false
         } else {
           this.$message({
-            title: '失败',
-            message: '写入托盘号失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.trayNumberWrittenFailure') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -821,15 +821,15 @@ export default {
           if (resData.Success) {
             this.sevenActive++
             this.$message({
-              title: '成功',
-              message: '启动成功' + resData.Message,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('systemManagementTips.startSucceed') + resData.Message,
               type: 'success',
               duration: 2000
             })
           } else {
             this.$message({
-              title: '失败',
-              message: '启动失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('systemManagementTips.startFailed') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -841,15 +841,15 @@ export default {
           if (resData.Success) {
             this.sevenActive++
             this.$message({
-              title: '成功',
-              message: '托架号' + resData.Data,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('basicInformation.bracket') + resData.Data,
               type: 'success',
               duration: 2000
             })
           } else {
             this.$message({
-              title: '失败',
-              message: '获取状态失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToGetStatus') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -867,8 +867,8 @@ export default {
                 var data = JSON.parse(res.data.Content)
                 if (data.Success && data.Data === true) {
                   _this.$message({
-                    title: '成功',
-                    message: '托盘已到位',
+                    title: this.$t('messageTips.Succeed'),
+                    message: this.$t('basicTips.trayInPlace'),
                     type: 'success',
                     duration: 2000
                   })
@@ -879,8 +879,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '运行失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.runFailed') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -904,8 +904,8 @@ export default {
           this.dialogSevenWrite = false
         } else {
           this.$message({
-            title: '失败',
-            message: '写入托盘号失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.trayNumberWrittenFailure') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -917,8 +917,8 @@ export default {
         var resData = JSON.parse(res.data.Content)
         if (resData.Success) {
           this.$message({
-            title: '成功',
-            message: '确认删除成功',
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('basicTips.confirmDeletionSucceeded'),
             type: 'success',
             duration: 2000
           })
@@ -926,8 +926,8 @@ export default {
           this.dialogSevenDelete = false
         } else {
           this.$message({
-            title: '失败',
-            message: '确认删除失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.confirmDeletionFailure') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -939,8 +939,8 @@ export default {
         var resData = JSON.parse(res.data.Content)
         if (resData.Success) {
           this.$message({
-            title: '成功',
-            message: '取消删除成功',
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('basicTips.cancelDeletionSucceeded'),
             type: 'success',
             duration: 2000
           })
@@ -948,8 +948,8 @@ export default {
           this.dialogSevenDelete = false
         } else {
           this.$message({
-            title: '失败',
-            message: '取消删除失败' + resData.Message,
+            title: this.$t('messageTips.Failure'),
+            message: this.$t('basicTips.cancelDeletionFailure') + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -981,8 +981,8 @@ export default {
             }, 5000)
           } else {
             this.$message({
-              title: '失败',
-              message: '开始整理存储空间失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToStartDefragmentingStorageSpace') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -999,8 +999,8 @@ export default {
           var resData = JSON.parse(res.data.Content)
           if (resData.Success) {
             this.$message({
-              title: '成功',
-              message: '整理完毕' + resData.Message,
+              title: this.$t('messageTips.Succeed'),
+              message: this.$t('basicTips.finishing') + resData.Message,
               type: 'success',
               duration: 2000
             })
@@ -1009,8 +1009,8 @@ export default {
             }
           } else {
             this.$message({
-              title: '失败',
-              message: '确认整理完毕失败' + resData.Message,
+              title: this.$t('messageTips.Failure'),
+              message: this.$t('basicTips.failedToConfirmTheCompletionOfSorting') + resData.Message,
               type: 'error',
               duration: 2000
             })

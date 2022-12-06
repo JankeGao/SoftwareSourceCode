@@ -27,11 +27,18 @@ namespace wms.Client.Core.Interfaces
         /// <returns></returns>
        Task<DataResult> PostRestAllAlarm();
         /// <summary>
+        /// 点击扫描按钮
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        //Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model);
+
+        /// <summary>
         /// 控制货柜运转(取出货柜)
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-       Task<DataResult> PostStartRunningContainer(RunningContainer model);
+        Task<DataResult> PostStartRunningContainer(RunningContainer model);
         /// <summary>
         /// 存入货柜
         /// </summary>
@@ -234,6 +241,11 @@ namespace wms.Client.Core.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<DataResult> WriteD650_In(Model.Entity.RunningContainer runningContainer);
+        /// <summary>
+        /// 开始取出
+        /// </summary>
+        /// <returns></returns>
+        Task<DataResult> SetM651True();
 
         /// <summary>
         /// 开始存入

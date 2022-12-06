@@ -5,7 +5,7 @@
       <div class="filter-container">
         <el-input
           v-model="listQuery.Code"
-          placeholder="物料编码、物料名称"
+          placeholder="$t('stockManagement.bomNumberAndBomName')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleFilter"
@@ -13,7 +13,7 @@
         />
         <el-input
           v-model="listQuery.Remark"
-          placeholder="备注"
+          placeholder="$t('headerInformation.remarks')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleFilter"
@@ -25,8 +25,8 @@
           type="primary"
           icon="el-icon-search"
           @click="handleFilter"
-        >查询</el-button>
-        <el-button class="filter-button" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+        >{{ $t('baseBtn.queryBtn') }}</el-button>
+        <el-button class="filter-button" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('baseBtn.addBtn') }}</el-button>
         <el-upload
           ref="fileupload"
           class="filter-button"
@@ -36,22 +36,22 @@
           :before-upload="beforeUpload"
           :on-exceed="handleExceed"
         >
-          <el-button type="primary" i class="el-icon-upload">导入</el-button>
+          <el-button type="primary" i class="el-icon-upload">{{ $t('baseBtn.importBtn') }}</el-button>
         </el-upload>
         <el-button
           class="filter-button"
           type="primary"
           icon="el-icon-download"
           @click="handleDownUpload()"
-        >模板</el-button>
+        >{{ $t('baseBtn.Template') }}</el-button>
         <el-dropdown size="small" placement="bottom" trigger="click" @command="batchOperate">
           <el-button class="filter-button" style="margin-left: 10px;" type="primary">
-            导出
+            {{ $t('baseBtn.exportBtn') }}
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="All_Export">全部导出</el-dropdown-item>
-            <el-dropdown-item command="Condition_Export">按条件导出</el-dropdown-item>
+            <el-dropdown-item command="All_Export">{{ $t('baseBtn.allExport') }}</el-dropdown-item>
+            <el-dropdown-item command="Condition_Export">{{ $t('baseBtn.queryExport') }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -75,10 +75,10 @@
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-row :gutter="20">
                   <el-col :span="6">
-                    <el-form-item label="先进先出">
+                    <el-form-item label="$t('basicInformation.firstInFirstOut')">
                       <span>{{ props.row.FIFOTypeCaption }}</span>
                     </el-form-item>
-                    <el-form-item label="批次料">
+                    <el-form-item label="$t('basicInformation.batchesOfMaterial')">
                       <el-switch
                         v-model="props.row.IsBatch"
                         active-color="#13ce66"
@@ -86,7 +86,7 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="存储锁定">
+                    <el-form-item label="$t('basicInformation.storeLocked')">
                       <el-switch
                         v-model="props.row.IsNeedBlock"
                         active-color="#13ce66"
@@ -94,7 +94,7 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="是否混批">
+                    <el-form-item label="$t('basicInformation.whetherTheMixedBatchOf')">
                       <el-switch
                         v-model="props.row.IsMaxBatch"
                         active-color="#13ce66"
@@ -104,13 +104,13 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
-                    <el-form-item label="有效期">
-                      <span>{{ props.row.ValidityPeriod }} 天</span>
+                    <el-form-item label="$t('basicInformation.expiryDate')">
+                      <span>{{ props.row.ValidityPeriod }} {{ $t('basicInformation.day') }}</span>
                     </el-form-item>
-                    <el-form-item label="老化时间">
-                      <span>{{ props.row.AgeingPeriod }} 天</span>
+                    <el-form-item label="$t('basicInformation.agingTime')">
+                      <span>{{ props.row.AgeingPeriod }} {{ $t('basicInformation.day') }}</span>
                     </el-form-item>
-                    <el-form-item label="单包条码">
+                    <el-form-item label="$t('basicInformation.singlePackageBarCode')">
                       <el-switch
                         v-model="props.row.IsPackage"
                         active-color="#13ce66"
@@ -118,21 +118,21 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="单包数量">
+                    <el-form-item label="$t('basicInformation.singlePackageNumber')">
                       <span>{{ props.row.PackageQuantity }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
-                    <el-form-item label="存放载具">
+                    <el-form-item label="$t('equipmentManagement.forAVehicle')">
                       <span>{{ props.row.BoxCode }}</span>
                     </el-form-item>
-                    <el-form-item label="载具名称">
+                    <el-form-item label="$t('headerInformation.vehicleName')">
                       <span>{{ props.row.BoxName }}</span>
                     </el-form-item>
-                    <el-form-item label="最大存放数">
+                    <el-form-item label="$t('equipmentManagement.maximumStorage')">
                       <span>{{ props.row.BoxCount }}</span>
                     </el-form-item>
-                    <el-form-item label="成本中心">
+                    <el-form-item label="$t('equipmentManagement.costCenter')">
                       <span>{{ props.row.CostCenter }}</span>
                     </el-form-item>
                   </el-col>
@@ -147,7 +147,7 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :label="'图片'" width="70" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.picture')" width="70" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <div class="image_box">
                 <img
@@ -158,58 +158,58 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料编码'" width="150" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.materialCode')" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Code }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料名称'" width="200" align="center" :show-overflow-tooltip="true">
+          <el-table-column :label="$t('headerInformation.materialName')" width="200" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
               <span>{{ scope.row.Name }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料类型'" width="80" align="center">
+          <el-table-column :label="$t('basicInformation.materialType')" width="80" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.MaterialTypeDescription }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'单位'" width="80" align="center">
+          <el-table-column :label="$t('headerInformation.company')" width="80" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.Unit }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'重量(g)'" width="80" align="center">
+          <el-table-column :label="$t('basicInformation.theWeightOfThe')" width="80" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.UnitWeight }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'备注1'" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('basicInformation.note1')" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark1 }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'价格'" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('basicInformation.note2')" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark2 }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'用途'" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('basicInformation.note3')" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark3 }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'备注4'" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('basicInformation.note4')" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark4 }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'备注5'" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('basicInformation.note5')" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark5 }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            :label="'操作'"
+            :label="$t('headerInformation.operation')"
             align="center"
             width="260"
             class-name="small-padding fixed-width"
@@ -221,9 +221,9 @@
                 type="info"
                 style="width:80px"
                 @click="handleBarCode(scope.row)"
-              >生成条码</el-button>
-              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              >{{ $t('basicInformation.toGenerateTheBarcode') }}</el-button>
+              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)">{{ $t('baseBtn.editBtn') }}</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('baseBtn.delete') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -261,15 +261,15 @@
         style="margin:20px"
       >
         <el-tabs v-model="activeName" type="card" style="width:900px">
-          <el-tab-pane label="基础信息" name="first">
+          <el-tab-pane label="$t('basicInformation.basicInformation')" name="first">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item :label="'物料类别'">
+                <el-form-item :label="$t('headerInformation.materialCategory')">
                   <el-select
                     v-model="materialTypeValue"
                     size="small"
                     class="dialog-input"
-                    placeholder="物料类别"
+                    placeholder="$t('headerInformation.materialCategory')"
                     :disabled="dialogStatus=='update'"
                     @change="handleChangeMaterailType"
                   >
@@ -281,64 +281,64 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item :label="'物料名称'" prop="Name">
+                <el-form-item :label="$t('headerInformation.materialName')" prop="Name">
                   <el-input
                     v-model="Material.Name"
                     clearable
                     class="dialog-input"
-                    placeholder="请输入物料名称"
+                    placeholder="$t('basicInformation.pleaseEnterTheMaterialName')"
                   />
                 </el-form-item>
-                <el-form-item :label="'物料编码'">
+                <el-form-item :label="$t('headerInformation.materialCode')">
                   <el-input
                     v-model="Material.Code"
                     clearable
                     class="dialog-input"
-                    placeholder="为空则系统自动生成"
+                    placeholder="$t('basicInformation.ifItIsEmpty')"
                     :disabled="dialogStatus=='update'"
                   />
                 </el-form-item>
-                <el-form-item :label="'物料单位'" prop="Unit">
+                <el-form-item :label="$t('dataReport.materialUnit')" prop="Unit">
                   <el-input
                     v-model="Material.Unit"
                     clearable
                     class="dialog-input"
-                    placeholder="请输入物料单位"
+                    placeholder="$t('basicInformation.pleaseEnterTheMaterialUnit')"
                   />
                 </el-form-item>
-                <el-form-item :label="'重量（g）'" prop="UnitWeight">
+                <el-form-item :label="$t('basicInformation.theWeightOfThe')" prop="UnitWeight">
                   <el-input
                     v-model="Material.UnitWeight"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请输入单位重量"
+                    placeholder="$t('basicInformation.pleaseEnterUnitWeight') "
                   />
                 </el-form-item>
-                <el-form-item :label="'备注1'">
+                <el-form-item :label="$t('basicInformation.note1')">
                   <el-input
                     v-model="Material.Remark1"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="请输入物料备注"
+                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
-                <el-form-item :label="'价格'">
+                <el-form-item :label="$t('basicInformation.note2')">
                   <el-input
                     v-model="Material.Remark2"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="请输入价格 "
+                    placeholder="$t('basicInformation.pleaseEnterMaterialPrice')"
                     class="dialog-input"
                   />
                 </el-form-item>
-                <el-form-item :label="'用途'">
+                <el-form-item :label="$t('basicInformation.note3')">
                   <el-input
                     v-model="Material.Remark3"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="请输入用途"
+                    placeholder="$t('basicInformation.pleaseEnterMaterialPurpose')"
                     class="dialog-input"
                   />
                 </el-form-item>
@@ -363,40 +363,40 @@
                   :before-upload="PictureStatus"
                   class="filter-button"
                 >
-                  <el-button style="margin-bottom: 70px;">选择图片</el-button>
+                  <el-button style="margin-bottom: 70px;">{{ $t('basicInformation.choosePicture') }}</el-button>
                 </el-upload>
-                <el-form-item :label="'备注4'">
+                <el-form-item :label="$t('basicInformation.note4')">
                   <el-input
                     v-model="Material.Remark4"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="请输入物料备注"
+                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
-                <el-form-item :label="'备注5'">
+                <el-form-item :label="$t('basicInformation.note5')">
                   <el-input
                     v-model="Material.Remark5"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="请输入物料备注"
+                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="属性信息" name="second">
+          <el-tab-pane label="$t('basicInformation.attributeInformation')" name="second">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item :label="'属性组'">
+                <el-form-item :label="$t('basicInformation.attributeGroup')">
                   <el-select
                     v-model="Material.PackageUnit"
                     :multiple="false"
                     filterable
                     clearable
                     reserve-keyword
-                    placeholder="选择属性组批量维护"
+                    placeholder="$t('basicInformation.batchMaintenance')"
                     style="width:300px"
                     @change="handleChooseMaterialProperty"
                   >
@@ -408,59 +408,59 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item :label="'最大库存'">
+                <el-form-item :label="$t('basicInformation.largestInventory')">
                   <el-input
                     v-model="Material.MaxNum"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请请输入物料最大库存"
+                    placeholder="$t('basicInformation.pleaseInputTheMaximumStockOfMaterials')"
                     @change="maxNumChange"
                   />
                 </el-form-item>
-                <el-form-item :label="'最小库存'">
+                <el-form-item :label="$t('basicInformation.theMinimumInventory')">
                   <el-input
                     v-model="Material.MinNum"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请输入物料最小库存"
+                    placeholder="$t('basicInformation.pleaseEnterTheMinimumInventoryOfMaterials')"
                     @change="minNumChange"
                   />
                 </el-form-item>
-                <el-form-item :label="'批次料'">
+                <el-form-item :label="$t('basicInformation.batchesOfMaterial')">
                   <el-switch
                     v-model="Material.IsBatch"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   />
                 </el-form-item>
-                <el-form-item :label="'存储锁定'">
+                <el-form-item :label="$t('basicInformation.storeLocked')">
                   <el-switch
                     v-model="Material.IsNeedBlock"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   />
                 </el-form-item>
-                <el-form-item :label="'单包条码'">
+                <el-form-item :label="$t('basicInformation.singlePackageBarCode')">
                   <el-switch
                     v-model="Material.IsPackage"
                     :disabled="Material.MaterialType===1"
                     active-color="#13ce66"
                     inactive-color="#ff4949"
                   />
-                  <div v-if="Material.MaterialType ===1">模具属性物料启动单包管理</div>
+                  <div v-if="Material.MaterialType ===1">{{ $t('basicInformation.singlePackageManagement') }}</div>
                 </el-form-item>
-                <el-form-item :label="'包装数量'">
+                <el-form-item :label="$t('basicInformation.numberOfPackages')">
                   <el-input
                     v-model="Material.PackageQuantity"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请输入包装数量"
+                    placeholder="$t('basicInformation.pleaseEnterPackingQuantity')"
                   />
                 </el-form-item>
-                <el-form-item :label="'是否混批'">
+                <el-form-item :label="$t('basicInformation.whetherTheMixedBatchOf')">
                   <el-switch
                     v-model="Material.IsMaxBatch"
                     active-color="#13ce66"
@@ -469,12 +469,12 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item :label="'先进先出'">
+                <el-form-item :label="$t('basicInformation.firstInFirstOut')">
                   <el-select
                     v-model="Material.FIFOType"
                     size="small"
                     class="dialog-input"
-                    placeholder="请选择先进先出"
+                    placeholder="$t('basicInformation.pleaseSelectFifO')"
                   >
                     <el-option
                       v-for="item in options"
@@ -484,10 +484,10 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item :label="'精度'" prop="IntervalType">
+                <el-form-item :label="$t('basicInformation.precision')" prop="IntervalType">
                   <el-select
                     v-model="Material.FIFOAccuracy"
-                    placeholder="请选择先进先出精度"
+                    placeholder="$t('basicInformation.pleaseSelectFifOAccuracy')"
                     class="dialog-input"
                     :disabled="Material.FIFOType===0"
                   >
@@ -499,29 +499,29 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item :label="'有效期(天)'">
+                <el-form-item :label="$t('basicInformation.expiryDateDays')">
                   <el-input
                     v-model="Material.ValidityPeriod"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请输入有效期天数"
+                    placeholder="$t('basicInformation.pleaseEnterTheValidityPeriod')"
                   />
                 </el-form-item>
-                <el-form-item :label="'老化时间(天)'">
+                <el-form-item :label="$t('basicInformation.agingTimeDays')">
                   <el-input
                     v-model="Material.AgeingPeriod"
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="请输入老化时间-天"
+                    placeholder="$t('basicInformation.pleaseEnterAgingTime')"
                   />
                 </el-form-item>
-                <el-form-item :label="'成本中心'">
+                <el-form-item :label="$t('basicInformation.costCenter')">
                   <el-input
                     v-model="Material.CostCenter"
                     class="dialog-input"
-                    placeholder="请输入物料成本中心"
+                    placeholder="$t('basicInformation.pleaseEnterMaterialCostCenter')"
                   />
                 </el-form-item>
               </el-col>

@@ -253,6 +253,10 @@ namespace wms.Client.Model.RequestModel
     {
         public override string route { get => DeviceIP + "WriteD650_In"; }
     }
+    public class SetM651TrueRequest : BaseRequest
+    {
+        public override string route { get => DeviceIP + "SetM651True"; }
+    }
     public class SetM654TrueRequest : BaseRequest
     {
         public override string route { get => DeviceIP + "SetM654True"; }

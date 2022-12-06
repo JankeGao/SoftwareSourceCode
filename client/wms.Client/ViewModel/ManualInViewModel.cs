@@ -17,6 +17,7 @@ using HP.Core.Data;
 using HP.Core.Dependency;
 using HP.Core.Mapping;
 using HP.Utility;
+using HP.Utility.Data;
 using HPC.BaseService.Contracts;
 using HPC.BaseService.Models;
 using MaterialDesignThemes.Wpf;
@@ -666,7 +667,7 @@ namespace wms.Client.ViewModel
         /// <summary>
         /// 当前操作储位
         /// </summary>
-        private decimal inQuantity = 1;
+        private decimal inQuantity = 0;
         public decimal InQuantity
         {
             get { return inQuantity; }
@@ -1145,7 +1146,7 @@ namespace wms.Client.ViewModel
                     UnitWeight = 0;
                     return;
                 }
-                //if (InQuantity<=0)
+                //if (InQuantity <= 0)
                 //{
                 //    Msg.Warning("入库数量必须大于0或者未输入入库数量");
                 //    SelectMaterialCode = "";
@@ -1475,7 +1476,6 @@ namespace wms.Client.ViewModel
                 {
                     GlobalData.IsFocus = true;
                     Msg.Warning("未选择执行托盘，请先选择一项！");
-
                     return;
                 }
 
@@ -1534,7 +1534,7 @@ namespace wms.Client.ViewModel
 
                 // 货柜运行
                 var runningContainer = baseControlService.PostStartRunningContainer(runingEntity);
-                if (runningContainer.Result.Success)//
+                if (runningContainer.Result.Success)
                 {
                     GlobalData.IsFocus = true;
                     if (CurTratCode != SelectTrayCode)
@@ -1549,11 +1549,10 @@ namespace wms.Client.ViewModel
                     GlobalData.IsFocus = true;
                     Msg.Error(runningContainer.Result.Message);
                 }
-
             }
             catch (Exception ex)
             {
-
+                Msg.Error(ex.Message);
             }
         }
 
@@ -1606,6 +1605,13 @@ namespace wms.Client.ViewModel
             try
             {
                 ChangeColor("FourthStep");
+
+                if (CurTratCode != SelectTrayCode)
+                {
+                    Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
+                    return;
+                }
+
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {
                     GlobalData.IsFocus = true;
@@ -1649,7 +1655,7 @@ namespace wms.Client.ViewModel
                     var runningContainer = baseControlService.PostStartRestoreContainer(runingEntity).Result;
                     if (runningContainer.Success)
                     {
-                         Msg.Info("正在存入托盘,请确认托盘已存入货柜后在关闭窗口");
+                         Msg.Info("正在存入托盘,请确认托盘已存入货柜后再关闭窗口");
                         //var result = baseControlService.SetM654True().Result;
                         //if (!result.Success)
                         //{
@@ -1898,7 +1904,7 @@ namespace wms.Client.ViewModel
                 LabelEntity.Quantity = 0;
                 LabelEntity.SupplyName = "";
                 MaterialUrl = "";
-                InQuantity = 1;
+                InQuantity = 0;
                 BatchCode = "";
                 SelectMaterialCode = "";
                 SelectMaterialName = "";

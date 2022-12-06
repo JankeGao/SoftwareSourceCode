@@ -497,7 +497,21 @@
                                 <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
                             </TextBox.InputBindings>
                         </TextBox>-->
-
+                        <!--<TextBox
+                            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                            VerticalAlignment="Top"
+                            Margin="0 10 10 10"  
+                            Name="BarCode"
+                            Width="500"
+                            Height="40"
+                            AcceptsReturn="False"
+                            TextWrapping="Wrap"
+                            Text="{Binding SearchBarcode, UpdateSourceTrigger=PropertyChanged}"
+                            materialDesign:HintAssist.Hint="请输入物料编码或物料名称" FontSize="16" >
+                            <TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
+                            </TextBox.InputBindings>
+                        </TextBox>-->
                         <controls:SearchableTextBox x:Name="BarCode" Grid.Row="0" Width="500" Height="40"
                                    IsShowSearchIcon="False"
                                    SearchItemsSource="{Binding SearchItemsSourceCollection}"

@@ -524,7 +524,7 @@ namespace wms.Client.ViewModel
         /// <summary>
         /// 当前操作储位
         /// </summary>
-        private decimal inQuantity = 1;
+        private decimal inQuantity = 0;
         public decimal OutQuantity
         {
             get { return inQuantity; }
@@ -1467,7 +1467,6 @@ namespace wms.Client.ViewModel
                     if (CurTratCode != SelectTrayCode)
                     {
                         Msg.Info("正在取出托盘,请确认托盘到达指定位置后再关闭窗口");
-                        Msg.Info("正在存入托盘,请确认托盘已存入货柜后在关闭窗口");
                     }
                     CurTratCode = SelectTrayCode;
                     orgXLight = XLight;
@@ -1480,7 +1479,7 @@ namespace wms.Client.ViewModel
             }
             catch (Exception ex)
             {
-
+                Msg.Error(ex.Message);
             }
   
         }
@@ -1492,6 +1491,13 @@ namespace wms.Client.ViewModel
             try
             {
                 ChangeColor("FourthStep");
+
+                if (CurTratCode != SelectTrayCode)
+                {
+                    Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
+                    return;
+                }
+
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {
                     GlobalData.IsFocus = true;
@@ -1815,7 +1821,7 @@ namespace wms.Client.ViewModel
                 LabelEntity.SupplyName = "";
                 SelectMaterialName = "";
                 MaterialUrl = "";
-                OutQuantity = 1;
+                OutQuantity = 0;
                 XLight =0;
                 YLight = 0;
                 SelectBatchCode = "";

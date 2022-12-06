@@ -3,10 +3,10 @@
     <!-- 筛选栏 -->
     <el-card class="search-card">
       <div class="filter-container">
-        <el-input v-model="listQuery.Code" placeholder="条码编码" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-input v-model="listQuery.MaterialCode" placeholder="物料编码、物料名称" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-input v-model="listQuery.SupplyCode" placeholder="供应商编码、供应商名称" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
+        <el-input v-model="listQuery.Code" placeholder="$t('printBar.barCode')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-input v-model="listQuery.MaterialCode" placeholder="$t('stockManagement.bomNumberAndBomName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-input v-model="listQuery.SupplyCode" placeholder="$t('stockManagement.supplierCodeSupplierName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('baseBtn.queryBtn') }}</el-button>
       </div>
     </el-card>
     <el-row>
@@ -23,57 +23,57 @@
           style="width:100%;min-height:100%;"
         >
           <el-table-column type="index" width="50" />
-          <el-table-column :label="'条码编码'" width="160" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('printBar.barCode')" width="160" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Code }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料编码'" width="150" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.materialCode')" width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.MaterialCode }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'物料名称'" show-overflow-tooltip align="center">
+          <el-table-column :label="$t('headerInformation.materialName')" show-overflow-tooltip align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.MaterialName }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'数量'" show-overflow-tooltip align="center">
+          <el-table-column :label="$t('commonData.quantity')" show-overflow-tooltip align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.Quantity }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'供应商编码'" width="140" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.supplierCode')" width="140" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.SupplierCode }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'供应商名称'" show-overflow-tooltip width="150" align="center">
+          <el-table-column :label="$t('headerInformation.supplierName')" show-overflow-tooltip width="150" align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.SupplyName }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'批次'" width="120" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.batch')" width="120" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.BatchCode }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'生产日期'" width="120" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('headerInformation.dateOfManufacture')" width="120" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.ManufactrueDateFormat }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'创建人'" width="120" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('printBar.founder')" width="120" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.CreatedUserName }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'创建时间'" width="180" align="center" show-overflow-tooltip>
+          <el-table-column :label="$t('printBar.createTime')" width="180" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.CreatedTime }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'操作'" align="center" width="80" class-name="small-padding fixed-width" fixed="right">
+          <el-table-column :label="$t('headerInformation.operation')" align="center" width="80" class-name="small-padding fixed-width" fixed="right">
             <template slot-scope="scope">
               <el-button size="mini" type="primary" @click="handlePrintCode(scope.row)">打印</el-button>
             </template>
@@ -140,8 +140,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑条码',
-        create: '创建条码'
+        update: this.$t('basicTips.editBarcode'),
+        create: this.$t('basicTips.createBarcode')
       },
       // 条码实体
       Label: {
@@ -155,8 +155,8 @@ export default {
       },
       // 输入规则
       rules: {
-        Code: [{ required: true, message: '请输入条码编码', trigger: 'blur' }],
-        Name: [{ required: true, message: '请输入条码名称', trigger: 'blur' }]
+        Code: [{ required: true, message: this.$t('basicTips.pleaseEnterBarcodeCode'), trigger: 'blur' }],
+        Name: [{ required: true, message: this.$t('basicTips.pleaseEnterBarcodeName'), trigger: 'blur' }]
       }
     }
   },
@@ -236,7 +236,7 @@ export default {
           },
           style: {
             color: '#000',
-            fontFamily: '宋体',
+            fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
             fontSize: '12px',
             fontSpacing: 0,
             fontWeight: 'normal',
@@ -266,7 +266,7 @@ export default {
           },
           style: {
             color: '#000',
-            fontFamily: '宋体',
+            fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
             fontSize: '12px',
             fontSpacing: 0,
             fontWeight: 'normal',
@@ -296,7 +296,7 @@ export default {
           },
           style: {
             color: '#000',
-            fontFamily: '宋体',
+            fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
             fontSize: '12px',
             fontSpacing: 0,
             fontWeight: 'normal',

@@ -12,6 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using wms.Client.Common;
+using wms.Client.View;
+using wms.Client.ViewDlg;
+using wms.Client.ViewModel;
+using wms.Client.LogicCore.Common;
+using wms.Client.Core.share.DataInterfaces;
 
 namespace wms.Client.View
 {
@@ -27,17 +32,13 @@ namespace wms.Client.View
 
         private void Updateclick(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void button_in_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

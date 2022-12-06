@@ -986,7 +986,9 @@
                   <el-button type="danger" icon="el-icon-delete" circle @click="deletedMaterial" />
                 </span>
                 <span style="margin-right:5px;">灯号</span>
-                <span style="margin-right:5px;">{{ CurXLight }}</span>
+                <span style="margin-right:0px;">{{ CurXLight}}</span>
+                <span style="margin-right:0px;">--</span>
+                <span style="margin-right:0px;">{{CurYLight }}</span>
                 <span style="margin-right:5px;">绑定物料</span>
                 <span>
                   <el-select
@@ -1478,6 +1480,7 @@ export default {
         children: 'children'
       },
       CurXLight: 0,
+      CurYLight: 0,
       CurTray: 0,
       // 复选框数据start
       dialogFormModel: false,
@@ -1766,6 +1769,9 @@ export default {
             if (this.selectComp !== null) {
               // 找到该组件，并更新绑定的物料编码
               this.Comment.components.find((element) => (element.identifier === this.selectComp.identifier)).dataBind.biz = this.SuggestMaterial.Code
+              // comment.dataBind.biz = this.SuggestMaterial.Code
+              // comment.style.backColor = '#FFFFFF'
+              //comment.style.borderColor = '#FFFFFF'
             }
           }).catch(() => {
             this.$message({
@@ -2124,6 +2130,10 @@ export default {
         if (component) {
           console.log(component)
           //  backColor:component.dataBind.biz==''? component.style.backColor:'#67C23A',
+          if (component.dataBind.biz == ''){
+            component.style.backColor = '#FFFFFF'
+            component.style.borderColor = '#FFFFFF'
+          }
           if (component.dataBind.biz != '') {
             component.style.backColor = '#67C23A'
             component.style.borderColor = '#67C23A'
@@ -2737,6 +2747,10 @@ export default {
       if (this.CurXLight == undefined) {
         this.CurXLight = 1
       }
+      this.CurYLight = component.dataBind.ylight
+      if (this.CurYLight == undefined) {
+        this.CurYLight = 1
+      }
       // getLocationByLayoutId(component.identifier).then(response => {
       //   var resData = JSON.parse(response.data.Content)
       //   console.log('resData')
@@ -3227,6 +3241,7 @@ export default {
         BoxLength: '',
         BoxWidth: '',
         CurXLight: 0,
+        CurYLight:0,
         LockQuantity: 0
       }
       this.configData.components = []

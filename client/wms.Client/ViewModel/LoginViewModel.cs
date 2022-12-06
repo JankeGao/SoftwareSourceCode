@@ -12,6 +12,7 @@ using wms.Client.LogicCore.Helpers;
 using wms.Client.LogicCore.Helpers.Files;
 using wms.Client.LogicCore.Interface;
 using wms.Client.Model.ResponseModel;
+using System.Runtime.InteropServices;
 
 
 namespace wms.Client.ViewModel
@@ -231,10 +232,10 @@ namespace wms.Client.ViewModel
 
                     this.Report = "加载客户端信息 . . .";
 
-                    //FaceInfoViewModel faceInfoViewModel = new FaceInfoViewModel();
-                    //faceInfoViewModel.DeviceLogin();
-                    //faceInfoViewModel.SendInfo();
-                    //faceInfoViewModel.btn_SetAlarm_Click();
+                    FaceInfoViewModel faceInfoViewModel = new FaceInfoViewModel();
+                    faceInfoViewModel.DeviceLogin();
+                    faceInfoViewModel.SendInfo();
+                    faceInfoViewModel.btn_SetAlarm_Click();
                     var dialog = ServiceProvider.Instance.Get<IModelDialog>("MainViewDlg");
                     dialog.BindDefaultViewModel();
                     Messenger.Default.Send(string.Empty, "ApplicationHiding");

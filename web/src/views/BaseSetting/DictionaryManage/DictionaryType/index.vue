@@ -3,9 +3,9 @@
     <!-- 筛选栏 -->
     <el-card class="search-card">
       <div class="filter-container">
-        <el-input v-model="listQuery.Name" placeholder="字典类别编码或名称" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">{{ '查询' }}</el-button>
-        <el-button class="filter-button" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+        <el-input v-model="listQuery.Name" :placeholder=" $t('basicInformation.dictionaryCategoryCodeOrName') " class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('baseBtn.queryBtn') }}</el-button>
+        <el-button class="filter-button" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('baseBtn.addBtn') }}</el-button>
       </div>
     </el-card>
     <el-card>
@@ -30,9 +30,9 @@
           />
         </template>
         <template slot="operation" slot-scope="{scope}">
-          <el-button v-if="scope.row.ParentCode===''||scope.row.ParentCode===null" type="primary" size="mini" @click="handleCreate(scope.row.Code)">添加</el-button>
-          <el-button size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.ParentCode===''||scope.row.ParentCode===null" type="primary" size="mini" @click="handleCreate(scope.row.Code)">{{ $t('baseBtn.addBtn') }}</el-button>
+          <el-button size="mini" @click="handleUpdate(scope.row)">{{ $t('baseBtn.editBtn') }}</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('baseBtn.delete') }}</el-button>
         </template>
       </tree-table>
       <!-- 分页 -->
@@ -44,33 +44,29 @@
     <!-- 创建/编辑 弹出框 -->
     <el-dialog v-el-drag-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :width="'40%'" :close-on-click-modal="false">
       <el-form ref="dataForm" :rules="rules" :model="DictionaryType" class="dialog-form" label-width="100px" label-position="left">
-        <el-form-item :label="'类别编码'">
-          <el-input v-model="DictionaryType.Code" :disabled="dialogStatus==='update'" class="dialog-input" placeholder="请输入类别编码" />
-        </el-form-item>
-        <el-form-item :label="'类别名称'">
-          <el-input v-model="DictionaryType.Name" class="dialog-input" placeholder="请输入类别名称" />
-        </el-form-item>
-        <el-form-item :label="'上级编码'">
-          <el-input v-model="DictionaryType.ParentCode" class="dialog-input" placeholder="请输入上级编码" />
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input v-model="DictionaryType.Sort" class="dialog-input" />
-        </el-form-item>
-        <el-form-item :label="'启用'">
-          <el-switch
-            v-model="DictionaryType.Enabled"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-          />
-        </el-form-item>
-        <el-form-item :label="'备注'">
-          <el-input v-model="DictionaryType.Remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="字典备注" class="dialog-input" />
-        </el-form-item>
+                <el-form-item :label=" $t('basicInformation.theCategoryCode') ">
+                    <el-input v-model="DictionaryType.Code" :disabled="dialogStatus==='update'" class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterTheCategoryCode') " />
+                </el-form-item>
+                <el-form-item :label=" $t('basicInformation.categoryName') ">
+                    <el-input v-model="DictionaryType.Name" class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterACategoryName') " />
+                </el-form-item>
+                <el-form-item :label=" $t('basicInformation.theSuperiorCoding') ">
+                    <el-input v-model="DictionaryType.ParentCode" class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterTheSuperiorCode') " />
+                </el-form-item>
+                <el-form-item :label=" $t('basicInformation.theSorting') ">
+                    <el-input v-model="DictionaryType.Sort" class="dialog-input" />
+                </el-form-item>
+                <el-form-item :label=" $t('basicInformation.toEnableThe') ">
+                    <el-switch v-model="DictionaryType.Enabled" active-color="#13ce66" inactive-color="#ff4949" />
+                </el-form-item>
+                <el-form-item :label=" $t('headerInformation.remarks') ">
+                    <el-input v-model="DictionaryType.Remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" :placeholder=" $t('basicInformation.theDictionaryNote') " class="dialog-input" />
+                </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确认</el-button>
-        <el-button v-else type="primary" @click="updateData(module)">确认</el-button>
+        <el-button @click="dialogFormVisible = false">{{ $t('baseBtn.cancel') }}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('baseBtn.confirm') }}</el-button>
+        <el-button v-else type="primary" @click="updateData(module)">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -135,15 +131,15 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑字典类别',
-        create: '创建字典类别'
+        update: this.$t('basicTips.editDictionaryCategory'),
+        create: this.$t('basicTips.createDictionaryCategory')
       },
 
       // 输入规则
       rules: {
         Code: [{ required: true, message: 'type is required', trigger: 'blur' }],
         // timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        Name: [{ required: true, message: '请输入文章名称', trigger: 'blur' }]
+        Name: [{ required: true, message: this.$t('basicTips.pleaseEnterTheArticleName'), trigger: 'blur' }]
       },
       imagecropperShow: false,
       imagecropperKey: 0,
@@ -156,38 +152,38 @@ export default {
         //   checkbox: true
         // },
         {
-          label: '编码',
+          label: this.$t('basicInformation.coding'),
           width: 200,
           key: 'Code',
           align: 'left'
         },
         {
-          label: '名称',
+          label: this.$t('headerInformation.name') ,
           key: 'Name',
           width: 200
         },
         {
-          label: '上级编码',
+          label: this.$t('basicInformation.theSuperiorCoding'),
           key: 'ParentCode',
           width: 200
         },
         {
-          label: '排序',
+          label: this.$t('systemManagement.theSorting'),
           width: 100,
           key: 'Sort'
         },
         {
-          label: '启用',
+          label: this.$t('basicInformation.toEnableThe'),
           width: 100,
           key: 'Enabled'
         },
         {
-          label: '备注',
+          label: this.$t('headerInformation.remarks'),
           // width: 100,
           key: 'Remark'
         },
         {
-          label: '操作',
+          label: this.$t('headerInformation.operation'),
           width: 280,
           key: 'operation'
         }
@@ -231,7 +227,7 @@ export default {
       var routerData = arr // data中的值为数组
       var entity = {
         Code: '',
-        Name: '根目录'
+        Name: this.$t('basicTips.rootDirectory')
       }
       var first = this.generateRouter(entity, true, 0)
       var firstchildren = []
@@ -300,8 +296,8 @@ export default {
               this.dialogFormVisible = false
               this.getList()
               this.$message({
-                title: '成功',
-                message: '创建成功',
+                title: this.$t('messageTips.Succeed'),
+                message: this.$t('messageTips.messageSucceed'),
                 type: 'success',
                 duration: 2000
               })
@@ -309,8 +305,8 @@ export default {
               // window.location.reload()
             } else {
               this.$message({
-                title: '失败',
-                message: '创建失败：' + resData.Message,
+                title: this.$t('messageTips.Failure'),
+                message: this.$t('messageTips.messageFailure') +"：" + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -336,15 +332,15 @@ export default {
           this.dialogFormVisible = false
           this.getList()
           this.$message({
-            title: '成功',
-            message: '编辑成功',
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('messageTips.editSucceed'),
             type: 'success',
             duration: 2000
           })
         } else {
           this.$message({
-            title: '成功',
-            message: '编辑失败：' + resData.Message,
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('messageTips.editFailure')+"：" + resData.Message,
             type: 'error',
             duration: 2000
           })
@@ -353,9 +349,9 @@ export default {
     },
     // 文章删除
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该字典类别, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('basicTips.permanentlyDeleteTheDictionaryCategory'), this.$t('messageTips.Tips') , {
+        confirmButtonText: this.$t('baseBtn.confirm') ,
+        cancelButtonText: this.$t('baseBtn.cancel') ,
         type: 'warning'
       }).then(() => {
         this.DictionaryType = Object.assign({}, row) // copy obj
@@ -363,7 +359,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: this.$t('messageTips.cancelledDelete'),
         })
       })
       this.$nextTick(() => {
@@ -376,16 +372,16 @@ export default {
         if (resData.Success) {
           this.dialogFormVisible = false
           this.$message({
-            title: '成功',
-            message: '删除成功',
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('messageTips.deleteSucceed'),
             type: 'success',
             duration: 2000
           })
           this.getList()
         } else {
           this.$message({
-            title: '成功',
-            message: '删除失败：' + resData.Message,
+            title: this.$t('messageTips.Succeed'),
+            message: this.$t('messageTips.deleteFailure')+"：" + resData.Message,
             type: 'error',
             duration: 2000
           })

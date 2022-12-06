@@ -17,7 +17,7 @@ namespace Bussiness.Services
 {
     class HistoryInServer : Contracts.IHistoryInContract
     {
-
+        public Bussiness.Contracts.IWareHouseContract WareHouseContract { set; get; }
         /// <summary>
         /// 入库单
         /// </summary>
@@ -34,11 +34,12 @@ namespace Bussiness.Services
             {
                 //入库信息和明细信息和材料信息和仓库
                 return InContract.InMaterialLabelRepository.Query()
-                    .InnerJoin(MaterialContract.Materials, (ins, material) => ins.MaterialCode == material.Code)
-                    .LeftJoin(IdentityContract.Users, (ins, material, user) => ins.Operator == user.Code)
-                    .LeftJoin(StockContract.StockDtos, (ins, material, user, stock) => ins.MaterialLabel == stock.MaterialLabel)
-                    .LeftJoin(InContract.Ins,(ins, material, user, stock, inentity) => ins.InCode == inentity.Code)
-                    .Select((ins, material, user, stock, inentity) => new HistoryInDto()
+                    .InnerJoin(WareHouseContract.LocationVMs, (ins, location) => ins.LocationCode == location.Code)
+                    .InnerJoin(MaterialContract.Materials, (ins, location,material) => ins.MaterialCode == material.Code)
+                    .LeftJoin(IdentityContract.Users, (ins, location, material, user) => ins.Operator == user.Code)
+                    //.LeftJoin(WareHouseContract.LocationVMs, (ins, location, material, user) => ins.LocationCode == location.Code)
+                    .LeftJoin(InContract.Ins, (ins, location, material, user, inentity) => ins.InCode == inentity.Code)
+                    .Select((ins, location, material, user,  inentity) => new HistoryInDto()
                     {
                         Id = ins.Id,
                         InCode = ins.InCode,
@@ -50,12 +51,12 @@ namespace Bussiness.Services
                         MaterialCode = ins.MaterialCode,
                         MaterialName = material.Name,
                         WarehouseCode = ins.WareHouseCode,
-                        WarehouseName = stock.WareHouseName,
-                        ContainerCode = stock.ContainerCode,
-                        TrayCode = stock.TrayCode,
-                        LocationCode = stock.LocationCode,
-                        BoxUrl = stock.BoxUrl,
-                        BoxName = stock.BoxName,
+                        WarehouseName = location.WarehouseName,
+                        ContainerCode = location.ContainerCode,
+                        TrayCode = location.TrayCode,
+                        LocationCode = location.Code,
+                        BoxUrl = location.BoxUrl,
+                        BoxName = location.BoxName,
                         CreatedUserName = ins.CreatedUserName,
                         CreatedTime = ins.CreatedTime,
                         InWarehouseTime = ins.ShelfTime,

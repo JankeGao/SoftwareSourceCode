@@ -3,10 +3,10 @@
     <!-- 筛选栏 -->
     <el-card class="search-card">
       <div class="filter-container">
-        <el-input v-model="listQuery.Code" placeholder="客户编码、客户名称" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
-        <el-button class="filter-button" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-        <el-button class="filter-button" style="margin-left: 10px;" type="primary" @click="handleDownUpload">模板下载</el-button>
+        <el-input v-model="listQuery.Code" placeholder="$t('basicInformation.customerCodeAndCustomerName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('baseBtn.queryBtn') }} </el-button>
+        <el-button class="filter-button" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('baseBtn.addBtn') }}</el-button>
+        <el-button class="filter-button" style="margin-left: 10px;" type="primary" @click="handleDownUpload">{{ $t('baseBtn.templateBtn') }}</el-button>
         <el-upload
           ref="fileupload"
           style="display: inline; margin-left: 10px;margin-right: 10px;"
@@ -16,7 +16,7 @@
 
           :on-exceed="handleExceed"
         >
-          <el-button type="primary">导入</el-button>
+          <el-button type="primary">{{ $t('baseBtn.importBtn') }}</el-button>
         </el-upload>
         <el-dropdown
           size="small"
@@ -25,12 +25,12 @@
           @command="batchOperate"
         >
           <el-button class="filter-button" style="margin-left: 10px;" type="primary">
-            导出
+            {{ $t('baseBtn.exportBtn') }}
             <i class="el-icon-arrow-down el-icon--right" />
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="All_Export">全部导出</el-dropdown-item>
-            <el-dropdown-item command="Condition_Export">按条件导出</el-dropdown-item>
+            <el-dropdown-item command="All_Export">{{ $t('baseBtn.allExport') }}</el-dropdown-item>
+            <el-dropdown-item command="Condition_Export">{{ $t('baseBtn.queryExport') }}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -50,40 +50,40 @@
         >
           <!-- @row-click="handleRowClick" -->
           <el-table-column type="index" width="50" />
-          <el-table-column :label="'客户编码'" width="150" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('basicInformation.customerCodeAndCustomerName') " width="150" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Code }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'客户名称'" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('basicInformation.theCustomerName') " align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Name }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'联系人'" width="100" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('headerInformation.theContact') " width="100" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Linkman }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'联系方式'" width="100" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('headerInformation.contact') " width="100" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Phone }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'地址'" width="180" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('headerInformation.address') " width="180" align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Address }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'备注'" align="center" show-overflow-tooltip>
+          <el-table-column :label=" $t('headerInformation.remarks') " align="center" show-overflow-tooltip>
             <template slot-scope="scope">
               <span>{{ scope.row.Remark }}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="'操作'" align="center" width="250" class-name="small-padding fixed-width" fixed="right">
+          <el-table-column :label=" $t('headerInformation.operation') " align="center" width="250" class-name="small-padding fixed-width" fixed="right">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)">编辑</el-button>
-              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+              <el-button size="mini" type="primary" @click="handleUpdate(scope.row)">{{ $t('baseBtn.editBtn') }}</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.row)">{{ $t('baseBtn.editBtn') }}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -97,29 +97,29 @@
     <!-- 创建/编辑 弹出框 -->
     <el-dialog v-el-drag-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :width="'40%'" :close-on-click-modal="false">
       <el-form ref="dataForm" :rules="rules" :model="Customer" class="dialog-form" label-width="100px" label-position="left">
-        <el-form-item :label="'客户编码'" prop="Code">
-          <el-input v-model="Customer.Code" clearable class="dialog-input" placeholder="请输入客户编码" />
+        <el-form-item :label=" $t('basicInformation.customerCodeAndCustomerName') " prop="Code">
+          <el-input v-model="Customer.Code" clearable class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterTheCustomerCode') " />
         </el-form-item>
-        <el-form-item :label="'客户名称'" prop="Name">
-          <el-input v-model="Customer.Name" clearable class="dialog-input" placeholder="请输入客户名称" />
+        <el-form-item :label=" $t('basicInformation.theCustomerName') " prop="Name">
+          <el-input v-model="Customer.Name" clearable class="dialog-input" placeholder=" $t('basicInformation.pleaseEnterACustomerName') " />
         </el-form-item>
-        <el-form-item :label="'联系人'">
-          <el-input v-model="Customer.Linkman" clearable class="dialog-input" placeholder="请输入联系人" />
+        <el-form-item :label=" $t('headerInformation.theContact') ">
+          <el-input v-model="Customer.Linkman" clearable class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterContacts') " />
         </el-form-item>
-        <el-form-item :label="'联系方式'" prop="Unit">
-          <el-input v-model="Customer.Phone" clearable class="dialog-input" placeholder="请输入联系方式" />
+        <el-form-item :label=" $t('headerInformation.contact') " prop="Unit">
+          <el-input v-model="Customer.Phone" clearable class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterContactInformation') " />
         </el-form-item>
-        <el-form-item :label="'地址'">
-          <el-input v-model="Customer.Address" clearable class="dialog-input" placeholder="请输入客户地址" />
+        <el-form-item :label=" $t('headerInformation.address') ">
+          <el-input v-model="Customer.Address" clearable class="dialog-input" :placeholder=" $t('basicInformation.pleaseEnterCustomerAddress') " />
         </el-form-item>
-        <el-form-item :label="'备注'">
-          <el-input v-model="Customer.Remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="客户备注" class="dialog-input" />
+        <el-form-item :label=" $t('headerInformation.remarks') ">
+          <el-input v-model="Customer.Remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" :placeholder=" $t('basicInformation.customerRemarks') " class="dialog-input" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确认</el-button>
-        <el-button v-else type="primary" @click="updateData">确认</el-button>
+        <el-button @click="dialogFormVisible = false">{{ $t('baseBtn.cancel') }}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('baseBtn.confirm') }}</el-button>
+        <el-button v-else type="primary" @click="updateData">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -154,8 +154,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑客户',
-        create: '创建客户'
+        update: this.$t('basicTips.editCustome'),
+        create: this.$t('basicTips.createCustome')
       },
       // 客户实体
       Customer: {
@@ -169,8 +169,8 @@ export default {
       },
       // 输入规则
       rules: {
-        Code: [{ required: true, message: '请输入客户编码', trigger: 'blur' }],
-        Name: [{ required: true, message: '请输入客户名称', trigger: 'blur' }]
+        Code: [{ required: true, message: this.$t('basicInformation.pleaseEnterTheCustomerCode'), trigger: 'blur' }],
+        Name: [{ required: true, message: this.$t('basicInformation.pleaseEnterACustomerName'), trigger: 'blur' }]
       }
     }
   },
@@ -228,15 +228,15 @@ export default {
               this.dialogFormVisible = false
               this.getList()
               this.$message({
-                title: '成功',
-                message: '创建成功',
+                title: this.$t('messageTips.Succeed') ,
+                message: this.$t('messageTips.messageSucceed'),
                 type: 'success',
                 duration: 2000
               })
             } else {
               this.$message({
-                title: '失败',
-                message: '创建失败：' + resData.Message,
+                title: this.$t('messageTips.Failure') ,
+                message: this.$t('messageTips.messageFailure')+'：' + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -271,15 +271,15 @@ export default {
               }
               this.dialogFormVisible = false
               this.$message({
-                title: '成功',
-                message: '更新成功',
+                title: this.$t('messageTips.Succeed') ,
+                message: this.$t('presentationOfWarehousingDocuments.updateSuccessful'),
                 type: 'success',
                 duration: 2000
               })
             } else {
               this.$message({
-                title: '成功',
-                message: '创建失败：' + resData.Message,
+                title: this.$t('messageTips.Succeed') ,
+                message:this.$t('messageTips.messageFailure')  +'：' + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -290,7 +290,7 @@ export default {
     },
     // 上传文件个数超过定义的数量
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
+      this.$message.warning(this.$t('messageTips.ImportJudge'))
     },
     // 上传文件
     uploadFile(item) {
@@ -306,15 +306,15 @@ export default {
           this.dialogFormVisible = false
           this.getList()
           this.$message({
-            title: '成功',
-            message: '导入成功',
+            title: this.$t('messageTips.Succeed') ,
+            message: this.$t('messageTips.ImportSucceed'),
             type: 'success',
             duration: 2000
           })
         } else {
           this.$message({
-            title: '失败',
-            message: '导入失败:' + resData.Message,
+            title: this.$t('messageTips.Failure') ,
+            message: this.$t('messageTips.ImportFailure')+':' + resData.Message,
             type: 'error',
             duration: 4000
           })
@@ -341,9 +341,9 @@ export default {
 
     // 全部导出
     All_ExportExcel() {
-      this.$confirm('此操作将导出全部数据，共：' + this.total + '条, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm( this.$t('deviceTips.thisOperationWillExportAllDataIncluding') + this.total + this.$t('deviceTips.articleContinue'),  this.$t('messageTips.Tips'), {
+        confirmButtonText: this.$t('baseBtn.confirm') ,
+        cancelButtonText: this.$t('baseBtn.cancel') ,
         type: 'warning'
       }).then(() => {
         var url = window.PLATFROM_CONFIG.baseUrl + '/api/Customer/ExportClientData'
@@ -352,7 +352,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消'
+          message: this.$t('messageTips.messageCancel')
         })
       })
     },
@@ -364,9 +364,9 @@ export default {
       window.open(url)
     },
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该客户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('basicTips.permanentlyDeleteTheCustomer'), this.$t('messageTips.Tips') , {
+        confirmButtonText: this.$t('baseBtn.confirm') ,
+        cancelButtonText: this.$t('baseBtn.cancel') ,
         type: 'warning'
       }).then(() => {
         this.Customer = Object.assign({}, row) // copy obj
@@ -374,7 +374,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: this.$t('messageTips.cancelledDelete') 
         })
       })
       // this.$nextTick(() => {
@@ -387,16 +387,16 @@ export default {
         if (resData.Success) {
           this.dialogFormVisible = false
           this.$message({
-            title: '成功',
-            message: '删除成功',
+            title: this.$t('messageTips.Succeed') ,
+            message: this.$t('messageTips.deleteSucceed'),
             type: 'success',
             duration: 2000
           })
           this.getList()
         } else {
           this.$message({
-            title: '成功',
-            message: '删除失败：' + resData.Message,
+            title: this.$t('messageTips.Succeed') ,
+            message: this.$t('messageTips.deleteFailure')+'：' + resData.Message,
             type: 'error',
             duration: 2000
           })

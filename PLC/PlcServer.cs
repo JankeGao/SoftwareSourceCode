@@ -114,6 +114,47 @@ namespace PLCServer
         {
             retry_th.Suspend();//挂起线程
         }
+        /// <summary>
+        /// 点击扫描按钮
+        /// </summary>
+        /// <param name="runningContainer"></param>
+        /// <returns></returns>
+        //public DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer)
+        //{
+        //    try
+        //    {
+        //        var M65111Result = melsec_net.ReadBool("M651");
+        //        if (M65111Result.IsSuccess)
+        //        {
+        //            if (M65111Result.Content == true)
+        //            {
+        //                return DataProcess.Failure("取出动作尚未结束");
+        //            }
+        //        }
+        //        var M654Result = melsec_net.ReadBool("M654");
+        //        if (M654Result.IsSuccess)
+        //        {
+        //            if (M654Result.Content == true)
+        //            {
+        //                return DataProcess.Failure("存入动作尚未结束");
+        //            }
+        //        }
+        //        var M900Result = melsec_net.ReadBool("M900");
+        //        if (M900Result.IsSuccess)
+        //        {
+        //            if (M900Result.Content == true)
+        //            {
+        //                return DataProcess.Failure("更换托盘动作尚未结束");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception EX)
+        //    {
+
+        //        return DataProcess.Failure(EX.Message);
+        //    }
+        //    return DataProcess.Success();
+        //}
 
         /// <summary>
         ///启动货柜逻辑-自动运行
@@ -152,12 +193,28 @@ namespace PLCServer
                         //        return DataProcess.Failure("写入存入托盘序号失败:" + takeInResult.Message);
                         //    }
                         //}
+                        var M65111Result = melsec_net.ReadBool("M651");
+                        if (M65111Result.IsSuccess)
+                        {
+                            if (M65111Result.Content == true)
+                            {
+                                return DataProcess.Failure("取出动作尚未结束");
+                            }
+                        }
                         var M654Result = melsec_net.ReadBool("M654");
                         if (M654Result.IsSuccess)
                         {
                             if (M654Result.Content == true)
                             {
                                 return DataProcess.Failure("存入动作尚未结束");
+                            }
+                        }
+                        var M900Result = melsec_net.ReadBool("M900");
+                        if (M900Result.IsSuccess)
+                        {
+                            if (M900Result.Content == true)
+                            {
+                                return DataProcess.Failure("更换托盘动作尚未结束");
                             }
                         }
                         var TrayResult = melsec_net.Write("D650", runningContainer.TrayCode);
@@ -294,6 +351,30 @@ namespace PLCServer
                     //runningContainer.ContainerType = 3;
                     if (runningContainer.ContainerType == 3)
                     {
+                        var M651Result = melsec_net.ReadBool("M651");
+                        if (M651Result.IsSuccess)
+                        {
+                            if (M651Result.Content == true)
+                            {
+                                return DataProcess.Failure("取出动作尚未结束");
+                            }
+                        }
+                        var M654Result = melsec_net.ReadBool("M654");
+                        if (M654Result.IsSuccess)
+                        {
+                            if (M654Result.Content == true)
+                            {
+                                return DataProcess.Failure("存入动作尚未结束");
+                            }
+                        }
+                        var M900Result = melsec_net.ReadBool("M900");
+                        if (M900Result.IsSuccess)
+                        {
+                            if (M900Result.Content == true)
+                            {
+                                return DataProcess.Failure("更换托盘动作尚未结束");
+                            }
+                        }
                         var result = WriteD650_In(runningContainer);
                         if (result.Success)
                         {
@@ -1507,7 +1588,8 @@ namespace PLCServer
            
                 if (socket != null)
                 {
-                    string status = "*G0011:2301$U XR$006$macro=read_status$\r\n";
+                    string containerCode = runningContainer.ContainerCode.ToString();
+                    string status = " * G0" + containerCode + "1:2301$U XR$006$macro=read_status$\r\n";
                     try
                     {
                         byte[] bs = Encoding.ASCII.GetBytes(status);//把字符串编码为字节
@@ -1585,7 +1667,8 @@ namespace PLCServer
         {
             //string transfer = "*G0011:2301$U XR$"+ number+"$macro =get_shelf$PM1=1$PM2=<pm2>$PM3=<pm3> $PM4=<pm4>$PM5=<pm5>$PM6=<pm6>$PM7=<pm7>$PM8=<pm8>$PM9=<pm9> $PM10=<pm10>$PM11=<pm11>$PM12=<pm12>$PM13=<pm13>$PM14=<pm14> $PM15=<pm15>$PM16=<pm16>$\r\n";
             string number = runningContainer.TrayCode.ToString();
-            string transfer = "*G0011:2301$U XR$009$macro=get_shelf$PM1=" + number + "$\r\n";
+            string containerCode = runningContainer.ContainerCode.ToString();
+            string transfer = "*G0" + containerCode + "1:2301$U XR$009$macro=get_shelf$PM1=" + number + "$\r\n";
             var socket = StartHanel(runningContainer);
             if (socket==null)
             {
@@ -1625,7 +1708,8 @@ namespace PLCServer
         public DataResult FinishHanellContainer(Command.RunningContainer runningContainer)
         {
             string number = "009";
-            string transfer = "*G0011:2301$U XR$" + number + "$macro=store_shelf$PM14=0$\r\n";
+            string containerCode = runningContainer.ContainerCode.ToString();
+            string transfer = "*G0" + containerCode + "1:2301$U XR$" + number + "$macro=store_shelf$PM14=0$\r\n";
             var socket = StartHanel(runningContainer);
             if (socket == null)
             {
@@ -2487,7 +2571,49 @@ namespace PLCServer
                 return DataProcess.Failure(ex.Message);
             }
         }
+        /// <summary>
+        /// 确定取出
+        /// </summary>
+        /// <returns></returns>
+        public DataResult SetM651True()
+        {
+            try
+            {
+                if (isConnected)
+                {
+                    //01 PLC 接收远程控制指令——在线
+                    //00 PLC 不接受远程控制指令——离线
+                    var M654Result = melsec_net.ReadBool("M654");
+                    if (M654Result.IsSuccess)
+                    {
+                        if (M654Result.Content == true)
+                        {
+                            return DataProcess.Failure("存入动作尚未结束");
+                        }
+                    }
+                    else
+                    {
+                        return DataProcess.Failure("获取M654状态失败");
+                    }
 
+                    var onLineResult = melsec_net.Write("M651", true);
+                    if (!onLineResult.IsSuccess)
+                    {
+                        return DataProcess.Failure("存入失败:" + onLineResult.Message);
+                    }
+                    return DataProcess.Success();
+                }
+                else
+                {
+                    return DataProcess.Failure("PLC未连接");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return DataProcess.Failure(ex.Message);
+            }
+        }
 
         /// <summary>
         /// 确定存入

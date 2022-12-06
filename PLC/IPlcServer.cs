@@ -10,6 +10,14 @@ namespace PLCServer
     public interface IPlcServer
     {
         /// <summary>
+        /// 扫描
+        /// </summary>
+        /// <param name="ScanBarcodeKeyDown"></param>
+        /// <returns></returns>
+        //[OperationContract]
+        //[WebInvoke(Method = "POST", UriTemplate = "StartScanBarcodeKeyDown", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        //DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer);
+        /// <summary>
         /// 货柜自动运行
         /// </summary>
         /// <param name="runningContainer"></param>
@@ -358,6 +366,14 @@ namespace PLCServer
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "WriteD650_In", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         DataResult WriteD650_In(Command.RunningContainer runningContainer);
+        /// <summary>
+        /// 取出托盘
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "SetM651True", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult SetM651True();
+
         /// <summary>
         /// 存入托盘
         /// </summary>

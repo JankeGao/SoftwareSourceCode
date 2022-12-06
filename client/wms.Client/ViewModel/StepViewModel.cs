@@ -275,7 +275,6 @@ namespace wms.Client.ViewModel
             }
             // 货柜运行
             var runningContainer = baseControlService.PostStartRunningContainer(runingEntity);
-
             if (runningContainer.Result.Success)
             {
                 GlobalData.IsFocus = true;
