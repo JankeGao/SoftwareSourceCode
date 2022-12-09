@@ -5,7 +5,7 @@
       <div class="filter-container">
         <el-input
           v-model="listQuery.Code"
-          placeholder="$t('stockManagement.bomNumberAndBomName')"
+          :placeholder="$t('stockManagement.bomNumberAndBomName')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleFilter"
@@ -13,7 +13,7 @@
         />
         <el-input
           v-model="listQuery.Remark"
-          placeholder="$t('headerInformation.remarks')"
+          :placeholder="$t('headerInformation.remarks')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleFilter"
@@ -261,7 +261,7 @@
         style="margin:20px"
       >
         <el-tabs v-model="activeName" type="card" style="width:900px">
-          <el-tab-pane label="$t('basicInformation.basicInformation')" name="first">
+          <el-tab-pane :label="$t('basicInformation.basicInformation')" name="first">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item :label="$t('headerInformation.materialCategory')">
@@ -269,7 +269,7 @@
                     v-model="materialTypeValue"
                     size="small"
                     class="dialog-input"
-                    placeholder="$t('headerInformation.materialCategory')"
+                    :placeholder="$t('headerInformation.materialCategory')"
                     :disabled="dialogStatus=='update'"
                     @change="handleChangeMaterailType"
                   >
@@ -286,7 +286,7 @@
                     v-model="Material.Name"
                     clearable
                     class="dialog-input"
-                    placeholder="$t('basicInformation.pleaseEnterTheMaterialName')"
+                    :placeholder="$t('basicInformation.pleaseEnterTheMaterialName')"
                   />
                 </el-form-item>
                 <el-form-item :label="$t('headerInformation.materialCode')">
@@ -294,7 +294,7 @@
                     v-model="Material.Code"
                     clearable
                     class="dialog-input"
-                    placeholder="$t('basicInformation.ifItIsEmpty')"
+                    :placeholder="$t('basicInformation.ifItIsEmpty')"
                     :disabled="dialogStatus=='update'"
                   />
                 </el-form-item>
@@ -303,7 +303,7 @@
                     v-model="Material.Unit"
                     clearable
                     class="dialog-input"
-                    placeholder="$t('basicInformation.pleaseEnterTheMaterialUnit')"
+                    :placeholder="$t('basicInformation.pleaseEnterTheMaterialUnit')"
                   />
                 </el-form-item>
                 <el-form-item :label="$t('basicInformation.theWeightOfThe')" prop="UnitWeight">
@@ -312,7 +312,7 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseEnterUnitWeight') "
+                    :placeholder="$t('basicInformation.pleaseEnterUnitWeight') "
                   />
                 </el-form-item>
                 <el-form-item :label="$t('basicInformation.note1')">
@@ -320,7 +320,7 @@
                     v-model="Material.Remark1"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
@@ -329,7 +329,7 @@
                     v-model="Material.Remark2"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialPrice')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialPrice')"
                     class="dialog-input"
                   />
                 </el-form-item>
@@ -338,7 +338,7 @@
                     v-model="Material.Remark3"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialPurpose')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialPurpose')"
                     class="dialog-input"
                   />
                 </el-form-item>
@@ -370,7 +370,7 @@
                     v-model="Material.Remark4"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
@@ -379,14 +379,14 @@
                     v-model="Material.Remark5"
                     :autosize="{ minRows: 1, maxRows: 4}"
                     type="textarea"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialRemarks')"
                     class="dialog-input"
                   />
                 </el-form-item>
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="$t('basicInformation.attributeInformation')" name="second">
+          <el-tab-pane :label="$t('basicInformation.attributeInformation')" name="second">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item :label="$t('basicInformation.attributeGroup')">
@@ -396,7 +396,7 @@
                     filterable
                     clearable
                     reserve-keyword
-                    placeholder="$t('basicInformation.batchMaintenance')"
+                    :placeholder="$t('basicInformation.batchMaintenance')"
                     style="width:300px"
                     @change="handleChooseMaterialProperty"
                   >
@@ -414,7 +414,7 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseInputTheMaximumStockOfMaterials')"
+                    :placeholder="$t('basicInformation.pleaseInputTheMaximumStockOfMaterials')"
                     @change="maxNumChange"
                   />
                 </el-form-item>
@@ -424,7 +424,7 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseEnterTheMinimumInventoryOfMaterials')"
+                    :placeholder="$t('basicInformation.pleaseEnterTheMinimumInventoryOfMaterials')"
                     @change="minNumChange"
                   />
                 </el-form-item>
@@ -457,7 +457,7 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseEnterPackingQuantity')"
+                    :placeholder="$t('basicInformation.pleaseEnterPackingQuantity')"
                   />
                 </el-form-item>
                 <el-form-item :label="$t('basicInformation.whetherTheMixedBatchOf')">
@@ -474,7 +474,7 @@
                     v-model="Material.FIFOType"
                     size="small"
                     class="dialog-input"
-                    placeholder="$t('basicInformation.pleaseSelectFifO')"
+                    :placeholder="$t('basicInformation.pleaseSelectFifO')"
                   >
                     <el-option
                       v-for="item in options"
@@ -487,7 +487,7 @@
                 <el-form-item :label="$t('basicInformation.precision')" prop="IntervalType">
                   <el-select
                     v-model="Material.FIFOAccuracy"
-                    placeholder="$t('basicInformation.pleaseSelectFifOAccuracy')"
+                    :placeholder="$t('basicInformation.pleaseSelectFifOAccuracy')"
                     class="dialog-input"
                     :disabled="Material.FIFOType===0"
                   >
@@ -505,7 +505,7 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseEnterTheValidityPeriod')"
+                    :placeholder="$t('basicInformation.pleaseEnterTheValidityPeriod')"
                   />
                 </el-form-item>
                 <el-form-item :label="$t('basicInformation.agingTimeDays')">
@@ -514,63 +514,63 @@
                     class="dialog-input"
                     type="text"
                     onkeyup="value=value.replace(/[^\d]/g,'')"
-                    placeholder="$t('basicInformation.pleaseEnterAgingTime')"
+                    :placeholder="$t('basicInformation.pleaseEnterAgingTime')"
                   />
                 </el-form-item>
                 <el-form-item :label="$t('basicInformation.costCenter')">
                   <el-input
                     v-model="Material.CostCenter"
                     class="dialog-input"
-                    placeholder="$t('basicInformation.pleaseEnterMaterialCostCenter')"
+                    :placeholder="$t('basicInformation.pleaseEnterMaterialCostCenter')"
                   />
                 </el-form-item>
               </el-col>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="存放载具" name="third">
+          <el-tab-pane :label="$t('equipmentManagement.forAVehicle')" name="third">
             <el-row :gutter="20">
               <el-col :span="12">
-                <el-form-item :label="'存放载具'">
+                <el-form-item :label="$t('equipmentManagement.forAVehicle')">
                   <el-input
                     v-model="Material.BoxCode"
                     class="dialog-input"
                     type="text"
-                    placeholder="载具类别编码"
+                    :placeholder="$t('basicInformation.vehicleClassCode')"
                     disabled
                   />
                 </el-form-item>
-                <el-form-item :label="'载具箱名称'">
+                <el-form-item :label="$t('basicInformation.nameOfVehicleBox')">
                   <el-input
                     v-model="Material.BoxName"
                     class="dialog-input"
-                    placeholder="载具箱名称"
+                    :placeholder="$t('basicInformation.nameOfVehicleBox')"
                     disabled
                   />
                 </el-form-item>
-                <el-form-item :label="'载具箱深度（mm）'">
+                <el-form-item :label="$t('basicInformation.theLengthOfThe')">
                   <el-input
                     v-model="Material.BoxLength"
                     class="dialog-input"
                     type="text"
-                    placeholder="载具箱深度"
+                    :placeholder="$t('basicInformation.lengthOfVehicleBox')"
                     disabled
                   />
                 </el-form-item>
-                <el-form-item :label="'载具箱宽度（mm）'">
+                <el-form-item :label="$t('basicInformation.theWidthOfThe')">
                   <el-input
                     v-model="Material.BoxWidth"
                     class="dialog-input"
                     type="text"
-                    placeholder="载具箱宽度（mm）"
+                    :placeholder="$t('basicInformation.widthOfVehicleBox')"
                     disabled
                   />
                 </el-form-item>
-                <el-form-item :label="'最大存放数量'" prop="BoxCount">
+                <el-form-item :label="$t('basicInformation.maximumStorageQuantity')" prop="BoxCount">
                   <el-input
                     v-model="Material.BoxCount"
                     class="dialog-input"
                     type="text"
-                    placeholder="最大存放数量"
+                    :placeholder="$t('basicInformation.maximumStorageQuantity')"
                   />
                 </el-form-item>
                 <el-button
@@ -579,7 +579,7 @@
                   type="primary"
                   icon="el-icon-search"
                   @click=" handleBox()"
-                >选择载具</el-button>
+                >{{ $t('basicInformation.chooseAVehicle') }}</el-button>
               </el-col>
               <el-col :span="12">
                 <img
@@ -593,16 +593,16 @@
         </el-tabs>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="creatCancel">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确认</el-button>
-        <el-button v-else type="primary" @click="updateData">确认</el-button>
+        <el-button @click="creatCancel">{{ $t('baseBtn.cancel') }}</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('baseBtn.confirm') }}</el-button>
+        <el-button v-else type="primary" @click="updateData">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
 
     <!-- 生成条码 -->
     <el-dialog
       v-el-drag-dialog
-      title="打印条码"
+      title="$t('headerInformation.printBarcode')"
       :show-close="false"
       :visible.sync="dialogBarCodeVisible"
       :width="'40%'"
@@ -616,13 +616,13 @@
         label-width="100px"
         label-position="left"
       >
-        <el-form-item :label="'物料编码'">
+        <el-form-item :label="$t('headerInformation.materialCode')">
           <el-input v-model="Material.Code" class="dialog-input" disabled />
         </el-form-item>
-        <el-form-item :label="'物料名称'">
+        <el-form-item :label="$t('headerInformation.materialName')">
           <el-input v-model="Material.Name" class="dialog-input" disabled />
         </el-form-item>
-        <el-form-item :label="'供应商编码'">
+        <el-form-item :label="$t('headerInformation.supplierCode')">
           <span>
             <el-input v-model="Supply.Code" class="dialog-input" disabled />
           </span>
@@ -636,36 +636,36 @@
             />
           </span>
         </el-form-item>
-        <el-form-item :label="'供应商名称'">
+        <el-form-item :label="$t('headerInformation.supplierName')">
           <el-input v-model="Supply.Name" class="dialog-input" disabled />
         </el-form-item>
-        <el-form-item :label="'批次'">
+        <el-form-item :label="$t('headerInformation.batch')">
           <el-input v-model="Label.Batchcode" class="dialog-input" />
         </el-form-item>
-        <el-form-item :label="'数量'">
+        <el-form-item :label="$t('commonData.quantity')">
           <el-input v-model="Label.Quantity" class="dialog-input" />
         </el-form-item>
-        <el-form-item :label="'生产日期'">
-          <el-date-picker v-model="productionDate" type="date" placeholder="选择日期" />
+        <el-form-item :label="$t('headerInformation.dateOfManufacture')">
+          <el-date-picker v-model="productionDate" type="date" :placeholder="$t('headerInformation.selectDate')" />
         </el-form-item>
-        <el-form-item :label="'生成数量'" prop="Unit">
+        <el-form-item :label="$t('basicInformation.toGenerateTheNumber')" prop="Unit">
           <el-input v-model="labelCount" class="dialog-input" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogBarCodeVisibleClose()">取消</el-button>
+        <el-button @click="dialogBarCodeVisibleClose()">{{ $t('baseBtn.cancel') }}</el-button>
         <el-button
           v-loading.fullscreen.lock="fullscreenLoading"
           type="primary"
-          element-loading-text="正在生成条码信息，请稍等~"
+          element-loading-text="$t('printBar.justAMomentPlease')"
           @click="handleCreateLabel() "
-        >生成</el-button>
+        >{{ $t('shelf.generate') }}</el-button>
       </div>
     </el-dialog>
     <!-- 存放载具 -->
     <el-dialog
       v-el-drag-dialog
-      title="载具信息"
+      title="$t('basicInformation.vehicleInformation')"
       :visible.sync="dialogBoxVisible"
       :width="'60%'"
       :close-on-click-modal="false"
@@ -674,7 +674,7 @@
       <div class="filter-container" style="margin-bottom:20px">
         <el-input
           v-model="listBoxQuery.Code"
-          placeholder="载具编码"
+          :placeholder="$t('basicInformation.vehicleCode')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleBoxFilter"
@@ -682,7 +682,7 @@
         />
         <el-input
           v-model="listBoxQuery.Name"
-          placeholder="载具名称"
+          :placeholder="$t('headerInformation.vehicleName')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleBoxFilter"
@@ -694,7 +694,7 @@
           type="primary"
           icon="el-icon-search"
           @click="handleBoxFilter"
-        >查询</el-button>
+        >{{ $t('baseBtn.queryBtn') }}</el-button>
       </div>
 
       <el-table
@@ -710,12 +710,12 @@
         @row-click="handleBoxRowClick"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column :label="'载具箱类别'" width="100" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.typeOfVehicleBox')" width="100" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.Code }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'图片信息'" width="120" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.imageInformation')" width="120" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <div>
               <span>
@@ -734,38 +734,38 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="'载具箱名称'" width="100" align="center" show-overflow-tooltip>
+        <el-table-column :label=" $t('basicInformation.nameOfVehicleBox')" width="100" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.Name }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'载具颜色'" width="80" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.vehicleColor')" width="80" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.BoxColour }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'载具深度(mm)'" width="120" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.theWidthOfThe')" width="120" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.BoxLength }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'载具宽度(mm)'" width="120" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.theLengthOfThe')" width="120" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.BoxWidth }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column :label="'类别'" width="100" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('box.Type')" width="100" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row. Type }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'虚拟载具'" width="80" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('box.IsVirtual')" width="80" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-switch v-model="scope.row.IsVirtual" disabled />
           </template>
         </el-table-column>
-        <el-table-column :label="'描述'" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('equipmentManagement.describe')" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.IntroduceBox }}</span>
           </template>
@@ -785,14 +785,14 @@
         />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogBoxVisible = false">取消</el-button>
-        <el-button type="primary" @click="updateBox">确认</el-button>
+        <el-button @click="dialogBoxVisible = false">{{ $t('baseBtn.cancel') }}</el-button>
+        <el-button type="primary" @click="updateBox">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
     <!-- 条码信息 -->
     <el-dialog
       v-el-drag-dialog
-      title="条码信息"
+      title=" $t('basicInformation.theBarcodeInformation')"
       :show-close="false"
       :visible.sync="dialogLabelVisible"
       :width="'60%'"
@@ -811,32 +811,32 @@
         @row-click="handleBoxRowClick"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column :label="'编码'" width="150" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('basicInformation.coding')" width="150" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.Code }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'物料编码'" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('headerInformation.materialCode')" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.MaterialCode }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'供应商编码'" width="120" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('headerInformation.supplierCode')" width="120" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.SupplierCode }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'供应商名称'" width="120" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('headerInformation.supplierName')" width="120" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.SupplyName }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'生产日期'" width="140" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('headerInformation.dateOfManufacture')" width="140" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.ManufactrueDate }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'批次'" width="150" align="center" show-overflow-tooltip>
+        <el-table-column :label="$t('headerInformation.batch')" width="150" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <span>{{ scope.row.Batchcode }}</span>
           </template>
@@ -844,11 +844,11 @@
       </el-table>
       <!-- 分页 -->
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogLabelVisibleClose()">取消</el-button>
+        <el-button @click="dialogLabelVisibleClose()">{{ $t('baseBtn.cancel') }}</el-button>
         <el-button
           v-loading.fullscreen.lock="fullscreenLoading1"
           type="primary"
-          element-loading-text="打印条码任务正在发送，请稍等~"
+          element-loading-text="$t('basicInformation.barCodePrintingTask')"
           @click="handlePrintCode()"
         >打印</el-button>
       </div>
@@ -856,7 +856,7 @@
     <!-- 供应商 -->
     <el-dialog
       v-el-drag-dialog
-      title="供应商信息"
+      title="$t('basicInformation.supplierInformation')"
       :visible.sync="dialogSupplyVisible"
       :width="'60%'"
       :close-on-click-modal="false"
@@ -864,7 +864,7 @@
       <div class="filter-container" style="margin-bottom:20px">
         <el-input
           v-model="listSupplyQuery.Code"
-          placeholder="供应商编码"
+          :placeholder="$t('headerInformation.supplierCode')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleSupplyFilter"
@@ -872,7 +872,7 @@
         />
         <el-input
           v-model="listSupplyQuery.Name"
-          placeholder="供应商名称"
+          :placeholder="$t('headerInformation.supplierName')"
           class="filter-item"
           clearable
           @keyup.enter.native="handleSupplyFilter"
@@ -884,7 +884,7 @@
           type="primary"
           icon="el-icon-search"
           @click="handleSupplyFilter"
-        >查询</el-button>
+        >{{ $t('baseBtn.queryBtn') }}</el-button>
       </div>
       <el-table
         :key="TableKey"
@@ -899,32 +899,32 @@
         @row-click="handleSupplyRowClick"
       >
         <el-table-column type="index" width="50" />
-        <el-table-column :label="'供应商编码'" width="150" align="center">
+        <el-table-column :label="$t('headerInformation.supplierCode')" width="150" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Code }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'供应商名称'" align="center">
+        <el-table-column :label="$t('headerInformation.supplierName')" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Name }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'联系人'" width="100" align="center">
+        <el-table-column :label="$t('headerInformation.theContact')" width="100" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Linkman }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'联系方式'" width="100" align="center">
+        <el-table-column :label="$t('headerInformation.contact')" width="100" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Phone }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'地址'" width="80" align="center">
+        <el-table-column :label="$t('headerInformation.address')" width="80" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Address }}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="'备注'" align="center">
+        <el-table-column :label="$t('headerInformation.remarks')" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.Remark }}</span>
           </template>
@@ -944,8 +944,8 @@
         />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogSupplyVisible = false">取消</el-button>
-        <el-button type="primary" @click="updateSupply">确认</el-button>
+        <el-button @click="dialogSupplyVisible = false">{{ $t('baseBtn.cancel') }}</el-button>
+        <el-button type="primary" @click="updateSupply">{{ $t('baseBtn.confirm') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -993,8 +993,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: '编辑物料',
-        create: '创建物料'
+        update: this.$t('basicTips.editItem'),
+        create: this.$t('basicTips.CreateItem')
       },
       // 物料实体
       Material: {
@@ -1034,14 +1034,14 @@ export default {
       },
       // 输入规则
       rules: {
-        Unit: [{ required: true, message: '请输入单位', trigger: 'blur' }],
-        UnitWeight: [{ required: true, message: '请输入物料重量', trigger: 'blur' }],
-        Name: [{ required: true, message: '请输入物料名称', trigger: 'blur' }],
-        BoxCount: [{ required: true, message: '请输入最大存放数量', trigger: 'blur' }]
+        Unit: [{ required: true, message: this.$t('basicTips.pleaseEnterTheUnit'), trigger: 'blur' }],
+        UnitWeight: [{ required: true, message: this.$t('basicTips.pleaseEnterTheMaterialWeight'), trigger: 'blur' }],
+        Name: [{ required: true, message:this.$t('basicTips.pleaseEnterTheMaterialName'), trigger: 'blur' }],
+        BoxCount: [{ required: true, message: this.$t('basicTips.pleaseEnterTheMaximumStorageQuantity'), trigger: 'blur' }]
       },
       // 输入规则
       labelrules: {
-        Code: [{ required: true, message: '请请选择载具', trigger: 'blur' }]
+        Code: [{ required: true, message: this.$t('basicTips.pleaseSelectVehicle'), trigger: 'blur' }]
       },
       // 生成条码
       dialogBarCodeVisible: false,
@@ -1109,42 +1109,42 @@ export default {
       materialTypeValue: 0,
       materialType: [{
         value: 0,
-        label: '物料'
+        label: this.$t('basicTips.material')
       }, {
         value: 1,
-        label: '模具'
+        label: this.$t('basicTips.Mould')
       }],
       // 先进先出枚举
       options: [{
         value: '0',
-        label: '无'
+        label: this.$t('basicTips.nothing')
       }, {
         value: '1',
-        label: '入库时间'
+        label: this.$t('historicalWarehousing.warehousingTime')
       }, {
         value: '2',
-        label: '生产日期'
+        label: this.$t('headerInformation.headerInformation')
       }, {
         value: '3',
-        label: '库存保质期'
+        label: this.$t('basicTips.shelfLifeOfInventory')
       }],
       // 时间间隔-后端枚举
       timeoptions: [
         {
           value: '0',
-          label: '无'
+          label: this.$t('basicTips.nothing')
         }, {
           value: '1',
-          label: '秒'
+          label: this.$t('basicTips.second')
         }, {
           value: '2',
-          label: '分钟'
+          label: this.$t('basicTips.minute')
         }, {
           value: '3',
-          label: '小时'
+          label: this.$t('inventoryTips.hour')
         }, {
           value: '4',
-          label: '天'
+          label: this.$t('basicInformation.day')
         }],
       // 属性组
       MaterialPropertyList: [],
@@ -1241,8 +1241,8 @@ export default {
     createData() {
       if (this.Material.Name === '') {
         this.$message({
-          title: '失败',
-          message: '请在基础信息选项卡中输入物料名称',
+          title: this.$t('messageTips.Failure'),
+          message: this.$t('basicTips.pleaseEnterTheMaterialNameInTheBasicInformationTab'),
           type: 'error',
           duration: 2000
         })
@@ -1250,8 +1250,8 @@ export default {
       }
       if (this.Material.BoxCode === '') {
         this.$message({
-          title: '失败',
-          message: '请选择关联载具',
+          title: this.$t('messageTips.Failure') ,
+          message:  this.$t('basicTips.pleaseSelectTheAssociatedVehicle'),
           type: 'error',
           duration: 2000
         })
@@ -1260,7 +1260,7 @@ export default {
       if (this.Material.MaxNum < this.Material.MinNum) {
         this.$message({
           type: 'error',
-          message: '属性信息：最大库存不能小于最小库位'
+          message: this.$t('basicTips.attributeInformation')
         })
         return
       }
@@ -1273,15 +1273,15 @@ export default {
               this.dialogFormVisible = false
               this.getList()
               this.$message({
-                title: '成功',
-                message: '创建成功',
+                title: this.$t('messageTips.Succeed') ,
+                message: this.$t('messageTips.messageSucceed') ,
                 type: 'success',
                 duration: 2000
               })
             } else {
               this.$message({
-                title: '失败',
-                message: '创建失败：' + resData.Message,
+                title: this.$t('messageTips.Failure') ,
+                message: this.$t('messageTips.messageFailure')+'：' + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -1320,9 +1320,9 @@ export default {
           var resDatas = JSON.parse(res.data.Content)
           if (!resDatas.Success) {
             this.$message({
-              title: '成功',
+              title: this.$t('messageTips.Succeed') ,
               type: 'success',
-              message: '图片未删除！',
+              message: this.$t('systemManagementTips.newEmployeePictureNotDeleted'),
               duration: 2000
             })
           }
@@ -1365,7 +1365,7 @@ export default {
       if (this.Material.MaxNum < this.Material.MinNum) {
         this.$message({
           type: 'error',
-          message: '属性信息：最大库存不能小于最小库位'
+          message: this.$t('basicTips.attributeInformation')
         })
         return
       }
@@ -1390,28 +1390,28 @@ export default {
               this.getList()
               this.dialogFormVisible = false
               this.$message({
-                title: '成功',
-                message: '更新成功',
+                title: this.$t('messageTips.Succeed') ,
+                message: this.$t('presentationOfWarehousingDocuments.updateSuccessful'),
                 type: 'success',
                 duration: 2000
               })
 
-              this.$confirm('是否跳转到仓库信息界面', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }).then(() => {
-                this.$router.push('/BaseSetting/WareHouseSetting/index');
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消执行'
-                })
-              })
+              // this.$confirm('是否跳转到仓库信息界面', '提示', {
+              //   confirmButtonText: '确定',
+              //   cancelButtonText: '取消',
+              //   type: 'warning'
+              // }).then(() => {
+              //   this.$router.push('/BaseSetting/WareHouseSetting/index');
+              // }).catch(() => {
+              //   this.$message({
+              //     type: 'info',
+              //     message: '已取消执行'
+              //   })
+              // })
             } else {
               this.$message({
-                title: '成功',
-                message: '创建失败：' + resData.Message,
+                title: this.$t('messageTips.Succeed') ,
+                message: this.$t('messageTips.messageFailure')+'：' + resData.Message,
                 type: 'error',
                 duration: 2000
               })
@@ -1462,8 +1462,8 @@ export default {
     updateBox() {
       if (this.Box === null) {
         this.$message({
-          title: '失败',
-          message: '请选择一条载具',
+          title: this.$t('messageTips.Failure') ,
+          message: this.$t('basicTips.pleaseSelectAVehicle') ,
           type: 'error',
           duration: 2000
         })
@@ -1507,8 +1507,8 @@ export default {
     updateSupply() {
       if (this.Supply === null) {
         this.$message({
-          title: '失败',
-          message: '请选择一条供应商',
+          title: this.$t('messageTips.Failure') ,
+          message: this.$t('basicTips.pleaseSelectASupplier') ,
           type: 'error',
           duration: 2000
         })
@@ -1520,9 +1520,9 @@ export default {
     /* 删除按钮 */
     /** ****************/
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该物料, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('basicTips.permanentlyDeleteTheMaterial'), this.$t('messageTips.Tips') , {
+        confirmButtonText: this.$t('baseBtn.confirm')  ,
+        cancelButtonText: this.$t('baseBtn.cancel')  ,
         type: 'warning'
       }).then(() => {
         this.Material = Object.assign({}, row) // copy obj
@@ -1530,7 +1530,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: this.$t('messageTips.cancelledDelete')
         })
       })
     },
@@ -1542,8 +1542,8 @@ export default {
           this.dialogFormVisible = false
           if (resData.Success) {
             this.$message({
-              title: '成功',
-              message: '删除成功',
+              title: this.$t('messageTips.Succeed') ,
+              message: this.$t('messageTips.deleteSucceed'),
               type: 'success',
               duration: 2000
             })
@@ -1554,8 +1554,8 @@ export default {
           this.getList()
         } else {
           this.$message({
-            title: '成功',
-            message: '删除失败：' + resData.Message,
+            title: this.$t('messageTips.Succeed') ,
+            message: this.$t('messageTips.deleteFailure')+'：' + resData.Message,
             type: 'error',
             duration: 4000
           })
@@ -1578,9 +1578,9 @@ export default {
     // 条件导出
     Condition_ExportExcel() {
       if (this.listQuery.Code === '' && this.listQuery.Remark === '') {
-        this.$confirm('您没有输入导出条件，将导出共：' + this.total + '条, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+        this.$confirm(this.$t('inventoryTips.youHaveNotEnteredAnExportCondition')  + this.total +  this.$t('deviceTips.articleContinue') , this.$t('messageTips.Tips') , {
+          confirmButtonText: this.$t('baseBtn.confirm')  ,
+          cancelButtonText: this.$t('baseBtn.cancel')  ,
           type: 'warning'
         }).then(() => {
           var url = window.PLATFROM_CONFIG.baseUrl + '/api/Material/DoDownLoad'
@@ -1589,7 +1589,7 @@ export default {
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消'
+            message: this.$t('messageTips.messageCancel')
           })
         })
       } else {
@@ -1600,9 +1600,9 @@ export default {
 
     // 全部导出
     All_ExportExcel() {
-      this.$confirm('此操作将导出全部数据，共：' + this.total + '条, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('deviceTips.thisOperationWillExportAllDataIncluding') + this.total + this.$t('deviceTips.articleContinue') , this.$t('messageTips.Tips') , {
+        confirmButtonText: this.$t('baseBtn.confirm')  ,
+        cancelButtonText: this.$t('baseBtn.cancel')  ,
         type: 'warning'
       }).then(() => {
         var url = window.PLATFROM_CONFIG.baseUrl + '/api/Material/DoDownLoad'
@@ -1610,7 +1610,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消'
+          message: this.$t('messageTips.messageCancel')
         })
       })
     },
@@ -1639,13 +1639,13 @@ export default {
     },
     // 上传文件个数超过定义的数量
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，请删除后继续上传`)
+      this.$message.warning(this.$t('messageTips.ImportJudge'))
     },
     // 上传文件
     uploadFile(item) {
-      this.$confirm('此操作会将系统中存在的物料按照导入文件中的物料编码进行相应替换，请确保导入的物料编码在系统中已存在以及导入的物料名称不能为空，否则将导入失败, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm(this.$t('basicTips.OtherwiseTheImportWillFail'), this.$t('messageTips.Tips') , {
+        confirmButtonText: this.$t('baseBtn.confirm')  ,
+        cancelButtonText: this.$t('baseBtn.cancel')  ,
         type: 'warning'
       }).then(() => {
         const fileObj = item.file
@@ -1660,16 +1660,16 @@ export default {
           if (resData.Success) {
             this.getList()
             this.$message({
-              title: '成功',
-              message: '导入成功',
+              title: this.$t('messageTips.Succeed') ,
+              message: this.$t('messageTips.ImportSucceed'),
               type: 'success',
               duration: 2000
             })
           } else {
             this.getList()
             this.$message({
-              title: '失败',
-              message: '导入失败' + resData.Message,
+              title: this.$t('messageTips.Failure') ,
+              message:  this.$t('messageTips.ImportFailure') + resData.Message,
               type: 'error',
               duration: 2000
             })
@@ -1678,7 +1678,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消导入'
+          message: this.$t('basicTips.importCanceled')
         })
       })
     },
@@ -1699,8 +1699,8 @@ export default {
     handleCreateLabel() {
       if (!isFloat(this.Label.Quantity) || this.Label.Quantity === 0) {
         this.$message({
-          title: '失败',
-          message: '请输入正确格式的数量',
+          title: this.$t('messageTips.Failure') ,
+          message:this.$t('presentationOfWarehousingDocuments.pleaseEnterTheNumberOfCorrectFormats') ,
           type: 'error',
           duration: 2000
         })
@@ -1708,8 +1708,8 @@ export default {
       }
       if (this.labelCount <= 0) {
         this.$message({
-          title: '失败',
-          message: '请输入正确的标签生成数量',
+          title: this.$t('messageTips.Failure') ,
+          message: this.$t('presentationOfWarehousingDocuments.pleaseEnterTheCorrectNumberOfTagGeneration'),
           type: 'error',
           duration: 2000
         })
@@ -1717,8 +1717,8 @@ export default {
       }
       if (this.Label.Batchcode === null) {
         this.$message({
-          title: '失败',
-          message: '请输入正确的批次',
+          title: this.$t('messageTips.Failure') ,
+          message: this.$t('presentationOfWarehousingDocuments.pleaseEnterTheCorrectBatch'),
           type: 'error',
           duration: 2000
         })
@@ -1738,8 +1738,8 @@ export default {
                 console.log(this.labelList)
               } else {
                 this.$message({
-                  title: '失败',
-                  message: '创建失败：' + resData.Message,
+                  title: this.$t('messageTips.Failure') ,
+                  message: this.$t('messageTips.messageFailure')+'：' + resData.Message,
                   type: 'error',
                   duration: 2000
                 })
@@ -1790,7 +1790,7 @@ export default {
             },
             style: {
               color: '#000',
-              fontFamily: '宋体',
+              fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
               fontSize: '12px',
               fontSpacing: 0,
               fontWeight: 'normal',
@@ -1821,7 +1821,7 @@ export default {
             },
             style: {
               color: '#000',
-              fontFamily: '宋体',
+              fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
               fontSize: '12px',
               fontSpacing: 0,
               fontWeight: 'normal',
@@ -1851,7 +1851,7 @@ export default {
             },
             style: {
               color: '#000',
-              fontFamily: '宋体',
+              fontFamily: this.$t('presentationOfWarehousingDocuments.songTypeface'),
               fontSize: '12px',
               fontSpacing: 0,
               fontWeight: 'normal',

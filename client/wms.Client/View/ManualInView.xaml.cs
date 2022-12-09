@@ -35,10 +35,5 @@ namespace wms.Client.View
             
         }
 
-        private void button_in_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
     }
 }

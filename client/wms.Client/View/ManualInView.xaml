@@ -82,10 +82,33 @@
                             Text="{Binding SearchBarcode, UpdateSourceTrigger=PropertyChanged}"
                             materialDesign:HintAssist.Hint="请输入物料编码或物料名称" FontSize="16" >
                             <TextBox.InputBindings>
-                                <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
+                                <KeyBinding Key="Enter" Command="{Binding ScanBarcodeKeyDownCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
                             </TextBox.InputBindings>
                         </TextBox>-->
+
                         <controls:SearchableTextBox x:Name="BarCode" Grid.Row="0" Width="500" Height="40"
+                                   VerticalAlignment="Top"
+                                   IsShowSearchIcon="False"
+                                   SearchItemsSource="{Binding SearchItemsSourceCollection}"
+                                   SearchText="{Binding Path=SearchBarcode,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                
+                                   SearchTips="请输入物料编码或物料名称"
+                                   FontSize="16"
+                                                     Margin="10"  
+                                   CanShowClearButton="True"
+                                                    BorderBrush="Black" BorderThickness="1"
+                                                    CornerRadius="5"
+                            >
+                            <controls:SearchableTextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding ScanBarcodeKeyDownCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
+                            </controls:SearchableTextBox.InputBindings>
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="ControlLoadOver">
+                                    <i:InvokeCommandAction Command="{Binding ScanBarcodeKeyDownCommand}" ></i:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                        </controls:SearchableTextBox>
+
+                        <!--<controls:SearchableTextBox x:Name="BarCode" Grid.Row="0" Width="500" Height="40"
                                    VerticalAlignment="Top"
                                    IsShowSearchIcon="False"
                                    SearchItemsSource="{Binding SearchItemsSourceCollection}"
@@ -102,7 +125,7 @@
                                     <i:InvokeCommandAction Command="{Binding ScanBarcodeKeyDownCommand}" ></i:InvokeCommandAction>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </controls:SearchableTextBox>
+                        </controls:SearchableTextBox>-->
                     </StackPanel>
                     <Button
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
@@ -645,7 +668,7 @@
                         <Button Margin="10 0 0 0" Height="80" FontSize="14" Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="存入托盘" 
                             CommandParameter="{Binding}"   
                             Background="{Binding FourthStepColor}"
-                            Command="{Binding RunningTakeInCommand}" Name="button_in" Click="button_in_Click" >
+                            Command="{Binding RunningTakeInCommand}" Name="button_in" >
                             ④存入托盘
                         </Button>
                     </StackPanel>

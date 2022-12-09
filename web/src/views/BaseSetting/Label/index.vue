@@ -3,9 +3,9 @@
     <!-- 筛选栏 -->
     <el-card class="search-card">
       <div class="filter-container">
-        <el-input v-model="listQuery.Code" placeholder="$t('printBar.barCode')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-input v-model="listQuery.MaterialCode" placeholder="$t('stockManagement.bomNumberAndBomName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
-        <el-input v-model="listQuery.SupplyCode" placeholder="$t('stockManagement.supplierCodeSupplierName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-input v-model="listQuery.Code" :placeholder="$t('printBar.barCode')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-input v-model="listQuery.MaterialCode" :placeholder="$t('stockManagement.bomNumberAndBomName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
+        <el-input v-model="listQuery.SupplyCode" :placeholder="$t('stockManagement.supplierCodeSupplierName')" class="filter-item" clearable @keyup.enter.native="handleFilter" @clear="handleFilter" />
         <el-button v-waves class="filter-button" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('baseBtn.queryBtn') }}</el-button>
       </div>
     </el-card>

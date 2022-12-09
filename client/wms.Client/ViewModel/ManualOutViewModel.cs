@@ -524,11 +524,11 @@ namespace wms.Client.ViewModel
         /// <summary>
         /// 当前操作储位
         /// </summary>
-        private decimal inQuantity = 0;
+        private decimal outQuantity = 1;
         public decimal OutQuantity
         {
-            get { return inQuantity; }
-            set { inQuantity = value; RaisePropertyChanged(); }
+            get { return outQuantity; }
+            set { outQuantity = value; RaisePropertyChanged(); }
         }
 
 
@@ -1492,7 +1492,11 @@ namespace wms.Client.ViewModel
             {
                 ChangeColor("FourthStep");
 
-                if (CurTratCode != SelectTrayCode)
+                ContainerSettingViewModel containerSettingViewModel = new ContainerSettingViewModel();
+
+                string TakeInTrayNumber = containerSettingViewModel.TakeInTrayNumber;
+
+                if (CurTratCode != SelectTrayCode && TakeInTrayNumber != SelectTrayCode)
                 {
                     Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
                     return;
@@ -1821,7 +1825,7 @@ namespace wms.Client.ViewModel
                 LabelEntity.SupplyName = "";
                 SelectMaterialName = "";
                 MaterialUrl = "";
-                OutQuantity = 0;
+                OutQuantity = 1;
                 XLight =0;
                 YLight = 0;
                 SelectBatchCode = "";
