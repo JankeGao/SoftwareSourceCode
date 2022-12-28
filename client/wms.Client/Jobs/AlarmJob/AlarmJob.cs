@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace wms.Client.Jobs.AlarmJob
     {
         // 调用本地数据库
         public static string connStr = System.Configuration.ConfigurationSettings.AppSettings["connectionString"].ToString();
+        //public static string connStr = ConfigurationManager.ConnectionStrings["Default"].ToString();
 
         private bool flag = false;
 
@@ -32,7 +34,7 @@ namespace wms.Client.Jobs.AlarmJob
             new ConnectionConfig()
             {
                 ConnectionString = connStr,
-                DbType = DbType.MySql,//设置数据库类型
+                DbType = DbType.SqlServer,//设置数据库类型
                 IsAutoCloseConnection = true,//自动释放数据务，如果存在事务，在事务结束后释放
                 InitKeyType = InitKeyType.Attribute //从实体特性中读取主键自增列信息
             });

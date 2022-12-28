@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -70,6 +71,7 @@ namespace wms.Client.ViewModel
 
         // 手动执行入库，调用本地数据库
         public static string connStr = System.Configuration.ConfigurationSettings.AppSettings["connectionString"].ToString();
+        //public static string connStr = ConfigurationManager.ConnectionStrings["Default"].ToString();
 
         SqlSugarClient db = new SqlSugarClient(
             new ConnectionConfig()

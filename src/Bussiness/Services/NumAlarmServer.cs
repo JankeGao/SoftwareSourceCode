@@ -23,6 +23,8 @@ namespace Bussiness.Services
         /// </summary>
         public IWareHouseContract WareHouseContract { set; get; }
 
+        public IInContract InContract { set; get; }
+
         /// <summary>
         /// 物料信息
         /// </summary>
@@ -39,15 +41,16 @@ namespace Bussiness.Services
             
         }
 
-       
         public IQuery<NumAlarmDto> NumAlarmDtos => NumAlarms
-            .InnerJoin(MaterialContract.Materials, (numAlarm,material) => numAlarm.MaterialCode == material.Code)
-            .LeftJoin(StockContract.StockDtos, (numAlarm, material, stock) => numAlarm.MaterialCode == stock.MaterialCode)
-            .Select((numAlarm, material, stock) => new NumAlarmDto()
+            .InnerJoin(MaterialContract.Materials, (numAlarm, material) => numAlarm.MaterialCode == material.Code)
+            .LeftJoin(WareHouseContract.LocationVMs, (numAlarm, material, location) => numAlarm.MaterialCode == location.SuggestMaterialCode)
+            .LeftJoin(StockContract.StockDtos, (numAlarm, material, location, stock) => numAlarm.MaterialCode == stock.MaterialCode)
+            .Select((numAlarm, material, location, stock) => new NumAlarmDto()
             {
                 Id = numAlarm.Id,
                 MinNum = material.MinNum,
                 MaxNum = material.MaxNum,
+                Quantityes = stock.Quantity.ToString() ?? "0",
                 MaterialCode = material.Code,
                 MaterialName = material.Name,
                 Status = numAlarm.Status,
@@ -57,10 +60,10 @@ namespace Bussiness.Services
                 UpdatedTime = numAlarm.UpdatedTime,
                 UpdatedUserCode = numAlarm.UpdatedUserCode,
                 UpdatedUserName = numAlarm.UpdatedUserName,
-                ContainerCode = stock.ContainerCode,
-                LocationCode = stock.LocationCode,
+                ContainerCode = location.ContainerCode,
+                LocationCode = location.Code
             });
-        
+
         /// <summary>
         /// 更新/插入库存物料上下限预警信息
         /// </summary>
@@ -100,7 +103,7 @@ namespace Bussiness.Services
         public DataResult CheckNumAlarm()
         {
             //获取未被删除的物料信息
-            string sql = "select c.MaterialCode,case when c.quantity = c.MinNum then 0 when c.quantity = c.MaxNum then 1 when c.quantity < c.MinNum then 2  when c.quantity > c.MinNum then 3 end as Status from (SELECT * FROM(SELECT a.Code as MaterialCode, IFnull(b.Quantity, 0) Quantity, a.MaxNum, a.MinNum FROM TB_WMS_MATERIAL A LEFT JOIN(SELECT  MATERIALCODE, SUM(Quantity) Quantity FROM TB_WMS_STOCK  group by MaterialCode) B ON A.Code = B.MaterialCode)  D where(D.Quantity >= D.MaxNum or D.Quantity <= D.MinNum) and D.MINNUM > 0) C";
+            string sql = "select c.MaterialCode,case when c.quantity = c.MinNum then 0 when c.quantity = c.MaxNum then 1 when c.quantity < c.MinNum then 2  when c.quantity > c.MinNum then 3 end as Status from (SELECT * FROM(SELECT a.Code as MaterialCode, isnull(b.Quantity, 0) Quantity, a.MaxNum, a.MinNum FROM TB_WMS_MATERIAL A LEFT JOIN(SELECT  MATERIALCODE, SUM(Quantity) Quantity FROM TB_WMS_STOCK  group by MaterialCode) B ON A.Code = B.MaterialCode)  D where(D.Quantity >= D.MaxNum or D.Quantity <= D.MinNum) and D.MINNUM > 0) C";
             var list = NumAlarmRepository.SqlQuery(sql).ToList();
             NumAlarmRepository.UnitOfWork.TransactionEnabled = true;
             NumAlarmRepository.Delete(a => 1 == 1);

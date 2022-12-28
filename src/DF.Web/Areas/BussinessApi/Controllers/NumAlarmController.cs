@@ -177,7 +177,7 @@ namespace DF.Web.Areas.BussinessApi.Controllers
                 {"StatusCaption","报警状态"},
                 {"MaxNum","库存上限"},
                 {"MinNum","库存下限"},
-                {"Quantity","库存数量"},
+                {"Quantityes","库存数量"},
                 {"MaterialCode","物料编码"},
                 {"ContainerCode","货柜"},
                 {"LocationCode","上架储位"},

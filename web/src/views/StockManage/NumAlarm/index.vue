@@ -75,6 +75,11 @@
               <span v-else>{{ scope.row.Quantity }}</span>
             </template>
           </el-table-column>
+          <!-- <el-table-column :label="'库存导出数量'" width="100" show-overflow-tooltip align="center">
+            <template slot-scope="scope">
+              <span>{{ scope.row.Quantityes }}</span>
+            </template>
+          </el-table-column> -->
           <el-table-column :label="'物料编码'" width="160" show-overflow-tooltip align="center">
             <template slot-scope="scope">
               <span>{{ scope.row.MaterialCode }}</span>

@@ -33,6 +33,12 @@
         public decimal Quantity { get; set; }
 
         /// <summary>
+        /// 库存导出数量
+        /// </summary>
+
+        public string Quantityes { get; set; }
+
+        /// <summary>
         /// 已超上下限数量
         /// </summary>
         public decimal OverNum { get; set; }

@@ -46,7 +46,7 @@ namespace Bussiness.Dtos
         /// </summary>
         public string ContainerCode { get; set; }
         /// <summary>
-        /// 仓库编码
+        /// 上架储位
         /// </summary>
         public string LocationCode { get; set; }
 
