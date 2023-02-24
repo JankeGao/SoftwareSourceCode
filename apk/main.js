@@ -5,7 +5,7 @@ import api from './config.js'
 Vue.config.productionTip = false
 Vue.prototype.api = api
 App.mpType = 'app'
-Vue.prototype.apiUrl = 'http://localhost:30025/api/';  
+Vue.prototype.apiUrl = 'http://localhost:40005/api/';  
 Vue.prototype.now = Date.now || function () {  
     return new Date().getTime();  
 };  

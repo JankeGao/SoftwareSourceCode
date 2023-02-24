@@ -54,7 +54,7 @@
                     <materialDesign:Card
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
                     Padding="32"  Margin="10" Background="{Binding VerticalSecondColor}" >
-                        步骤 2 监视M340 on表示学习结束
+                        步骤 2 监视M340 ON表示学习结束
                     </materialDesign:Card>
                     <materialDesign:Card
                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
@@ -387,7 +387,7 @@
                                 IsEnabled="{Binding TakeInTrayInputEnabled}"
                                  >
                                 </TextBox>
-                                <Button  Width="100" Height="40"  Command="{Binding TakeInNextCommand}" IsEnabled="{Binding TakeInNextEnable}" Content="存入" Margin="10,10" />
+                                <Button  Width="100" Height="40"  Command="{Binding TakeInNextCommand}" IsEnabled="{Binding TakeInNextEnable}" Content="存入" Margin="10,10" Cursor="Hand" />
                             </StackPanel>
                         </Grid>
                     </StackPanel>

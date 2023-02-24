@@ -1201,6 +1201,8 @@ namespace wms.Client.ViewModel
         }
         public async void TakeOutNext()
         {
+            //ManualInViewModel manualInViewModel = new ManualInViewModel();
+            //manualInViewModel.ChangeColor("FirstStep");
             string CurrentRunningTray = this.TakeOutTrayNumber;
             if (!int.TryParse(this.TakeOutTrayNumber, out int trayNumber))
             {
@@ -1465,6 +1467,8 @@ namespace wms.Client.ViewModel
         }
         public async void TakeInNext()
         {
+            //ManualInViewModel manualInViewModel = new ManualInViewModel();
+            //manualInViewModel.ChangeColor("FourthStep");
             if (!int.TryParse(this.TakeInTrayNumber, out int trayNumber))
             {
                 Msg.Error("输入的托盘号格式不正确");
@@ -1636,7 +1640,7 @@ namespace wms.Client.ViewModel
             set { _TakeInThirdColor = value; RaisePropertyChanged(); }
         }
 
-        private string _TakeInTrayNumber = "";
+        private  string _TakeInTrayNumber = "";
         public string TakeInTrayNumber
         {
             get { return _TakeInTrayNumber; }

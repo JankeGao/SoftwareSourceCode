@@ -16,32 +16,31 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <materialDesign:ColorZone  Padding="27" Mode="PrimaryMid"/>
-            <TextBlock  Text="消息窗口" FontSize="20" 
+            <TextBlock  Text="报警信息" FontSize="20" 
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center"
                             Foreground="White"  />
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                <materialDesign:PackIcon Kind="{Binding obj.Icon}" Foreground="{Binding obj.Color}" 
+                <!--<materialDesign:PackIcon Kind="{Binding obj.Icon}" Foreground="{Binding obj.Color}" 
                                          VerticalAlignment="Center" 
-                                         Width="30" Height="30"/>
-                <TextBlock Margin="10 0 0 0" VerticalAlignment="Center"
+                                         Width="30" Height="30"/>-->
+                <TextBlock x:Name="Msg" Margin="10 0 0 0" VerticalAlignment="Center"
                                TextWrapping="Wrap" FontSize="15" MaxWidth="300"
                                Text="{Binding obj.Msg}" />
             </StackPanel>
-            <UniformGrid Grid.Row="2" Columns="2" Margin="8 0 8 8">
-                <Button Content="确定"   Margin="5" Height="45" Style="{StaticResource   MaterialDesignFlatMidBgButton}"
-                       Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" >
-                    <Button.CommandParameter>
-                        <system:Boolean>True</system:Boolean>
-                    </Button.CommandParameter>
-                </Button>
-                <Button Content="取消" Background="White"  Style="{StaticResource MaterialDesignFlatLightBgButton}"
+            <UniformGrid Grid.Row="2" Columns="0" Margin="8 0 8 8">
+                <Button Content="确定" VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" Height="45" Style="{StaticResource   MaterialDesignFlatMidBgButton}"
+                       Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" Width="132" Click="Button_Click" />
+                <!--<Button Content="取消" Background="White"  Style="{StaticResource MaterialDesignFlatLightBgButton}"
                          Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" 
                             Foreground="Black"  Margin="5" Height="45" >
-                    <Button.CommandParameter>
+                    -->
+                <!--<Button.CommandParameter>
                         <system:Boolean>False</system:Boolean>
-                    </Button.CommandParameter>
-                </Button>
+                    </Button.CommandParameter>-->
+                <!--
+                </Button>-->
             </UniformGrid>
         </Grid>
     </Grid>

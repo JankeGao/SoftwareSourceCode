@@ -5,7 +5,12 @@ using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Bussiness.Contracts;
@@ -120,7 +125,10 @@ namespace wms.Client.ViewModel
             ScanBarcodeCommand = new RelayCommand<string>(ScanBarcode);
             ScanBarcodeKeyDownCommand = new RelayCommand<object>(ScanBarcodeKeyDown);
             RunningCommand = new RelayCommand(RunningContainer);
+            StraightOutTrayCommand = new RelayCommand(StraightOutTray);
+            AutoButtonClickCommand = new RelayCommand(AutoButtonClick);
             RunningTakeInCommand = new RelayCommand(RunningTakeInContainer);
+            StraightInTrayCommand = new RelayCommand(StraightInTray);
             HandShelfCommand = new RelayCommand (HandShelf);
             DelectItemCommand = new RelayCommand<InTaskMaterialDto>(DelectInTaskItem);
             SubmitCommand = new RelayCommand(Submit);
@@ -236,6 +244,21 @@ namespace wms.Client.ViewModel
             set { _WeightCheckColor = value; RaisePropertyChanged(); }
         }
 
+        private string _StraightInTrayColor = "MediumPurple";
+
+        public string StraightInTrayColor
+        {
+            get { return _StraightInTrayColor; }
+            set { _StraightInTrayColor= value; RaisePropertyChanged(); }
+        }
+
+        private string _StraightOutTrayColor = "MediumPurple";
+
+        public string StraightOutTrayColor
+        {
+            get { return _StraightOutTrayColor; }
+            set { _StraightOutTrayColor = value; RaisePropertyChanged(); }
+        }
 
         public void ChangeColor(string Operation)
         {
@@ -250,6 +273,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                     case "FirstStep":
                         this.ScanColor = "MediumPurple";
@@ -258,6 +283,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                     case "SecondStep":
                         this.ScanColor = "MediumPurple";
@@ -266,6 +293,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                     case "ThirdStep":
                         this.ScanColor = "MediumPurple";
@@ -274,6 +303,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "Green";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                     case "FourthStep":
                         this.ScanColor = "MediumPurple";
@@ -282,6 +313,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "Green";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                     case "WeightCheck":
                         this.ScanColor = "MediumPurple";
@@ -290,6 +323,28 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "Green";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
+                        break;
+                    case "StraightInTrayCheck":
+                        this.ScanColor = "MediumPurple";
+                        this.FirstStepColor = "MediumPurple";
+                        this.SecondStepColor = "MediumPurple";
+                        this.ThirdStepColor = "MediumPurple";
+                        this.FourthStepColor = "MediumPurple";
+                        this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "Green";
+                        this.StraightOutTrayColor = "MediumPurple";
+                        break;
+                    case "StraightOutTrayCheck":
+                        this.ScanColor = "MediumPurple";
+                        this.FirstStepColor = "MediumPurple";
+                        this.SecondStepColor = "MediumPurple";
+                        this.ThirdStepColor = "MediumPurple";
+                        this.FourthStepColor = "MediumPurple";
+                        this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "Green";
                         break;
                     default:
                         this.ScanColor = "MediumPurple";
@@ -298,6 +353,8 @@ namespace wms.Client.ViewModel
                         this.ThirdStepColor = "MediumPurple";
                         this.FourthStepColor = "MediumPurple";
                         this.WeightCheckColor = "MediumPurple";
+                        this.StraightInTrayColor = "MediumPurple";
+                        this.StraightOutTrayColor = "MediumPurple";
                         break;
                 }
             }
@@ -396,11 +453,13 @@ namespace wms.Client.ViewModel
         /// 打开新页面，string: 模块名称
         /// </summary>
         public RelayCommand RunningCommand { get; private set; }
+        public RelayCommand StraightOutTrayCommand { get; private set; }
 
         /// <summary>
         /// 打开新页面，string: 模块名称
         /// </summary>
         public RelayCommand RunningTakeInCommand { get; private set; }
+        public RelayCommand StraightInTrayCommand { get; private set; }
 
         /// <summary>
         /// 选择本次入库的物料
@@ -471,7 +530,7 @@ namespace wms.Client.ViewModel
 
         public RelayCommand<object> ScanBarcodeKeyDownCommand { get; private set; }
 
-
+        public RelayCommand AutoButtonClickCommand { get; private set; }
 
         /// <summary>
         /// 确认存入指令
@@ -849,6 +908,10 @@ namespace wms.Client.ViewModel
         /// 扫描的条码实体
         /// </summary>
         public LabelClient LabelEntity { get; set; } = new LabelClient();
+        /// <summary>
+        /// 当前取出托盘号
+        /// </summary>
+        public string TakeInTrayNumberes { get; set; }
 
         #endregion
 
@@ -970,6 +1033,7 @@ namespace wms.Client.ViewModel
                 IsMoreThanTwo = "Hidden";
                 //  ScanColor = "Green";
                 ChangeColor("Scan");
+                
                 if (String.IsNullOrEmpty(SearchBarcode))
                 {
                     return;
@@ -1076,6 +1140,21 @@ namespace wms.Client.ViewModel
             var code = obj as SearchableTextBox.SearchableTextBox;
             ScanBarcode("");
         }
+
+        public void AutoButtonClick()
+        {
+            Button btn_Scan = new Button();
+            btn_Scan.Click += Btn_Scan_Click;
+            ButtonAutomationPeer peer = new ButtonAutomationPeer(btn_Scan);
+            IInvokeProvider invokeProv = peer.GetPattern(PatternInterface.Invoke) as IInvokeProvider;
+            invokeProv.Invoke();
+        }
+
+        private void Btn_Scan_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ScanBarcode("");
+        }
+
 
         /// <summary>
         /// 删除入库项目
@@ -1462,6 +1541,104 @@ namespace wms.Client.ViewModel
             }
         }
 
+        private string _TakeOutTrayNumber = "";
+        public string TakeOutTrayNumber
+        {
+            get { return _TakeOutTrayNumber; }
+            set { _TakeOutTrayNumber = value; RaisePropertyChanged(); }
+        }
+
+        private string _TakeInTrayNumber = "";
+        public string TakeInTrayNumber
+        {
+            get { return _TakeInTrayNumber; }
+            set { _TakeInTrayNumber = value; RaisePropertyChanged(); }
+        }
+
+        /// <summary>
+        /// 直接取出托盘
+        /// </summary>
+        public async void StraightOutTray()
+        {
+            try
+            {
+                ChangeColor("StraightInTrayCheck");
+
+                string CurrentRunningTray = this.TakeOutTrayNumber;
+                if (!int.TryParse(this.TakeOutTrayNumber, out int trayNumber))
+                {
+                    Msg.Error("输入的托盘号格式不正确");
+                    return;
+                }
+
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Warning("设备离线状态，无法启动货柜！");
+                    return;
+                }
+
+                //GlobalData.IsFocus = false;
+                //if (String.IsNullOrEmpty(SelectTrayCode))
+                //{
+                //    GlobalData.IsFocus = true;
+                //    Msg.Warning("未选择执行托盘，请先选择一项！");
+                //    return;
+                //}
+
+                if (CurrentRunningTray != null)
+                {
+                    GlobalData.IsFocus = true;
+
+                    if (!await Msg.Question("是否驱动目标托盘到取料口？"))
+                    {
+                        return;
+                    }
+                }
+
+                // 核查用户是否有此模块操作权限
+                var user = ServiceProvider.Instance.Get<IUserService>();
+                var authCheck = user.GetCheckTrayAuth(Convert.ToInt32(CurrentRunningTray));
+                if (!authCheck.Result.Success)
+                {
+                    Msg.Warning("抱歉，您无操作该托盘权限！");
+                    return;
+                }
+
+                // await dialog.c
+                // 读取PLC 状态信息
+                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                var runingEntity = new RunningContainer()
+                {
+                    ContainerCode = ContainerCode,
+                    TrayCode = trayNumber,
+                };
+                var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                if (container != null)
+                {
+                    runingEntity.ContainerType = container.ContainerType;
+                    runingEntity.IpAddress = container.Ip;
+                    runingEntity.Port = int.Parse(container.Port);
+                }
+
+                // 货柜运行
+                var runningContainer = baseControlService.PostStartRunningContainer(runingEntity);
+                if (runningContainer.Result.Success)
+                {
+                    TakeInTrayNumber = runingEntity.TrayCode.ToString();
+                }
+                else
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Error(runningContainer.Result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Msg.Error(ex.Message);
+            }
+        }
 
         /// <summary>
         /// 启动货柜
@@ -1606,18 +1783,103 @@ namespace wms.Client.ViewModel
                 Msg.Error(runningContainer.Result.Message);
             }
         }
+        /// <summary>
+        /// 直接存入托盘
+        /// </summary>
+        public async void StraightInTray()
+        {
+            try
+            {
+                ChangeColor("StraightOutTrayCheck");
 
+                //string cfgINIes = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
+                //if (File.Exists(cfgINIes))
+                //{
+                //    IniFile ini = new IniFile(cfgINIes);
+                //    TakeInTrayNumber = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
+                //}
+                //if (CurTratCode != SelectTrayCode && TakeInTrayNumber != SelectTrayCode)
+                //{
+                //    Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
+                //    return;
+                //}
+
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Warning("设备离线状态，无法启动货柜！");
+                    return;
+                }
+
+                GlobalData.IsFocus = false;
+
+                string CurrentRunningTray = "";
+                string cfgINI = AppDomain.CurrentDomain.BaseDirectory + wms.Client.LogicCore.Configuration.SerivceFiguration.INI_CFG;
+                if (System.IO.File.Exists(cfgINI))
+                {
+                    wms.Client.LogicCore.Helpers.Files.IniFile ini = new wms.Client.LogicCore.Helpers.Files.IniFile(cfgINI);
+                    CurrentRunningTray = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
+                }
+
+                if (!string.IsNullOrEmpty(CurrentRunningTray))
+                {
+                    // await dialog.c
+                    // 读取PLC 状态信息
+                    var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                    var runingEntity = new RunningContainer()
+                    {
+                        ContainerCode = ContainerCode,
+                        TrayCode = Convert.ToInt32(CurrentRunningTray),
+                        //XLight = XLight
+                    };
+                    var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                    if (container != null)
+                    {
+                        runingEntity.ContainerType = container.ContainerType;
+                        runingEntity.IpAddress = container.Ip;
+                        runingEntity.Port = int.Parse(container.Port);
+                    }
+
+                    // 货柜运行
+                    var runningContainer = baseControlService.PostStartRestoreContainer(runingEntity).Result;
+                    if (runningContainer.Success)
+                    {
+                        Msg.Info("正在存入托盘,请确认托盘已存入货柜后再关闭窗口");
+                    }
+                    else
+                    {
+                        Msg.Error(runningContainer.Message);
+                    }
+
+                    GlobalData.IsFocus = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Msg.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 托盘存入货柜
+        /// </summary>
         public async void RunningTakeInContainer()
         {
             try
             {
                 ChangeColor("FourthStep");
 
-                ContainerSettingViewModel containerSettingViewModel = new ContainerSettingViewModel();
+                //ContainerSettingViewModel containerSettingViewModel = new ContainerSettingViewModel();
 
-                string TakeInTrayNumber = containerSettingViewModel.TakeInTrayNumber;
-
-                if (CurTratCode != SelectTrayCode && TakeInTrayNumber != SelectTrayCode)
+                //string TakeInTrayNumber = wms.Client.ViewModel.ContainerSettingViewModel.TakeInTrayNumber;
+                string cfgINIes = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
+                if (File.Exists(cfgINIes))
+                {
+                    IniFile ini = new IniFile(cfgINIes);
+                    TakeInTrayNumberes = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
+                }
+                if (CurTratCode != SelectTrayCode && TakeInTrayNumberes != SelectTrayCode)
                 {
                     Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
                     return;
@@ -1954,6 +2216,7 @@ namespace wms.Client.ViewModel
             {
                 IniFile ini = new IniFile(cfgINI);
                 ContainerCode = ini.IniReadValue("ClientInfo", "code");
+                TakeInTrayNumber = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
             }
         }
     }

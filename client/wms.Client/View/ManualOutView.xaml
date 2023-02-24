@@ -32,6 +32,7 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
+                
                 <materialDesign:PackIcon Kind="Table" Width="30" Height="30"  Margin="15 30 15 0"  Foreground="#673AB7"/>
                 <StackPanel Margin="0 0 0 0" >
                     <TextBox 
@@ -497,6 +498,7 @@
                                 <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
                             </TextBox.InputBindings>
                         </TextBox>-->
+                        
                         <!--<TextBox
                             Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
                             VerticalAlignment="Top"

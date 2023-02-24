@@ -272,7 +272,7 @@ namespace wms.Client.Jobs.AlarmJob
         }
         public MessageBoxResult MessageBoxShow_F(string msg)
         {
-            return MessageBox.Show(msg, "提示信息", MessageBoxButton.OK);
+            return MessageBox.Show(msg, "报警信息，请点确认！", MessageBoxButton.OK);
         }
 
         /// <summary>

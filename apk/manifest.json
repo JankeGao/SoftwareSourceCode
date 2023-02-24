@@ -1,6 +1,6 @@
 {
     "name" : "EZY-WMS",
-    "appid" : "__UNI__A9CB2E1",
+    "appid" : "__UNI__152F5C7",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx210d9323bfdb14a1",
         "setting" : {
             "urlCheck" : false
         },

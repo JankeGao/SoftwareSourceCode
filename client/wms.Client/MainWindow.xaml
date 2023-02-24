@@ -55,7 +55,7 @@
                             <!--ToggleButton切换IsChecked,动态更新gridMenu宽度-->
                             <ColumnDefinition x:Name="gridMenu" Width="{Binding ElementName=toggle,Path=IsChecked,Converter={StaticResource mwc}}"/>
                             <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
+                            </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
                                 <template:MainLeftMenu Background="{StaticResource DefaultBackGround}" BorderThickness="1" BorderBrush="#EAEAEA" />
                             </Grid>

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace wms.Client.Template
 {
@@ -10,6 +12,15 @@ namespace wms.Client.Template
         public MsgView()
         {
             InitializeComponent();
+        }
+        public MsgView(string mess)
+        {
+            InitializeComponent();
+            Msg.Text = mess;
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+         
         }
     }
 }

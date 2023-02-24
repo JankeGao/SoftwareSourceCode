@@ -12,7 +12,7 @@
 		},
 		data(){
 			return {
-				apiUrl:'http://127.0.0.1:30011/api/'
+				apiUrl:'http://127.0.0.1:40005/api/'
 			}
 		}
 	}

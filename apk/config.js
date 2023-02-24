@@ -1,5 +1,5 @@
 const app = {
-    apiUrl: 'http://127.0.0.1:30025/api/', //请求的地址
+    apiUrl: 'http://127.0.0.1:40005/api/', //请求的地址
     baseRequest(obj) {
         try {
             const userToken = uni.getStorageSync('userToken');

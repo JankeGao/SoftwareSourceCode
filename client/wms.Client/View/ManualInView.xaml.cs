@@ -17,6 +17,8 @@ using wms.Client.ViewDlg;
 using wms.Client.ViewModel;
 using wms.Client.LogicCore.Common;
 using wms.Client.Core.share.DataInterfaces;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 
 namespace wms.Client.View
 {
@@ -29,11 +31,5 @@ namespace wms.Client.View
         {
             InitializeComponent();
         }
-
-        private void Updateclick(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
     }
 }
