@@ -2277,7 +2277,13 @@
             <param name="KeyValue"></param>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:DF.Web.Areas.BussinessApi.Controllers.WareHouseController.GetWareHouseLocations(System.String)" -->
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.WareHouseController.GetWareHouseLocations(System.String)">
+            <summary>
+            获取仓库库位信息——打印
+            </summary>
+            <param name="KeyValue"></param>
+            <returns></returns>
+        </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.WareHouseController.GetAreaLocations(System.String)">
             <summary>  
             获取仓库库位信息——打印

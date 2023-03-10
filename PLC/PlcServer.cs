@@ -221,7 +221,10 @@ namespace PLCServer
                         if (TrayResult.IsSuccess)
                         {
                             //2.	写入D218 十进制 X轴灯号 
-                            var XResult = melsec_net.Write("D219", runningContainer.XLight);
+                            //var XResult = melsec_net.Write("D219", runningContainer.XLight);
+                            var XResult = melsec_net.Write("D251", runningContainer.XLight);
+                            Thread.Sleep(SignalDelay);
+                            var XLenghtResult = melsec_net.Write("D250",runningContainer.XLenght);
                             if (XResult.IsSuccess)
                             {
                                 //发送 3.	M651 bit  置为 ON
@@ -278,7 +281,10 @@ namespace PLCServer
                         if (TrayResult.IsSuccess)
                         {
                             //2.	写入R218 十进制 X轴灯号 
-                            var XResult = melsec_net.Write("R218", runningContainer.XLight);
+                            //var XResult = melsec_net.Write("R218", runningContainer.XLight);
+                            var XResult = melsec_net.Write("D251", runningContainer.XLight);
+                            Thread.Sleep(SignalDelay);
+                            var XLenghtResult = melsec_net.Write("D250", runningContainer.XLenght);
                             if (XResult.IsSuccess)
                             {
                                 //发送 3.	M50  bit  置为 ON
@@ -2331,6 +2337,7 @@ namespace PLCServer
             {
                 if (isConnected)
                 {
+                    int SignalDelay = 500;
                     //01 PLC 接收远程控制指令——在线
                     //00 PLC 不接受远程控制指令——离线
                     var onLineResult = melsec_net.Write("D650", runningContainer.TrayCode);
@@ -2338,7 +2345,10 @@ namespace PLCServer
                     {
                         return DataProcess.Failure("写入取出托盘时:" + onLineResult.Message);
                     }
-                    var XResult = melsec_net.Write("D219", runningContainer.XLight);
+                    //var XResult = melsec_net.Write("D219", runningContainer.XLight);
+                    var XResult = melsec_net.Write("D251", runningContainer.XLight);
+                    Thread.Sleep(SignalDelay);
+                    var XLenghtResult = melsec_net.Write("D250",runningContainer.XLenght);
                     if (XResult.IsSuccess)
                     {
                         return DataProcess.Success();

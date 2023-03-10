@@ -677,7 +677,7 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, list.ToMvcJson());
             return response;
         }
-
+        /// <summary>
         /// 获取仓库库位信息——打印
         /// </summary>
         /// <param name="KeyValue"></param>

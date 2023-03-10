@@ -13,6 +13,8 @@ namespace Bussiness.Entitys
         /// </summary>
         public string Code { set; get; }
 
+        public override int  Id { set; get; }
+
         /// <summary>
         /// »õ¹ñ±àºÅ
         /// </summary>

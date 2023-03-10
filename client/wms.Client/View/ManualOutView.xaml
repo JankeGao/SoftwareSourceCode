@@ -32,23 +32,32 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                
-                <materialDesign:PackIcon Kind="Table" Width="30" Height="30"  Margin="15 30 15 0"  Foreground="#673AB7"/>
-                <StackPanel Margin="0 0 0 0" >
-                    <TextBox 
-                            HorizontalAlignment="Left"
-                            Margin="73 0 0 0"
-                            materialDesign:HintAssist.Hint="输入备注"
-                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
-                            materialDesign:HintAssist.FloatingScale="0.50"
-                            Width="500"
-                            Text="{Binding Remark,Mode=TwoWay}"
-                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="24" />
-
-                </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <StackPanel  Margin="660 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <materialDesign:PackIcon Kind="Table" Width="30" Height="30"  Margin="15 30 15 0"  Foreground="#673AB7"/>
+                    <TextBox 
+                                Text="{Binding TakeOutTrayNumber, UpdateSourceTrigger=PropertyChanged}"
+                                FontSize="18"   
+                                materialDesign:HintAssist.Hint="托盘号" 
+                                Margin="5" 
+                                Foreground="#434343"
+                                VerticalAlignment="Center" 
+                                Width="60" 
+                                IsEnabled="{Binding TakeOutTrayInputEnabled}"
+                                 >
+                    </TextBox>
+                    <Button  Width="90" Margin="5" Command="{Binding StraightOutTrayCommand}" IsEnabled="{Binding TakeOutNextEnable}" Background="{Binding StraightInTrayColor}" Content="取出" />
+                    <TextBox 
+                                Text="{Binding TakeInTrayNumber, UpdateSourceTrigger=PropertyChanged}"
+                                FontSize="18"   
+                                materialDesign:HintAssist.Hint="托盘号" 
+                                Margin="5" 
+                                Foreground="#434343"
+                                VerticalAlignment="Center" 
+                                Width="60" Visibility="Visible" IsEnabled="False"
+                                 >
+                    </TextBox>
+                    <Button  Width="90" Command="{Binding StraightInTrayCommand}" IsEnabled="{Binding TakeInNextEnable}" Background="{Binding StraightOutTrayColor}" Content="存入" Margin="5" Cursor="Hand" />
+                    <StackPanel  Margin="220 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
                         <materialDesign:Chip
                                     Content="{Binding Source={StaticResource globalData},Path=UserName}"
                                     IsDeletable="True"
@@ -362,6 +371,17 @@
                         是否称量单品重量
                     </CheckBox>-->
                     <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
+                    <StackPanel Margin="0" >
+                        <TextBox 
+                            HorizontalAlignment="Left"
+                            materialDesign:HintAssist.Hint="输入备注"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="120"
+                            Text="{Binding Remark,Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="18" />
+                    </StackPanel>
                     <StackPanel>
                         <TextBlock Margin="10 22 10 0"
                                    Text="{Binding SelectMaterialName}"
@@ -526,6 +546,11 @@
                                                     BorderBrush="Black" BorderThickness="1"
                                                     CornerRadius="5"
                             >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostMouseCapture">
+                                    <i:InvokeCommandAction Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"></i:InvokeCommandAction>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                             <controls:SearchableTextBox.InputBindings>
                                 <KeyBinding Key="Enter" Command="{Binding ScanBarcodeCommand}" CommandParameter="{Binding ElementName=SearchBarcode}"/>
                             </controls:SearchableTextBox.InputBindings>

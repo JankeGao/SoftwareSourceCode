@@ -905,6 +905,23 @@ namespace wms.Client.ViewModel
         }
 
         /// <summary>
+        /// 直接存入托盘号获取
+        /// </summary>
+        private List<Tray> trayList = new List<Tray>() ;
+        public List<Tray> TrayList
+        {
+            get { return trayList; }
+            set { trayList = value; RaisePropertyChanged(); }
+        }
+
+        private Tray tray = new Tray() ;
+        public Tray Tray
+        {
+            get { return tray; }
+            set { tray = value; RaisePropertyChanged(); }
+        }
+
+        /// <summary>
         /// 扫描的条码实体
         /// </summary>
         public LabelClient LabelEntity { get; set; } = new LabelClient();
@@ -1540,14 +1557,18 @@ namespace wms.Client.ViewModel
 
             }
         }
-
+        /// <summary>
+        /// 直接取出托盘号
+        /// </summary>
         private string _TakeOutTrayNumber = "";
         public string TakeOutTrayNumber
         {
             get { return _TakeOutTrayNumber; }
             set { _TakeOutTrayNumber = value; RaisePropertyChanged(); }
         }
-
+        /// <summary>
+        /// 直接存入托盘号
+        /// </summary>
         private string _TakeInTrayNumber = "";
         public string TakeInTrayNumber
         {
@@ -1565,6 +1586,7 @@ namespace wms.Client.ViewModel
                 ChangeColor("StraightInTrayCheck");
 
                 string CurrentRunningTray = this.TakeOutTrayNumber;
+
                 if (!int.TryParse(this.TakeOutTrayNumber, out int trayNumber))
                 {
                     Msg.Error("输入的托盘号格式不正确");
@@ -1578,13 +1600,6 @@ namespace wms.Client.ViewModel
                     return;
                 }
 
-                //GlobalData.IsFocus = false;
-                //if (String.IsNullOrEmpty(SelectTrayCode))
-                //{
-                //    GlobalData.IsFocus = true;
-                //    Msg.Warning("未选择执行托盘，请先选择一项！");
-                //    return;
-                //}
 
                 if (CurrentRunningTray != null)
                 {
@@ -1596,9 +1611,13 @@ namespace wms.Client.ViewModel
                     }
                 }
 
+                var trayEntity = WareHouseContract.Trays.Where(a => a.Code == TakeOutTrayNumber).FirstOrDefault();
+
+                var TrayId = trayEntity?.Id;
+
                 // 核查用户是否有此模块操作权限
                 var user = ServiceProvider.Instance.Get<IUserService>();
-                var authCheck = user.GetCheckTrayAuth(Convert.ToInt32(CurrentRunningTray));
+                var authCheck = user.GetCheckTrayAuth((int)TrayId);
                 if (!authCheck.Result.Success)
                 {
                     Msg.Warning("抱歉，您无操作该托盘权限！");
@@ -1791,18 +1810,6 @@ namespace wms.Client.ViewModel
             try
             {
                 ChangeColor("StraightOutTrayCheck");
-
-                //string cfgINIes = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
-                //if (File.Exists(cfgINIes))
-                //{
-                //    IniFile ini = new IniFile(cfgINIes);
-                //    TakeInTrayNumber = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
-                //}
-                //if (CurTratCode != SelectTrayCode && TakeInTrayNumber != SelectTrayCode)
-                //{
-                //    Msg.Warning("当前存入托盘号非已取出托盘，请核验后存入！");
-                //    return;
-                //}
 
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {

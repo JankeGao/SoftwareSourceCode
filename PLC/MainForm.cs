@@ -401,7 +401,7 @@ namespace PLCServer
             Command.RunningContainer runningContainer = new Command.RunningContainer();
             //runningContainer.ContainerCode = containerCode;
             runningContainer.TrayCode = number;
-            runningContainer.XLight = x;
+            runningContainer.XLight = (short)x;
             var result = _plcServer.StartRunningContainer(runningContainer);
             this.BeginInvoke(new Action(() => {
 

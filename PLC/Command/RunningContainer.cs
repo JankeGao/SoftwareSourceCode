@@ -19,7 +19,12 @@ namespace PLCServer.Command
         /// <summary>
         /// X轴灯号
         /// </summary>
-        public int XLight{ get; set; }
+        public short XLight{ get; set; }
+
+        /// <summary>
+        /// X轴灯号长度
+        /// </summary>
+        public short XLenght { get; set; }
 
         public string IpAddress { get; set; }
 

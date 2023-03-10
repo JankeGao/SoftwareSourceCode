@@ -1210,13 +1210,13 @@ namespace wms.Client.ViewModel
                 return;
             }
 
-            if (!int.TryParse(this.TakeOutLightX, out int lightX))
+            if (!short.TryParse(this.TakeOutLightX, out short lightX))
             {
                 //Msg.Error("输入的灯号格式不正确");
                 //return;
                 lightX = 0;
             }
-            if (!int.TryParse(this.TakeOutLightXLenght, out int lightXLenght))
+            if (!short.TryParse(this.TakeOutLightXLenght, out short lightXLenght))
             {
                 lightXLenght = 1;
             }
