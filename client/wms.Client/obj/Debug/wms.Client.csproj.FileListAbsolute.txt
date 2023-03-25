@@ -1116,3 +1116,5 @@ E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Clie
 E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Client\obj\Debug\wms.Client.csproj.CopyComplete
 E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Client\obj\Debug\wms.Client.exe
 E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Client\obj\Debug\wms.Client.pdb
+E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Client\obj\Debug\Template\AlarmConfirmationBox.baml
+E:\SoftwareSourceCodes\TestSoftwareSourceCode\SoftwareSourceCode\client\wms.Client\obj\Debug\Template\AlarmConfirmationBox.g.cs

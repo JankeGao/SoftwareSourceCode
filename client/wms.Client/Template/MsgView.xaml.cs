@@ -18,9 +18,5 @@ namespace wms.Client.Template
             InitializeComponent();
             Msg.Text = mess;
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-         
-        }
     }
 }

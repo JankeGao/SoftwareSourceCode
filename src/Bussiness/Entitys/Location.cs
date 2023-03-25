@@ -80,11 +80,13 @@ namespace Bussiness.Entitys
         /// 锁定物料
         /// </summary>
         public string LockMaterialCode { get; set; }
-
+        /// <summary>
+        /// 托盘号
+        /// </summary>
         [NotMapped]
         public string TrayCode { get; set; }
         /// <summary>
-        /// 
+        /// X轴灯号长度
         /// </summary>
         public int? XLenght { get; set; }
 

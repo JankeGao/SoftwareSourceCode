@@ -16,6 +16,8 @@ using wms.Client.LogicCore.Configuration;
 using wms.Client.LogicCore.Helpers.Files;
 using wms.Client.Service;
 using wms.Client.ViewModel.other.Common;
+using wms.Client.Template;
+using wms.Client.ViewModel;
 
 namespace wms.Client.Jobs.AlarmJob
 {
@@ -171,8 +173,8 @@ namespace wms.Client.Jobs.AlarmJob
                         //MessageBox.Show("设备发生报警:" + message + ",请复位！", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes
                         //  await Msg.Question("设备发生报警:" + message + ",请复位！") == true
 
-           
-                        if (this.ShowMessage("设备发生报警:" + message + ",请复位！")==MessageBoxResult.OK)
+                        MessageResult dr = ShowMessage("设备发生报警:" + message + ",请复位！");
+                        if (dr.IsYes)
                         {
                             try
                             {
@@ -253,12 +255,12 @@ namespace wms.Client.Jobs.AlarmJob
         }
 
 
-        public delegate MessageBoxResult MessageBoxShow(string msg);
+        public delegate MessageResult MessageBoxShow(string msg);
 
-        public MessageBoxResult ShowMessage(string msg)
+        public MessageResult ShowMessage(string msg)
         {
            // (MessageBoxResult)App.Current.Dispatcher.BeginInvoke(new MessageBoxShow(MessageBoxShow_F), new object[] { msg }).;
-           return (MessageBoxResult) App.Current.Dispatcher .Invoke(new MessageBoxShow(MessageBoxShow_F), new object[] { msg });
+           return (MessageResult) App.Current.Dispatcher .Invoke(new MessageBoxShow(MessageBoxShow_F), new object[] { msg });
 
             // return (MessageBoxResult)
             //App.Current.MainWindow.Dispatcher.Invoke(new Action(delegate
@@ -270,9 +272,12 @@ namespace wms.Client.Jobs.AlarmJob
             // MainWindow.
             //   Dispatcher.Invoke(new MessageBoxShow(MessageBoxShow_F), new object[] { msg });
         }
-        public MessageBoxResult MessageBoxShow_F(string msg)
+        public MessageResult MessageBoxShow_F(string msg)
         {
-            return MessageBox.Show(msg, "报警信息，请点确认！", MessageBoxButton.OK);
+            //MsgView msgView = new MsgView(msg);
+            //return msgView;
+            //return MessageBox.Show(msg, "报警信息，请点确认！", MessageBoxButton.OK);
+            return AlarmConfirmationBox.ShowDialog(msg);
         }
 
         /// <summary>

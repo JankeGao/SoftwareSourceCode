@@ -189,6 +189,9 @@
     <Reference Include="Microsoft.Toolkit, Version=6.0.0.0, Culture=neutral, PublicKeyToken=4aff67a105548ee2, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Toolkit.6.0.0\lib\netstandard2.0\Microsoft.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="MVVM">
+      <HintPath>..\packages\libs\MVVM.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>packages\MySql.Data.8.0.30\lib\net48\MySql.Data.dll</HintPath>
     </Reference>
@@ -429,6 +432,9 @@
     <Compile Include="Service\Service\MenuService.cs" />
     <Compile Include="Service\Service\UserService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Template\AlarmConfirmationBox.xaml.cs">
+      <DependentUpon>AlarmConfirmationBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Template\Converters\IsLastItemConverter.cs" />
     <Compile Include="Template\Converters\IsProgressedConverter.cs" />
     <Compile Include="Template\DataPager.cs" />
@@ -462,6 +468,7 @@
     <Compile Include="ViewDlg\ManualInDlg.cs" />
     <Compile Include="ViewDlg\BarCodeDlg.cs" />
     <Compile Include="ViewDlg\UserLoginDlg.cs" />
+    <Compile Include="ViewModel\AlarmConfirmationBoxViewModel.cs" />
     <Compile Include="ViewModel\ContainerSettingViewModel.cs" />
     <Compile Include="ViewModel\FaceInfoViewModel.cs" />
     <Compile Include="ViewModel\GuideModel.cs" />
@@ -665,6 +672,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Template\AlarmConfirmationBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Template\SetBarDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
