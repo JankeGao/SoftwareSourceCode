@@ -271,6 +271,7 @@
     <Compile Include="Services\CheckListServer.cs" />
     <Compile Include="Services\CheckServer.cs" />
     <Compile Include="Services\ContrainerRunServer.cs" />
+    <Compile Include="Services\CRRCDataContServer.cs" />
     <Compile Include="Services\CustomerServer.cs" />
     <Compile Include="Services\DeviceAlarmServer.cs" />
     <Compile Include="Services\DeviceInfoService.cs" />

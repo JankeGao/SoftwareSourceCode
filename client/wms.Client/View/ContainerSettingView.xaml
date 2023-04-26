@@ -389,7 +389,14 @@
                                 </TextBox>
                                 <Button  Width="100" Height="40"  Command="{Binding TakeInNextCommand}" IsEnabled="{Binding TakeInNextEnable}" Content="存入" Margin="10,10" Cursor="Hand" />
                             </StackPanel>
+                            
                         </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <Button x:Name="btn_Verification"  Width="100" Height="40" Content="验证弹窗" Margin="0" Cursor="Hand" Click="btn_Verification_Click" />
+                        </StackPanel>
+                        <StackPanel>
+                            
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>

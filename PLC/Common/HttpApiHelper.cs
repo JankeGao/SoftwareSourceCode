@@ -652,7 +652,7 @@ namespace PLCServer.Common
             client.BaseAddress = new Uri(url);
 
             client.Timeout = TimeSpan.FromSeconds(510);
-            string result = "";
+            //string result = "";
             if (type.ToLower() == "put")
             {
                 HttpResponseMessage response;
@@ -723,7 +723,7 @@ namespace PLCServer.Common
             {
                 return null;
             }
-            return null;
+            //return null;
         }
         /// <summary>
         /// 向货架发送命令

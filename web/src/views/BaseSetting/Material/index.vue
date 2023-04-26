@@ -75,10 +75,10 @@
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-row :gutter="20">
                   <el-col :span="6">
-                    <el-form-item label="$t('basicInformation.firstInFirstOut')">
+                    <el-form-item :label="$t('basicInformation.firstInFirstOut')">
                       <span>{{ props.row.FIFOTypeCaption }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.batchesOfMaterial')">
+                    <el-form-item :label="$t('basicInformation.batchesOfMaterial')">
                       <el-switch
                         v-model="props.row.IsBatch"
                         active-color="#13ce66"
@@ -86,7 +86,7 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.storeLocked')">
+                    <el-form-item :label="$t('basicInformation.storeLocked')">
                       <el-switch
                         v-model="props.row.IsNeedBlock"
                         active-color="#13ce66"
@@ -94,7 +94,7 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.whetherTheMixedBatchOf')">
+                    <el-form-item :label="$t('basicInformation.whetherTheMixedBatchOf')">
                       <el-switch
                         v-model="props.row.IsMaxBatch"
                         active-color="#13ce66"
@@ -104,13 +104,13 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
-                    <el-form-item label="$t('basicInformation.expiryDate')">
+                    <el-form-item :label="$t('basicInformation.expiryDate')">
                       <span>{{ props.row.ValidityPeriod }} {{ $t('basicInformation.day') }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.agingTime')">
+                    <el-form-item :label="$t('basicInformation.agingTime')">
                       <span>{{ props.row.AgeingPeriod }} {{ $t('basicInformation.day') }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.singlePackageBarCode')">
+                    <el-form-item :label="$t('basicInformation.singlePackageBarCode')">
                       <el-switch
                         v-model="props.row.IsPackage"
                         active-color="#13ce66"
@@ -118,21 +118,21 @@
                         disabled
                       />
                     </el-form-item>
-                    <el-form-item label="$t('basicInformation.singlePackageNumber')">
+                    <el-form-item :label="$t('basicInformation.singlePackageNumber')">
                       <span>{{ props.row.PackageQuantity }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="6">
-                    <el-form-item label="$t('equipmentManagement.forAVehicle')">
+                    <el-form-item :label="$t('equipmentManagement.forAVehicle')">
                       <span>{{ props.row.BoxCode }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('headerInformation.vehicleName')">
+                    <el-form-item :label="$t('headerInformation.vehicleName')">
                       <span>{{ props.row.BoxName }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('equipmentManagement.maximumStorage')">
+                    <el-form-item :label="$t('basicInformation.maximumStorage')">
                       <span>{{ props.row.BoxCount }}</span>
                     </el-form-item>
-                    <el-form-item label="$t('equipmentManagement.costCenter')">
+                    <el-form-item :label="$t('basicInformation.costCenter')">
                       <span>{{ props.row.CostCenter }}</span>
                     </el-form-item>
                   </el-col>
@@ -311,7 +311,7 @@
                     v-model="Material.UnitWeight"
                     class="dialog-input"
                     type="text"
-                    onkeyup="value=value.replace(/[^\d]/g,'')"
+                    onkeyup="value=value.replace(/[^\d.]/g,'').replace(/^(\d*\.\d{0,2}).*$/g, '$1')"
                     :placeholder="$t('basicInformation.pleaseEnterUnitWeight') "
                   />
                 </el-form-item>
@@ -1112,7 +1112,7 @@ export default {
         label: this.$t('basicTips.material')
       }, {
         value: 1,
-        label: this.$t('basicTips.Mould')
+        label: this.$t('basicTips.mould')
       }],
       // 先进先出枚举
       options: [{
@@ -1123,7 +1123,7 @@ export default {
         label: this.$t('historicalWarehousing.warehousingTime')
       }, {
         value: '2',
-        label: this.$t('headerInformation.headerInformation')
+        label: this.$t('headerInformation.dateOfManufacture')
       }, {
         value: '3',
         label: this.$t('basicTips.shelfLifeOfInventory')

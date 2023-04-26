@@ -40,7 +40,8 @@ namespace wms.Client.LogicCore.Common
         /// </summary>
         /// <param name="msg"></param>
         public static async void Error(string ex, bool Host = false)
-        {await Show(Notify.Error, ex, Host);
+        {
+            await Show(Notify.Error, ex, Host);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace wms.Client.LogicCore.Common
         /// <param name="notify">类型</param>
         /// <param name="msg">文本信息</param>
         /// <returns></returns>
-        private static async Task<bool> Show(Notify notify, string msg, bool Host = false)
+        public static async Task<bool> Show(Notify notify, string msg, bool Host = false)
         {
             string Icon = string.Empty;
             string Color = string.Empty;

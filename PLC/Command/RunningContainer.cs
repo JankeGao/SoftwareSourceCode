@@ -38,5 +38,10 @@ namespace PLCServer.Command
         /// 上一次运转货柜
         /// </summary>
         public string LastTrayCode { get; set; }
+
+        /// <summary>
+        /// 物料单重
+        /// </summary>
+        public decimal UnitWeight { get; set; }
     }
 }

@@ -100,6 +100,18 @@ namespace DF.Web.Areas.BussinessApi.Controllers
         {
             return Request.CreateResponse(HttpStatusCode.OK, ContrainerRunContract.GetAlarmInformation(entity).ToMvcJson());
         }
+        /// <summary>
+        /// 扫描传递物料单重
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [LogFilter(Type = LogType.Operate, Name = "获取报警信息")]
+        public HttpResponseMessage StartScanBarcodeKeyDown([FromUri] RunningContainer entity)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, ContrainerRunContract.StartScanBarcodeKeyDown(entity).ToMvcJson());
+        }
+
     }
 }
 

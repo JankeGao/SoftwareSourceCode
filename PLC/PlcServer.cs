@@ -114,47 +114,95 @@ namespace PLCServer
         {
             retry_th.Suspend();//挂起线程
         }
+
         /// <summary>
         /// 点击扫描按钮
         /// </summary>
-        /// <param name="runningContainer"></param>
-        /// <returns></returns>
-        //public DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer)
-        //{
-        //    try
-        //    {
-        //        var M65111Result = melsec_net.ReadBool("M651");
-        //        if (M65111Result.IsSuccess)
-        //        {
-        //            if (M65111Result.Content == true)
-        //            {
-        //                return DataProcess.Failure("取出动作尚未结束");
-        //            }
-        //        }
-        //        var M654Result = melsec_net.ReadBool("M654");
-        //        if (M654Result.IsSuccess)
-        //        {
-        //            if (M654Result.Content == true)
-        //            {
-        //                return DataProcess.Failure("存入动作尚未结束");
-        //            }
-        //        }
-        //        var M900Result = melsec_net.ReadBool("M900");
-        //        if (M900Result.IsSuccess)
-        //        {
-        //            if (M900Result.Content == true)
-        //            {
-        //                return DataProcess.Failure("更换托盘动作尚未结束");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception EX)
-        //    {
+        /// <param name = "runningContainer" >货柜信息</ param >
+        /// < returns ></ returns >
+        public DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer)
+        {
+            if (isConnected || runningContainer.ContainerType == 1 || runningContainer.ContainerType == 2)
+            {
+                int SignalDelay = 200;
+                if (runningContainer.ContainerType == 3)
+                {
+                    try
+                    {
+                        var M65111Result = melsec_net.ReadBool("M651");
+                        if (M65111Result.IsSuccess)
+                        {
+                            if (M65111Result.Content == true)
+                            {
+                                return DataProcess.Failure("取出动作尚未结束");
+                            }
+                        }
+                        var M654Result = melsec_net.ReadBool("M654");
+                        if (M654Result.IsSuccess)
+                        {
+                            if (M654Result.Content == true)
+                            {
+                                return DataProcess.Failure("存入动作尚未结束");
+                            }
+                        }
+                        var M900Result = melsec_net.ReadBool("M900");
+                        if (M900Result.IsSuccess)
+                        {
+                            if (M900Result.Content == true)
+                            {
+                                return DataProcess.Failure("更换托盘动作尚未结束");
+                            }
+                        }
+                        var UnitWeightResult = melsec_net.Write("D192", (float)runningContainer.UnitWeight);
+                        if (!UnitWeightResult.IsSuccess)
+                        {
+                            return DataProcess.Failure("物料单重传值未成功");
+                        }
 
-        //        return DataProcess.Failure(EX.Message);
-        //    }
-        //    return DataProcess.Success();
-        //}
+                        Thread.Sleep(SignalDelay);
+
+                    }
+                    catch (Exception EX)
+                    {
+                        return DataProcess.Failure(EX.Message);
+                    }
+                }
+                else if (runningContainer.ContainerType == 1)
+                {
+                    return StartRunningC3000Container(runningContainer);
+                }
+                else if (runningContainer.ContainerType == 2)
+                {
+                    return StartRunningHanelContainer(runningContainer);
+                }
+            }
+            else
+            {
+                return DataProcess.Failure("PLC未连接");
+            }
+
+            return DataProcess.Success();
+        }
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        /// <returns></returns>
+        public DataResult GetBackWeighingQuantity()
+        {
+            if (isConnected)
+            {
+                var ReturnQuantityResult = melsec_net.ReadUInt16("D196");
+                if (!ReturnQuantityResult.IsSuccess)
+                {
+                    return DataProcess.Failure("获取物料称重数量未成功");
+                }
+                return DataProcess.Success(ReturnQuantityResult.Content);
+            }
+            // 如果未连接，则返回失败状态的DataResult对象
+            return DataProcess.Failure("PLC未连接");
+
+        }
 
         /// <summary>
         ///启动货柜逻辑-自动运行
@@ -1174,7 +1222,7 @@ namespace PLCServer
                     }
                     else
                     {
-                        return DataProcess.Failure("PCL无报警");
+                        return DataProcess.Failure("PLC无报警");
                     }
                 }
                 else

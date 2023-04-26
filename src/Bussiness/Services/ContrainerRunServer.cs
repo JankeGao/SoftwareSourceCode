@@ -262,6 +262,47 @@ namespace Bussiness.Services
             }
             return resultData;
         }
+        /// <summary>
+        /// 扫描传递物料单重-Post
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public DataResult StartScanBarcodeKeyDown(RunningContainer entity)
+        {
+            DataResult vresult = Validate(entity);
+            if (!vresult.Success) return vresult;
+
+            DataResult resultData = new DataResult();
+            var container = WareHouseContract.Containers.FirstOrDefault(a => a.Code == entity.ContainerCode);
+
+            // 报警复位
+            var url = "http://" + container.Ip + ":" + container.Port + "/" + "StartScanBarcodeKeyDown";
+            string result = "";
+            //将实时数据转发到一级平台
+            HttpWebRequest wbRequest = (HttpWebRequest)WebRequest.Create(url);
+            wbRequest.Method = "POST";
+            wbRequest.ContentType = "application/x-www-form-urlencoded";
+
+            try
+            {
+                using (Stream requestStream = wbRequest.GetRequestStream())
+                {
+
+                }
+                HttpWebResponse wbResponse = (HttpWebResponse)wbRequest.GetResponse();
+                Stream stream = wbResponse.GetResponseStream();
+                //获取响应内容
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    result = reader.ReadToEnd();
+                }
+                resultData = JsonConvert.DeserializeObject<DataResult>(result);
+            }
+            catch (Exception e)
+            {
+            }
+            return resultData;
+        }
 
         /// <summary>
         /// 验证数据合法性

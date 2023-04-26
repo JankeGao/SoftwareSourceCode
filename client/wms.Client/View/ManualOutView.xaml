@@ -11,7 +11,7 @@
              xmlns:converter="clr-namespace:wms.Client.UiCore.Converter"
              xmlns:validationRules="clr-namespace:wms.Client.UiCore.ValidationRules"
              xmlns:service="clr-namespace:wms.Client.Service"
-             xmlns:controls="clr-namespace:SearchableTextBox;assembly=SearchableTextBox"
+             xmlns:controls="clr-namespace:SearchableTextBox;assembly=SearchableTextBox" xmlns:viewmodel="clr-namespace:wms.Client.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ManualOutViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Background="LightSkyBlue">
     <UserControl.Resources>
@@ -380,7 +380,36 @@
                             Width="120"
                             Text="{Binding Remark,Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="18" Visibility="Collapsed" />
+                    </StackPanel>
+                    <StackPanel Margin="5 0 0 0">
+                        <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center"
+                            materialDesign:HintAssist.Hint="单重(g)"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="60"
+                            Text="{Binding UnitWeight,Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             FontSize="18" />
+                    </StackPanel>
+
+                    <StackPanel Margin="5 0 0 0">
+                        <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="数量"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="60"
+                            Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="18" IsEnabled="False" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Button VerticalAlignment="Center" 
+                            HorizontalAlignment="Center"  Width="60" Margin="5 20 0 0" Command="{Binding SynchronousQuantityCommand}" Content="同步" IsEnabled="{Binding IsWeighingQuantity}" />
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Margin="10 22 10 0"

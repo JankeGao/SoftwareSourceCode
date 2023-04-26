@@ -10,13 +10,22 @@ namespace PLCServer
     public interface IPlcServer
     {
         /// <summary>
-        /// 扫描
+        /// 扫描传递物料单重
         /// </summary>
-        /// <param name="ScanBarcodeKeyDown"></param>
+        /// <param name="runningContainer"></param>
         /// <returns></returns>
-        //[OperationContract]
-        //[WebInvoke(Method = "POST", UriTemplate = "StartScanBarcodeKeyDown", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
-        //DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer);
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "StartScanBarcodeKeyDown", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult StartScanBarcodeKeyDown(Command.RunningContainer runningContainer);
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "GetBackWeighingQuantity", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult GetBackWeighingQuantity();
+
         /// <summary>
         /// 货柜自动运行
         /// </summary>

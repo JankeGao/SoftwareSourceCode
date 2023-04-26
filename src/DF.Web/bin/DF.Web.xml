@@ -859,6 +859,13 @@
             <param name="entity"></param>
             <returns></returns>
         </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.ContrainerRunController.StartScanBarcodeKeyDown(Bussiness.Entitys.RunningContainer)">
+            <summary>
+            扫描传递物料单重
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="P:DF.Web.Areas.BussinessApi.Controllers.CustomerController.CustomerContract">
             <summary>
             客户信息
@@ -1358,10 +1365,30 @@
             <param name="entity"></param>
             <returns></returns>
         </member>
+        <member name="T:DF.Web.Areas.BussinessApi.Controllers.InTaskController">
+            <summary>
+            入库任务管理
+            </summary>
+        </member>
         <member name="P:DF.Web.Areas.BussinessApi.Controllers.InTaskController.InTaskContract">
             <summary>
             入库数据库操作
             </summary>
+        </member>
+        <member name="P:DF.Web.Areas.BussinessApi.Controllers.InTaskController.MaterialContract">
+            <summary>
+            物料管理接口
+            </summary>
+        </member>
+        <member name="P:DF.Web.Areas.BussinessApi.Controllers.InTaskController.WareHouseContract">
+            <summary>
+            仓库管理接口
+            </summary>
+        </member>
+        <member name="P:DF.Web.Areas.BussinessApi.Controllers.InTaskController.SupplyContract">
+             <summary>
+            供应商管理接口
+             </summary>
         </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.InTaskController.GetPageRecords(HP.Web.Mvc.Pagination.MvcPageCondition)">
             <summary>
@@ -1383,11 +1410,24 @@
             <param name="inTaskCode"></param>
             <returns></returns>
         </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.InTaskController.GetMaterialList(System.String)">
+            <summary>
+            获取物料信息
+            </summary>
+            <param name="KeyValue"></param>
+            <returns></returns>
+        </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.InTaskController.PostDoCreate(Bussiness.Entitys.In)">
             <summary>
             创建入库任务
             </summary>
             <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.InTaskController.GetWareHouseList">
+            <summary>
+            获取仓库信息
+            </summary>
             <returns></returns>
         </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.InTaskController.PostDoDelete(Bussiness.Entitys.InTask)">
@@ -1455,9 +1495,30 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.InController.PostDoCreate(Bussiness.Entitys.In)">
+            <summary>
+            创建入库单
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.InController.GetInterfaceIn">
             <summary>
             接口同步入库单
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.InController.PostDoDelete(Bussiness.Entitys.In)">
+            <summary>
+            删除入库单
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.InController.PostDoUpdate(Bussiness.Entitys.In)">
+            <summary>
+            编辑入库单
             </summary>
             <param name="entity"></param>
             <returns></returns>

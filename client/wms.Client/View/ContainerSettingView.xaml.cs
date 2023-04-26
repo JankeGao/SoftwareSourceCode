@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using wms.Client.Template;
 
 namespace wms.Client.View
 {
@@ -52,6 +54,12 @@ namespace wms.Client.View
         private void btn_RemoveItem(object sender, RoutedEventArgs e)
         {
             list.RemoveAt(0);
+        }
+
+        private void btn_Verification_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.OnTimerElapsed(sender, null);
         }
     }
 }

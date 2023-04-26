@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Bussiness.Contracts;
@@ -57,7 +58,7 @@ namespace Bussiness.Services
             .LeftJoin(WareHouseContract.WareHouses, (inMaterial, material, ins, warehouse) => ins.WareHouseCode == warehouse.Code)
             .LeftJoin(SupplyContract.Supplys, (inMaterial, material, ins, warehouse,supply)=> inMaterial.SupplierCode==supply.Code)
             .Select((inMaterial, material, ins, warehouse, supply) => new Dtos.InMaterialDto
-        {
+            {
             Id = inMaterial.Id,
             InCode = inMaterial.InCode,
             MaterialCode = inMaterial.MaterialCode,
@@ -138,6 +139,72 @@ namespace Bussiness.Services
         /// <param name="entity"></param>
         public DataResult CreateInEntityInterFace()
         {
+
+            var connectionString = "Data Source=DESKTOP-71I0RDA;Initial Catalog=SMDB;User ID=sa;Password=123456";
+            var query = "SELECT * FROM View_ConnectionTest";
+            using (var connection = new SqlConnection(connectionString))
+            {
+                var command = new SqlCommand(query, connection);
+                connection.Open();
+                var reader = command.ExecuteReader();
+                var resultList = new List<Dictionary<string, object>>();
+                while (reader.Read())
+                {
+                    var row = new Dictionary<string, object>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        row.Add(reader.GetName(i), reader.GetValue(i));
+                    }
+                    resultList.Add(row);
+                }
+                reader.Close();
+
+                List<In> inList = new List<In>();
+                foreach (var dict in resultList)
+                {
+                    In inEnity = new In
+                    {
+                        Id = 0,
+                        BillCode = "",
+                        Code = "",
+                        Remark = "",
+                        WareHouseCode = dict["WareHouseCode"].ToString(),
+                        AddMaterial = new List<InMaterial>(),
+
+
+                    };
+
+
+                    InMaterial inMaterialObj = new InMaterial
+                    {
+                        Id = (int)dict["Id"],
+                        MaterialCode = dict["MaterialCode"].ToString(),
+                        Quantity = (decimal)dict["Quantity"],
+                        ManufactrueDate = (DateTime?)dict["ManufactrueDate"],
+
+
+                        Status = 0,
+                        RealInQuantity = 0,
+
+                        BatchCode = "",
+
+                    };
+                    
+                    inEnity.AddMaterial.Add(inMaterialObj);
+                    inList.Add(inEnity);
+                    InRepository.Insert(inList);
+
+                }
+
+                
+                InServer inServer = new InServer();
+                foreach (var inEntity in inList)
+                {
+                    inServer.CreateInEntity(inEntity);
+                }
+
+            }
+
             try
             {
                 InIFRepository.UnitOfWork.TransactionEnabled = true;
@@ -518,7 +585,7 @@ namespace Bussiness.Services
         }
 
         /// <summary>
-        /// 
+        /// 强制中止
         /// </summary>
         /// <param name="entityDto"></param>
         /// <returns></returns>

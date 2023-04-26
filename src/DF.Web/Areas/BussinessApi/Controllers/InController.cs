@@ -91,7 +91,11 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, aa.ToMvcJson());
             return response;
         }
-
+        /// <summary>
+        /// 创建入库单
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "创建入库单")]
         [HttpPost]
         public HttpResponseMessage PostDoCreate(Bussiness.Entitys.In entity)
@@ -120,7 +124,11 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             return response;
         }
 
-
+        /// <summary>
+        /// 删除入库单
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "删除入库单")]
         [HttpPost]
         public HttpResponseMessage PostDoDelete(Bussiness.Entitys.In entity)
@@ -128,7 +136,11 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, InContract.RemoveIn(entity.Id).ToMvcJson());
             return response;
         }
-
+        /// <summary>
+        /// 编辑入库单
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "编辑入库单")]
         [HttpPost]
         public HttpResponseMessage PostDoUpdate(Bussiness.Entitys.In entity)

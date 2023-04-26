@@ -108,6 +108,7 @@ namespace wms.Client.ViewModel
             ScanBarcodeCommand = new RelayCommand<string>(ScanBarcode);
             StraightOutTrayCommand = new RelayCommand(StraightOutTray);
             StraightInTrayCommand = new RelayCommand(StraightInTray);
+            SynchronousQuantityCommand = new RelayCommand(SynchronousQuantity);
             HandShelfCommand = new RelayCommand (HandShelf);
             PrintItemCommand = new RelayCommand<OutTaskMaterialLabelDto>(PrintItem);
             RunningCommand = new RelayCommand(RunningContainer);
@@ -141,6 +142,16 @@ namespace wms.Client.ViewModel
         {
             get { return _IsCancel; }
             set { _IsCancel = value; RaisePropertyChanged(); }
+        }
+
+        private bool _isWeighingQuantity = false;
+        /// <summary>
+        /// 同步数量按钮是否可用
+        /// </summary>
+        public bool IsWeighingQuantity
+        {
+            get { return _isWeighingQuantity; }
+            set { _isWeighingQuantity = value; RaisePropertyChanged(); }
         }
 
         public ObservableCollection<SearchModel> SearchItemsSourceCollection { get; set; }
@@ -178,13 +189,26 @@ namespace wms.Client.ViewModel
             set { inWeight = value; RaisePropertyChanged(); }
         }
 
-
+        /// <summary>
+        /// 物料单重
+        /// </summary>
         private decimal unitWeight = 0;
         public decimal UnitWeight
         {
             get { return unitWeight; }
             set { unitWeight = value; RaisePropertyChanged(); }
         }
+
+        /// <summary>
+        /// 物料称重数量
+        /// </summary>
+        private decimal weighingQuantity = 0;
+        public decimal WeighingQuantity
+        {
+            get { return weighingQuantity; }
+            set { weighingQuantity = value; RaisePropertyChanged(); }
+        }
+
         private bool isCheckUnitWeight = false;
         public bool IsCheckUnitWeight
         {
@@ -405,6 +429,7 @@ namespace wms.Client.ViewModel
         /// </summary>
         public RelayCommand StraightOutTrayCommand { get; private set; }
         public RelayCommand StraightInTrayCommand { get; private set; }
+        public RelayCommand SynchronousQuantityCommand { get; private set; }
 
 
 
@@ -1060,6 +1085,130 @@ namespace wms.Client.ViewModel
             }
         }
 
+        /// <summary>
+        /// 扫描传递物料单重
+        /// </summary>
+        public async void TransferWeight()
+        {
+            try
+            {
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Warning("货柜PLC离线状态，无法传递物料单重！");
+                    return;
+                }
+                // 读取PLC 状态信息
+                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                var runingEntity = new RunningContainer()
+                {
+                    ContainerCode = ContainerCode,
+                    UnitWeight = UnitWeight
+                };
+                var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                if (container != null)
+                {
+                    runingEntity.ContainerType = container.ContainerType;
+                    runingEntity.IpAddress = container.Ip;
+                    runingEntity.Port = int.Parse(container.Port);
+                }
+
+                // 向货柜PLC传递物料单重
+                var runningContainer = baseControlService.PostStartScanBarcodeKeyDown(runingEntity);
+                if (runningContainer.Result.Success)
+                {
+                    //unitWeight = runingEntity.UnitWeight;
+                    //TakeInTrayNumber = runingEntity.TrayCode.ToString();
+                }
+                else
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Error(runningContainer.Result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                Msg.Error(ex.Message); ;
+            }
+        }
+
+        /// <summary>
+        /// 每隔200毫秒触发一次物料称重刷新
+        /// </summary>
+        /// <returns></returns>
+        public async Task StartGetWeighingQuantity()
+        {
+            while (true)
+            {
+                if (String.IsNullOrEmpty(SearchBarcode))
+                {
+                    return;
+                }
+                GetWeighingQuantity();
+                if (isAlarmRaised || WeighingQuantity == 0)
+                {
+                    return;
+                }
+                await Task.Delay(200);
+            }
+        }
+
+        private static bool isAlarmRaised = false;
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        public async void GetWeighingQuantity()
+        {
+
+            try
+            {
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Warning("货柜PLC离线状态，无法传递物料单重！");
+                    isAlarmRaised = true;
+                    return;
+                }
+                // 读取PLC 状态信息
+                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                // 返回当前称重物料数量
+                var weightResult = await baseControlService.GetBackWeighingQuantity();
+                if (weightResult.Success)
+                {
+                    WeighingQuantity = decimal.Parse(weightResult.Data.ToString());
+                    if (weighingQuantity > 0)
+                    {
+                        OutQuantity = weighingQuantity;
+                        IsWeighingQuantity = true;
+                    }
+                    else
+                    {
+                        IsWeighingQuantity = false;
+                    }
+                }
+                else
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Error(weightResult.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Msg.Error(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 同步物料数量
+        /// </summary>
+        public void SynchronousQuantity()
+        {
+            OutQuantity = WeighingQuantity;
+        }
 
         /// <summary>
         /// 扫描出库条码
@@ -1071,6 +1220,7 @@ namespace wms.Client.ViewModel
                 ChangeColor("Scan");
                 // 清空料盒提示
                 IsMoreThanTwo = "Hidden";
+                OutQuantity = 1;
 
                 if (String.IsNullOrEmpty(SearchBarcode))
                 {
@@ -1112,6 +1262,7 @@ namespace wms.Client.ViewModel
                         if (stock == null)
                         {
                             Msg.Warning("该出库物料无库存！");
+                            isAlarmRaised = true;
                             return;
                         }
                         LabelEntity.MaterialCode = stock.MaterialCode;
@@ -1124,7 +1275,6 @@ namespace wms.Client.ViewModel
                         {
                             UnitWeight = materialEntity.UnitWeight;
                         }
-                        
                         // OutQuantity = stock.Quantity - stock.LockedQuantity;
                     }
                     else
@@ -1146,11 +1296,13 @@ namespace wms.Client.ViewModel
                         {
                             Clear();
                             Msg.Warning("未获取到条码信息!");
+                            isAlarmRaised = true;
                             return;
                         }
                     }
-
                     SelectMaterial();
+                    TransferWeight();
+                    await StartGetWeighingQuantity();
                 }
                 else // 如果是物料条码
                 {
@@ -1158,12 +1310,14 @@ namespace wms.Client.ViewModel
                     if (SelectMaterialCode != labelEnity.MaterialCode)
                     {
                         Msg.Warning("扫描的物料与待出库物料不同，请核验");
+                        isAlarmRaised = true;
                         return;
                     }
                     //本次出库数量-需要核验
                     if (SelectBatchCode != labelEnity.BatchCode)
                     {
                         Msg.Warning("扫描的物料的批次与待出库物料批次不同，请核验");
+                        isAlarmRaised = true;
                         return;
                     }
                     // 查找该储位的库存
@@ -1173,6 +1327,7 @@ namespace wms.Client.ViewModel
                     if (SelectLocationCode != stock.LocationCode)
                     {
                         Msg.Warning("扫描的物料的不在此储位，请核验");
+                        isAlarmRaised = true;
                         return;
                     }
                     LabelEntity.LabelCode = labelEnity.Code;
@@ -1184,7 +1339,17 @@ namespace wms.Client.ViewModel
                     LabelEntity.MaterialUrl = _basePath + labelEnity.MaterialUrl;
                     // 本次出库数量
                     OutQuantity = labelEnity.Quantity;
+                    var material = MaterialContract.Materials.FirstOrDefault(a => a.Code == labelEnity.MaterialCode);
+                    if (material == null)
+                    {
+                        Msg.Warning("该储位未维护存放物料，请扫描物料信息！");
+                        isAlarmRaised = true;
+                        return;
+                    }
+                    UnitWeight = material.UnitWeight;
                     SelectMaterial();
+                    TransferWeight();
+                    await StartGetWeighingQuantity();
                 }
             }
             catch (Exception ex)
@@ -1260,6 +1425,7 @@ namespace wms.Client.ViewModel
                     if (AviStockList.Count == 0)
                     {
                         Msg.Warning("您暂无操作该物料权限或无可出库库存");
+                        isAlarmRaised = true;
                         return;
                     }
 
@@ -1288,11 +1454,12 @@ namespace wms.Client.ViewModel
                         var dialog = ServiceProvider.Instance.Get<IShowContent>();
                         dialog.BindDataContext(new UserLoginWindow(), new UserLoginModel());
                         // 系统登录
-                        dialog.Show();
+                        await dialog.Show();
                     }
                     else
                     {
                         Msg.Error("获取可存放托盘失败：" + outTask.Result.Message);
+                        isAlarmRaised = true;
                     }
                 }
 

@@ -72,12 +72,24 @@ namespace wms.Client.Service.Service
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        //public async Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model)
-        //{
-        //    BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
-        //    var r = await baseService.GetRequest<DataResult>(new EmergencyDoorSettingRequest(), RestSharp.Method.POST);
-        //    return r;
-        //}
+        public async Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model)
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            var r = await baseService.GetRequest<DataResult>(new StartScanBarcodeKeyDownRequest(), model, RestSharp.Method.POST);
+            return r;
+        }
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        /// <returns></returns>
+        public async Task<DataResult> GetBackWeighingQuantity()
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            var r = await baseService.GetRequest<DataResult>(new GetBackWeighingQuantityRequest(), RestSharp.Method.GET);
+            return r;
+        }
+
         /// <summary>
         /// 控制货柜运转
         /// </summary>
@@ -102,47 +114,6 @@ namespace wms.Client.Service.Service
                     if (trayNumber != model.TrayCode)
                     {
                         model.LastTrayCode = CurrentRunningTray;
-                        //if (!IsTakeIn && model.ContainerType == 3)//先存入
-                        //{
-                        //    var container = new RunningContainer();
-                        //    container.ContainerCode = model.ContainerCode;
-                        //    container.ContainerType = model.ContainerType;
-                        //    container.IpAddress = model.IpAddress;
-                        //    container.LastTrayCode = model.LastTrayCode;
-                        //    container.TrayCode = Convert.ToInt32(CurrentRunningTray);
-                        //    container.XLight = model.XLight;
-                        //    container.Port = model.Port;
-                        //    var inResult = await PostStartRestoreContainer(container);
-                        //    if (!inResult.Success)
-                        //    {
-                        //        return inResult;
-                        //    }
-                        //    else //成功后监听M654 
-                        //    {
-                        //        bool IsAllIn = false;
-                        //        while (!IsAllIn)
-                        //        {
-                        //            var M654Result = await baseService.GetRequest<DataResult>(new SetM654TrueRequest(),RestSharp.Method.GET);
-                        //            if (M654Result.Success)
-                        //            {
-                        //                var data = Convert.ToBoolean(M654Result.Data);
-                        //                if (!data)
-                        //                {
-                        //                    IsAllIn = true;
-                        //                }
-                        //            }
-
-                        //            Thread.Sleep(2000);
-                                   
-                        //        }
-
-                        //        if (System.IO.File.Exists(cfgINI))
-                        //        {
-                        //            wms.Client.LogicCore.Helpers.Files.IniFile ini = new wms.Client.LogicCore.Helpers.Files.IniFile(cfgINI);
-                        //            ini.IniWriteValue("ClientInfo", "IsTakeIn", "True");
-                        //        }
-                        //    }
-                        //}
                     }
                 }
             }

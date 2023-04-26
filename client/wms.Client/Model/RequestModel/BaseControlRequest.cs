@@ -25,6 +25,20 @@ namespace wms.Client.Model.RequestModel
     {
         public override string route { get => DeviceIP + "ResetAlarm"; }
     }
+    /// <summary>
+    /// 扫描按钮
+    /// </summary>
+    public class StartScanBarcodeKeyDownRequest : BaseRequest
+    {
+        public override string route { get => DeviceIP + "StartScanBarcodeKeyDown"; }
+    }
+    /// <summary>
+    /// 返回当前称重物料数量
+    /// </summary>
+    public class GetBackWeighingQuantityRequest : BaseRequest
+    {
+        public override string route { get => DeviceIP + "GetBackWeighingQuantity"; }
+    }
 
     /// <summary>
     /// 控制货柜运转

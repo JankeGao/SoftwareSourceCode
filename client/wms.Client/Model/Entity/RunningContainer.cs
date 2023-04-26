@@ -31,7 +31,14 @@ namespace wms.Client.Model.Entity
         /// 上一次运转货柜
         /// </summary>
         public string LastTrayCode { get; set; }
-
+        /// <summary>
+        /// 亮灯长度
+        /// </summary>
         public int XLenght { get; set; }
+
+        /// <summary>
+        /// 物料单重
+        /// </summary>
+        public decimal UnitWeight { get; set; }
     }
 }

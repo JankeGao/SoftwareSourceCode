@@ -14,6 +14,9 @@ using HP.Web.Mvc.Pagination;
 
 namespace DF.Web.Areas.BussinessApi.Controllers
 {
+    /// <summary>
+    /// 入库任务管理
+    /// </summary>
     [Description("入库任务管理")]
     public class InTaskController : BaseApiController
     {
@@ -21,10 +24,18 @@ namespace DF.Web.Areas.BussinessApi.Controllers
         /// 入库数据库操作
         /// </summary>
         public Bussiness.Contracts.IInTaskContract InTaskContract { set; get; }
+        /// <summary>
+        /// 物料管理接口
+        /// </summary>
         public Bussiness.Contracts.IMaterialContract MaterialContract { set; get; }
-
+        /// <summary>
+        /// 仓库管理接口
+        /// </summary>
         public Bussiness.Contracts.IWareHouseContract WareHouseContract { set; get; }
-        // 供应商管理接口
+        
+        /// <summary>
+        ///供应商管理接口
+        /// </summary>
         public Bussiness.Contracts.ISupplyContract SupplyContract { set; get; }
 
 
@@ -95,7 +106,11 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             return response;
         }
 
-
+        /// <summary>
+        /// 获取物料信息
+        /// </summary>
+        /// <param name="KeyValue"></param>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "获取物料信息")]
         [HttpGet]
         public HttpResponseMessage GetMaterialList(string KeyValue)
@@ -119,6 +134,10 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             return response;
         }
 
+        /// <summary>
+        /// 获取仓库信息
+        /// </summary>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "获取仓库信息")]
         [HttpGet]
         public HttpResponseMessage GetWareHouseList()

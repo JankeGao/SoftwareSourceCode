@@ -1,13 +1,18 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interactivity;
 using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
 using wms.Client.LogicCore.Configuration;
 using wms.Client.LogicCore.Enums;
 using wms.Client.LogicCore.Helpers.Files;
 using wms.Client.Service;
+using wms.Client.Template;
 using wms.Client.ViewModel;
 
 namespace wms.Client
@@ -17,7 +22,14 @@ namespace wms.Client
     /// </summary>
     public partial class MainWindow : Window
     {
-         DispatcherTimer dTimer;
+        DispatcherTimer dTimer;
+
+        // 定义定时器
+        private Timer _timer;
+        // 第一次触发弹窗的起始计算时间
+        private DateTime _lastDismissTime;
+        
+
         public MainWindow()
         {
             InitializeComponent(); 
@@ -29,7 +41,61 @@ namespace wms.Client
             EventManager.RegisterClassHandler(typeof(Button), Button.ClickEvent, new RoutedEventHandler(UpdataText));
 
             method = new MessageBoxShow(showMessage);
+
+            this.ReadConfigInfo();
+            // 初始化定时器，每分钟触发一次
+            _timer = new Timer(60000);
+            _timer.Elapsed += OnTimerElapsed;
+            _timer.Start();
+            
         }
+
+        public void ReadConfigInfo()
+        {
+            string cfgINI = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
+            if (File.Exists(cfgINI))
+            {
+                IniFile ini = new IniFile(cfgINI);
+                string lastDismissTimees = ini.IniReadValue("ClientInfo", "DismissTime");
+
+                _lastDismissTime = DateTime.Parse(lastDismissTimees);
+            }
+        }
+
+        // 定时器到达触发时间时，显示保养弹窗提示
+        public void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            // 判断是否需要半年后再次触发
+            if (_lastDismissTime.AddDays(182) <= DateTime.Now)
+            {
+                // 切换回UI线程显示弹窗提示
+                Dispatcher.Invoke(() =>
+                {
+                    var result = MaintenancePopover.ShowDialoges();
+                    if (result == true)
+                    {
+                        _lastDismissTime = DateTime.Now;
+                        string DismissTimeed = _lastDismissTime.ToString();
+                        string cfgINI = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
+                        IniFile ini = new IniFile(cfgINI);
+                        ini.IniWriteValue("ClientInfo", "DismissTime", DismissTimeed);
+                    }
+                    else
+                    {
+                        // 如果验证码不正确，则将定时器间隔设置为一天，等待下一次触发
+                        _timer.Interval = TimeSpan.FromDays(1).TotalMilliseconds;
+                    }
+                });
+            }
+            // 判断是否需要重新触发
+            else if (_lastDismissTime.AddDays(182) > DateTime.Now)
+            {
+                // 设置重新触发
+                _timer.Interval = 60000;
+            }
+
+        }
+
         public delegate MessageBoxResult MessageBoxShow(string msg);
         public static MessageBoxShow method;
 
@@ -79,7 +145,6 @@ namespace wms.Client
             if (obj == null) return;
             obj.ExitPage(MenuBehaviorType.ExitAllPage, "");
         }
-
 
 
         private void UpdataText(object sender, RoutedEventArgs e)

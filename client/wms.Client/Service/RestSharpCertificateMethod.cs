@@ -62,7 +62,6 @@ namespace wms.Client.Service
                     break;
             }
 
-
             try
             {
               //  var response = await client.ExecuteAsync(request);

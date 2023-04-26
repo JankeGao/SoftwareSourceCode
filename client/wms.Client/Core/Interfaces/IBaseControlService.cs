@@ -31,7 +31,13 @@ namespace wms.Client.Core.Interfaces
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        //Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model);
+        Task<DataResult> PostStartScanBarcodeKeyDown(RunningContainer model);
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        /// <returns></returns>
+        Task<DataResult> GetBackWeighingQuantity();
 
         /// <summary>
         /// 控制货柜运转(取出货柜)

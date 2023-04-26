@@ -51,5 +51,12 @@ namespace Bussiness.Contracts
         /// <param name="entity"></param>
         /// <returns></returns>
         DataResult GetAlarmInformation(RunningContainer entity);
+
+        /// <summary>
+        /// 扫描传递物料单重接口
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        DataResult StartScanBarcodeKeyDown(RunningContainer entity);
     }
 }

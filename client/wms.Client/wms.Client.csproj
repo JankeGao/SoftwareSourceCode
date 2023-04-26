@@ -438,6 +438,9 @@
     <Compile Include="Template\Converters\IsLastItemConverter.cs" />
     <Compile Include="Template\Converters\IsProgressedConverter.cs" />
     <Compile Include="Template\DataPager.cs" />
+    <Compile Include="Template\MaintenancePopover.xaml.cs">
+      <DependentUpon>MaintenancePopover.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Template\ModuleTemplateSelector.cs" />
     <Compile Include="Template\MsgView.xaml.cs">
       <DependentUpon>MsgView.xaml</DependentUpon>
@@ -473,6 +476,7 @@
     <Compile Include="ViewModel\FaceInfoViewModel.cs" />
     <Compile Include="ViewModel\GuideModel.cs" />
     <Compile Include="ViewModel\AlarmViewModel.cs" />
+    <Compile Include="ViewModel\MaintenancePopoverViewModel.cs" />
     <Compile Include="ViewModel\StockViewModel.cs" />
     <Compile Include="ViewModel\ManualOutViewModel.cs" />
     <Compile Include="ViewModel\CheckMainViewModel.cs" />
@@ -673,6 +677,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Template\AlarmConfirmationBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Template\MaintenancePopover.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
