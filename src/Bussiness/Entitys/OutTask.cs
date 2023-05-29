@@ -76,6 +76,10 @@ namespace Bussiness.Entitys
             }
         }
 
+        /// <summary>
+        /// MOM传入ID
+        /// </summary>
+        public string CRRCID { get; set; }
 
     }
 }

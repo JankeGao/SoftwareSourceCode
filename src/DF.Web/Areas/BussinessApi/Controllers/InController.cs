@@ -22,6 +22,9 @@ using HPC.BaseService.Contracts;
 
 namespace DF.Web.Areas.BussinessApi.Controllers
 {
+    /// <summary>
+    /// 入库管理
+    /// </summary>
     [Description("入库管理")]
     public class InController : BaseApiController
     {
@@ -103,6 +106,17 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK,InContract.CreateInEntity(entity).ToMvcJson());
             return response;
         }
+        /// <summary>
+        /// restful接口同步入库单
+        /// </summary>
+        /// <returns></returns>
+        //[LogFilter(Type = LogType.Operate, Name = "同步入库单")]
+        //[HttpGet]
+        //public HttpResponseMessage GetInterfaceIned()
+        //{
+        //    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, InContract.CreateInEntityInterFacedes().ToMvcJson());
+        //    return response;
+        //}
 
         /// <summary>
         /// 接口同步入库单

@@ -113,7 +113,11 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK, CheckContract.CancelCheck(entity.Id).ToMvcJson());
             return response;
         }
-
+        /// <summary>
+        /// 提交盘点单信息
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         [LogFilter(Type = LogType.Operate, Name = "提交盘点单信息")]
         [HttpPost]
         public HttpResponseMessage PostDoSubmit(Bussiness.Entitys.CheckMain entity)

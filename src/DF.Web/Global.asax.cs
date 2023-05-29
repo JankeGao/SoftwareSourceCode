@@ -99,7 +99,7 @@ namespace DF.Web
             //        DatabaseProvider.Register("", conect, "System.Data.SqlClient");
             //    }
             //}
-            DatabaseProvider.Register("", "Data Source=DELL-PC;User ID=sa;Password=rockwell123@RA;Initial Catalog=D-Framework;Max Pool Size=512; Min Pool Size=5", "System.Data.SqlClient");
+            DatabaseProvider.Register("", "Data Source=DESKTOP-71I0RDA;User ID=sa;Password=123456;Initial Catalog=winclient;Max Pool Size=512; Min Pool Size=5", "System.Data.SqlClient");
         }
 
 

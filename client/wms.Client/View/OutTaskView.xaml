@@ -11,7 +11,7 @@
              xmlns:converter="clr-namespace:wms.Client.UiCore.Converter"
              xmlns:validationRules="clr-namespace:wms.Client.UiCore.ValidationRules"
              xmlns:service="clr-namespace:wms.Client.Service"
-             xmlns:common="clr-namespace:wms.Client.Common"
+             xmlns:common="clr-namespace:wms.Client.Common" xmlns:viewmodel="clr-namespace:wms.Client.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:OutTaskViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -164,7 +164,7 @@
             </TabItem>
 
             <!--出库任务页面-->
-            <TabItem Visibility="Collapsed">
+            <TabItem Visibility="Visible">
                 <Grid Background="LightSkyBlue">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
@@ -324,20 +324,32 @@
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
                             Foreground="Red"
-                            Width="60"
+                            Width="100"
                             Text="{Binding UnitWeight,Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="24" />
+                            FontSize="18" />
+                            <StackPanel Margin="10 10 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="数量"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="70"
+                            Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="18" IsEnabled="False" />
+                            </StackPanel>
                             <TextBlock Margin="20 22 0 0"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                         重量：
                             </TextBlock>
                             <TextBlock Margin="10 22 10 0"
                                Text="{Binding InWeight}"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                             </TextBlock>
                             <TextBlock Margin="10 22 10 0"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                         Kg
                             </TextBlock>
                             <Button
@@ -347,15 +359,15 @@
                         ToolTip="Resource name: MaterialDesignRaisedButton" 
                         IsDefault="true" 
                          Background="{Binding WeightCheckColor}"
-                        Command="{Binding WeightCheckCommand}">
+                        Command="{Binding WeightCheckCommand}" Visibility="Collapsed">
                                 重量核验
                             </Button>
                             <CheckBox
                                     IsChecked="{Binding IsCheckUnitWeight}"
-                                    materialDesign:CheckBoxAssist.CheckBoxSize="30">
+                                    materialDesign:CheckBoxAssist.CheckBoxSize="30" Visibility="Collapsed">
                                 是否称量单品重量
                             </CheckBox>
-                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
+                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15 18 15 15"  Foreground="#673AB7"/>
                             <StackPanel>
                                 <TextBlock Margin="10 22 10 0"
                                    Text="{Binding SelectMaterialName}"
@@ -492,7 +504,7 @@
                             <DataGrid 
                 CanUserSortColumns="True"  Background="{StaticResource DefaultBackGround}"  
                   CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding OutTaskMaterial}"
-                      IsReadOnly="True"  >
+                      IsReadOnly="False"  >
                                 <DataGrid.InputBindings>
                                     <!--<MouseBinding MouseAction="LeftDoubleClick"  
                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 

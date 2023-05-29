@@ -186,8 +186,8 @@
                                 Width="60" Visibility="Visible" IsEnabled="False"
                                  >
                     </TextBox>
-                    <Button  Width="90" Command="{Binding StraightInTrayCommand}" IsEnabled="{Binding TakeInNextEnable}" Background="{Binding StraightOutTrayColor}" Content="存入" Margin="5" Cursor="Hand" />
-                    
+                    <Button  Width="90" IsEnabled="{Binding TakeInNextEnable}" Background="{Binding StraightOutTrayColor}" Content="存入" Margin="5" Cursor="Hand" />
+
                     <StackPanel  Margin="220 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
                         <!--<Border Background="#EDEDED" BorderThickness="3 0 0 0" BorderBrush="#A3A3A3" />-->
                         <materialDesign:Chip
@@ -331,11 +331,11 @@
                             Width="60"
                             Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="18" IsEnabled="False" />
+                            FontSize="18" IsEnabled="False" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel>
                         <Button VerticalAlignment="Center" 
-                            HorizontalAlignment="Center"  Width="60" Margin="5 20 0 0" Command="{Binding SynchronousQuantityCommand}" Content="同步" IsEnabled="{Binding IsWeighingQuantity}" />
+                            HorizontalAlignment="Center"  Width="60" Margin="5 20 0 0" Command="{Binding SynchronousQuantityCommand}" Content="同步" IsEnabled="{Binding IsWeighingQuantity}" Visibility="Collapsed" />
                     </StackPanel>
 
                     <StackPanel>

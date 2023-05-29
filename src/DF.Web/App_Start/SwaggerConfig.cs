@@ -7,8 +7,14 @@ using Swashbuckle.Application;
 
 namespace DF.Web
 {
+    /// <summary>
+    /// Swagger≈‰÷√
+    /// </summary>
     public class SwaggerConfig
     {
+        /// <summary>
+        /// ºƒ¥Ê∆˜≈‰÷√
+        /// </summary>
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;

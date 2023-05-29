@@ -19,6 +19,10 @@ using wms.Client.LogicCore.Common;
 using wms.Client.Core.share.DataInterfaces;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
 
 namespace wms.Client.View
 {
@@ -31,5 +35,6 @@ namespace wms.Client.View
         {
             InitializeComponent();
         }
+
     }
 }

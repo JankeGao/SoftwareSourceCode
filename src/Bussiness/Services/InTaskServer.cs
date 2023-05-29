@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.RegularExpressions;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
@@ -16,6 +21,8 @@ using HP.Data.Orm;
 using HP.Utility;
 using HP.Utility.Data;
 using HP.Utility.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bussiness.Services
 {
@@ -24,13 +31,13 @@ namespace Bussiness.Services
         public IRepository<Material, int> MaterialRepository { get; set; }
         public IRepository<InTask, int> InTaskRepository { get; set; }
         public IRepository<InTaskMaterial, int> InTaskMaterialRepository { get; set; }
-        
+
         public IRepository<Entitys.Stock, int> StockRepository { get; set; }
 
         public IRepository<Entitys.Tray, int> TrayRepository { get; set; }
         public IRepository<Entitys.Location, int> LocationRepository { get; set; }
 
-        public IRepository<HPC.BaseService.Models.Dictionary,int> DictionaryRepository { get; set; }
+        public IRepository<HPC.BaseService.Models.Dictionary, int> DictionaryRepository { get; set; }
 
         public IRepository<MouldInformation, int> MouldInformationRepository { get; set; }
         public IRepository<InMaterialLabel, int> InMaterialLabelRepository { get; set; }
@@ -58,96 +65,99 @@ namespace Bussiness.Services
 
         public IMapper Mapper { set; get; }
 
+        public IRepository<In, int> InRepository { get; set; }
+        public IQuery<In> Ins => InRepository.Query();
+
         public IQuery<InTask> InTasks => InTaskRepository.Query();
 
         public IQuery<InTaskMaterial> InTaskMaterials => InTaskMaterialRepository.Query();
         public IQuery<InTaskMaterialDto> InTaskMaterialDtos => InTaskMaterials
             .InnerJoin(MaterialRepository.Query(), (inMaterial, material) => inMaterial.MaterialCode == material.Code)
-            .InnerJoin(InTasks, (inTaskMaterial, material,inTasks)=> inTaskMaterial.InTaskCode== inTasks.Code)
-            .InnerJoin(WareHouseContract.LocationVMs, (inTaskMaterial, material, inTasks,location) => inTaskMaterial.SuggestLocation == location.Code)
-            .LeftJoin(SupplyContract.Supplys, (inTaskMaterial, material, inTasks, location, supply)=> inTaskMaterial.SupplierCode==supply.Code)
+            .InnerJoin(InTasks, (inTaskMaterial, material, inTasks) => inTaskMaterial.InTaskCode == inTasks.Code)
+            .InnerJoin(WareHouseContract.LocationVMs, (inTaskMaterial, material, inTasks, location) => inTaskMaterial.SuggestLocation == location.Code)
+            .LeftJoin(SupplyContract.Supplys, (inTaskMaterial, material, inTasks, location, supply) => inTaskMaterial.SupplierCode == supply.Code)
             .Select((inTaskMaterial, material, inTasks, location, supply) => new Dtos.InTaskMaterialDto
             {
-            Id = inTaskMaterial.Id,
-            InCode = inTaskMaterial.InCode,
-            MaterialCode = inTaskMaterial.MaterialCode,
-            SuggestContainerCode= inTaskMaterial.SuggestContainerCode,
-            SuggestTrayId = inTaskMaterial.SuggestTrayId,
-            SuggestTrayCode= location.TrayCode,
-            InTaskCode = inTaskMaterial.InTaskCode,
-            MaterialType = material.MaterialType,
-            Quantity = inTaskMaterial.Quantity,
-            UnitWeight= material.UnitWeight,
-            ManufactrueDate = inTaskMaterial.ManufactrueDate,
-            InDict= inTaskMaterial.InDict,
-            BatchCode = inTaskMaterial.BatchCode,
-            SupplierCode = inTaskMaterial.SupplierCode,
-            IsPackage= material.IsPackage,
-            IsMaxBatch = material.IsMaxBatch,
-            AgeingPeriod = material.AgeingPeriod,
-            IsBatch = material.IsBatch, 
-            SupplierName = supply.Name,
-            Status = inTaskMaterial.Status,
-            IsDeleted = inTaskMaterial.IsDeleted,
-            BillCode = inTaskMaterial.BillCode,
-            CustomCode = inTaskMaterial.CustomCode,
-            CustomName = inTaskMaterial.CustomName,
-            MaterialLabel = inTaskMaterial.MaterialLabel,
-            SuggestLocation = inTaskMaterial.SuggestLocation,
-            LocationCode = inTaskMaterial.LocationCode,
-            ShelfTime = inTaskMaterial.ShelfTime,
-            CreatedUserCode = inTaskMaterial.CreatedUserCode,
-            CreatedUserName = inTaskMaterial.CreatedUserName,
-            CreatedTime = inTaskMaterial.CreatedTime,
-            UpdatedUserCode = inTaskMaterial.UpdatedUserCode,
-            UpdatedUserName = inTaskMaterial.UpdatedUserName,
-            UpdatedTime = inTaskMaterial.UpdatedTime,
-            MaterialName = material.Name,
-            MaterialUrl= material.PictureUrl,
-            MaterialUnit = material.Unit,
-            ItemNo = inTaskMaterial.ItemNo,
-            WareHouseCode = inTasks.WareHouseCode,
-            RealInQuantity = inTaskMaterial.RealInQuantity,
-            XLight= location.XLight,
-            YLight= location.YLight,
-            BoxName=location.BoxName,
-            BoxUrl= location.BoxUrl,
-            ContainerType = location.ContainerType,
-            BracketTrayNumber = location.BracketTrayNumber,
-            BracketNumber = location.BracketNumber
+                Id = inTaskMaterial.Id,
+                InCode = inTaskMaterial.InCode,
+                MaterialCode = inTaskMaterial.MaterialCode,
+                SuggestContainerCode = inTaskMaterial.SuggestContainerCode,
+                SuggestTrayId = inTaskMaterial.SuggestTrayId,
+                SuggestTrayCode = location.TrayCode,
+                InTaskCode = inTaskMaterial.InTaskCode,
+                MaterialType = material.MaterialType,
+                Quantity = inTaskMaterial.Quantity,
+                UnitWeight = material.UnitWeight,
+                ManufactrueDate = inTaskMaterial.ManufactrueDate,
+                InDict = inTaskMaterial.InDict,
+                BatchCode = inTaskMaterial.BatchCode,
+                SupplierCode = inTaskMaterial.SupplierCode,
+                IsPackage = material.IsPackage,
+                IsMaxBatch = material.IsMaxBatch,
+                AgeingPeriod = material.AgeingPeriod,
+                IsBatch = material.IsBatch,
+                SupplierName = supply.Name,
+                Status = inTaskMaterial.Status,
+                IsDeleted = inTaskMaterial.IsDeleted,
+                BillCode = inTaskMaterial.BillCode,
+                CustomCode = inTaskMaterial.CustomCode,
+                CustomName = inTaskMaterial.CustomName,
+                MaterialLabel = inTaskMaterial.MaterialLabel,
+                SuggestLocation = inTaskMaterial.SuggestLocation,
+                LocationCode = inTaskMaterial.LocationCode,
+                ShelfTime = inTaskMaterial.ShelfTime,
+                CreatedUserCode = inTaskMaterial.CreatedUserCode,
+                CreatedUserName = inTaskMaterial.CreatedUserName,
+                CreatedTime = inTaskMaterial.CreatedTime,
+                UpdatedUserCode = inTaskMaterial.UpdatedUserCode,
+                UpdatedUserName = inTaskMaterial.UpdatedUserName,
+                UpdatedTime = inTaskMaterial.UpdatedTime,
+                MaterialName = material.Name,
+                MaterialUrl = material.PictureUrl,
+                MaterialUnit = material.Unit,
+                ItemNo = inTaskMaterial.ItemNo,
+                WareHouseCode = inTasks.WareHouseCode,
+                RealInQuantity = inTaskMaterial.RealInQuantity,
+                XLight = location.XLight,
+                YLight = location.YLight,
+                BoxName = location.BoxName,
+                BoxUrl = location.BoxUrl,
+                ContainerType = location.ContainerType,
+                BracketTrayNumber = location.BracketTrayNumber,
+                BracketNumber = location.BracketNumber
             });
 
         public IQuery<InTaskDto> InTaskDtos {
             get {
-               return InTasks
-                   .LeftJoin(DictionaryRepository.Query(), (inentity, dictionary) => inentity.InDict == dictionary.Code)
-                   .LeftJoin(WareHouseContract.WareHouses, (inentity, dictionary, warehouse) => inentity.WareHouseCode == warehouse.Code)
-                   .InnerJoin(WareHouseContract.Containers, (inentity, dictionary, warehouse, containers) => inentity.ContainerCode == containers.Code)
-                   .InnerJoin(EquipmentTypeContract.EquipmentType, (inentity, dictionary, warehouse, containers,equipmentType) => containers.EquipmentCode == equipmentType.Code)
-                   .Select((inentity, dictionary, warehouse, containers, equipmentType) => new Dtos.InTaskDto()
-                {
-                   Id=inentity.Id,
-                   Code=inentity.Code,
-                   InCode=inentity.InCode,
-                   WareHouseCode= inentity.WareHouseCode,
-                   WareHouseName=warehouse.Name,
-                   ContainerCode= inentity.ContainerCode,
-                   InDict = inentity.InDict,
-                   Status= inentity.Status,
-                   Remark = inentity.Remark,
-                   IsDeleted= inentity.IsDeleted,
-                   ShelfStartTime=inentity.ShelfStartTime,
-                   ShelfEndTime= inentity.ShelfEndTime,
-                   CreatedUserCode = inentity.CreatedUserCode,
-                   CreatedUserName = inentity.CreatedUserName,
-                   CreatedTime = inentity.CreatedTime,
-                   UpdatedUserCode = inentity.UpdatedUserCode,
-                   UpdatedUserName = inentity.UpdatedUserName,
-                   UpdatedTime = inentity.UpdatedTime,
-                   InDictDescription = dictionary.Name,
-                   PictureUrl = equipmentType.PictureUrl,
-                   InDate = inentity.InDate,
-                   BillCode= inentity.BillCode
+                return InTasks
+                    .LeftJoin(DictionaryRepository.Query(), (inentity, dictionary) => inentity.InDict == dictionary.Code)
+                    .LeftJoin(WareHouseContract.WareHouses, (inentity, dictionary, warehouse) => inentity.WareHouseCode == warehouse.Code)
+                    .InnerJoin(WareHouseContract.Containers, (inentity, dictionary, warehouse, containers) => inentity.ContainerCode == containers.Code)
+                    .InnerJoin(EquipmentTypeContract.EquipmentType, (inentity, dictionary, warehouse, containers, equipmentType) => containers.EquipmentCode == equipmentType.Code)
+                    .Select((inentity, dictionary, warehouse, containers, equipmentType) => new Dtos.InTaskDto()
+                    {
+                        Id = inentity.Id,
+                        Code = inentity.Code,
+                        InCode = inentity.InCode,
+                        WareHouseCode = inentity.WareHouseCode,
+                        WareHouseName = warehouse.Name,
+                        ContainerCode = inentity.ContainerCode,
+                        InDict = inentity.InDict,
+                        Status = inentity.Status,
+                        Remark = inentity.Remark,
+                        IsDeleted = inentity.IsDeleted,
+                        ShelfStartTime = inentity.ShelfStartTime,
+                        ShelfEndTime = inentity.ShelfEndTime,
+                        CreatedUserCode = inentity.CreatedUserCode,
+                        CreatedUserName = inentity.CreatedUserName,
+                        CreatedTime = inentity.CreatedTime,
+                        UpdatedUserCode = inentity.UpdatedUserCode,
+                        UpdatedUserName = inentity.UpdatedUserName,
+                        UpdatedTime = inentity.UpdatedTime,
+                        InDictDescription = dictionary.Name,
+                        PictureUrl = equipmentType.PictureUrl,
+                        InDate = inentity.InDate,
+                        BillCode = inentity.BillCode
                     });
             }
 
@@ -243,7 +253,7 @@ namespace Bussiness.Services
                     // 根据载具可存放的数量进行储位筛选，分配数量，明确哪个储位存放多少数量，以重量做限制
                     var locationList = query.ToList();
 
-                    var stockLocatonList = query.Where(a => a.Quantity > 0).OrderBy(a=>a.Code).ToList();//有库存的库位
+                    var stockLocatonList = query.Where(a => a.Quantity > 0).OrderBy(a => a.Code).ToList();//有库存的库位
 
                     var NoStockLocationList = query.Where(a => a.Quantity == null && (a.LockMaterialCode == item.MaterialCode || string.IsNullOrEmpty(a.LockMaterialCode))).OrderBy(a => a.Code).ToList();//没有库存的库位;
 
@@ -542,7 +552,7 @@ namespace Bussiness.Services
                             break;
                         }
                     }
-                 
+
                     // 计算已下发数量
                     item.SendInQuantity = item.SendInQuantity + sendInQuantity;
                 }
@@ -1054,7 +1064,7 @@ namespace Bussiness.Services
             var query = WareHouseContract.LocationVIEWs.Where(a =>
                 a.WareHouseCode == entity.WareHouseCode && a.ContainerCode == entity.SuggestContainerCode);
 
-            query = query.Where(a => a.MaterialCode == entity.MaterialCode );//f|| !a.IsNeedBlock
+            query = query.Where(a => a.MaterialCode == entity.MaterialCode);//f|| !a.IsNeedBlock
 
             // 入库是存储锁定，则必须存放在所绑定的载具中,及该载具维护的物料即为待入库物料
             if (mateialEntity.IsNeedBlock)
@@ -1078,7 +1088,7 @@ namespace Bussiness.Services
             if (mateialEntity.IsPackage && mateialEntity.PackageQuantity > 0)
             {
                 packageWeight = mateialEntity.UnitWeight * mateialEntity.PackageQuantity; // 单包数量的重量
-                packCount = (decimal) mateialEntity.PackageQuantity;
+                packCount = (decimal)mateialEntity.PackageQuantity;
             }
 
             // 根据载具可存放的数量进行储位筛选，分配数量，明确哪个储位存放多少数量，以重量做限制
@@ -1106,11 +1116,11 @@ namespace Bussiness.Services
                         WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code).Sum(a => a.Quantity) ==
                         null
                             ? 0
-                            : (decimal) WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code)
+                            : (decimal)WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code)
                                 .Sum(a => a.Quantity);
 
                     // 当前储位可存放的数量
-                    var available = (decimal) locationEntity.BoxCount - lockQuantity;
+                    var available = (decimal)locationEntity.BoxCount - lockQuantity;
 
 
                     // 入库可存放一个单包
@@ -1220,7 +1230,7 @@ namespace Bussiness.Services
                 }
             }
 
-            return DataProcess.Success(string.Format("获取可存放库位成功"),inLocationList);
+            return DataProcess.Success(string.Format("获取可存放库位成功"), inLocationList);
         }
 
 
@@ -1239,7 +1249,7 @@ namespace Bussiness.Services
                 // 获取标签数量
 
 
-                 var inQuantity = entity.InTaskMaterialQuantity; // 本次入库数量
+                var inQuantity = entity.InTaskMaterialQuantity; // 本次入库数量
 
                 var mateialEntity = MaterialContract.MaterialRepository.GetEntity(a => a.Code == entity.MaterialCode);
                 //验证该物料是否维护了载具信息
@@ -1351,7 +1361,7 @@ namespace Bussiness.Services
                 #endregion
 
                 inLocationList = GetClientAvailable(entity);
-                if (inLocationList.Count==0)
+                if (inLocationList.Count == 0)
                 {
                     return DataProcess.Failure("未找到可存放库位");
                 }
@@ -1373,7 +1383,7 @@ namespace Bussiness.Services
             // var labelEntity = LabelContract.LabelRepository.GetEntity(a => a.Code == entity.MaterialLabel);
             var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == entity.SuggestContainerCode);
             entity.WareHouseCode = container.WareHouseCode;
-             var inQuantity = entity.InTaskMaterialQuantity; // 本次入库数量
+            var inQuantity = entity.InTaskMaterialQuantity; // 本次入库数量
             var query = WareHouseContract.LocationVIEWs.Where(a =>
      a.WareHouseCode == entity.WareHouseCode && a.ContainerCode == entity.SuggestContainerCode);
 
@@ -1405,9 +1415,9 @@ namespace Bussiness.Services
             }
 
             // 根据 具可存放的数量进行储位筛选，分配数量，明确哪个储位存放多少数量，以重量做限制
-           // var locationCodeList = query.GroupBy(a => a.Code).Select(a => a.Code).ToList();
+            // var locationCodeList = query.GroupBy(a => a.Code).Select(a => a.Code).ToList();
 
-          //   var locationList = query.ToList();
+            //   var locationList = query.ToList();
 
             var stockLocatonList = query.Where(a => a.Quantity > 0).OrderBy(a => a.Code).ToList();//有库存的库位
 
@@ -1417,8 +1427,8 @@ namespace Bussiness.Services
             {
                 // 入库仍有数量需要分配
 
-              //  if (inQuantity > 0)
-                if(true)
+                //  if (inQuantity > 0)
+                if (true)
                 {
                     /* 计算储位可存放的数量*/
                     // 储位实体
@@ -1441,16 +1451,16 @@ namespace Bussiness.Services
 
 
                     // 入库可存放一个单包
-                    if (available >0 )//inQuantity
+                    if (available > 0)//inQuantity
                     {
                         // 本次入库的单包总重量
-                        decimal? inWeight =  0 * mateialEntity.UnitWeight; //inQuantity// 本次入库的重量
+                        decimal? inWeight = 0 * mateialEntity.UnitWeight; //inQuantity// 本次入库的重量
                         /* 计算托盘是否可承重*/
                         //  托盘实体
                         var trayEntity =
                             WareHouseContract.TrayWeightMapRepository.GetEntity(a =>
                                 a.TrayId == locationEntity.TrayId);
-                        
+
                         var availabelTray = trayEntity.MaxWeight - trayEntity.LockWeight - trayEntity.TempLockWeight;
 
                         // 判断是满足生成任务的条件
@@ -1485,8 +1495,8 @@ namespace Bussiness.Services
             foreach (var locationEntity in NoStockLocationList)
             {
                 // 入库仍有数量需要分配
-               // if (inQuantity > 0)
-               if(true)
+                // if (inQuantity > 0)
+                if (true)
                 {
                     /* 计算储位可存放的数量*/
                     // 储位实体
@@ -1511,7 +1521,7 @@ namespace Bussiness.Services
                     if (available > 0)//inQuantity
                     {
                         // 本次入库的单包总重量
-                        decimal? inWeight =  0 * mateialEntity.UnitWeight; // inQuantity 本次入库的重量
+                        decimal? inWeight = 0 * mateialEntity.UnitWeight; // inQuantity 本次入库的重量
                         /* 计算托盘是否可承重*/
                         //  托盘实体
                         var trayEntity =
@@ -1560,27 +1570,25 @@ namespace Bussiness.Services
         {
             // 物料实体映射
             InTaskMaterial entity = InTaskMaterials.FirstOrDefault(
-                a=>a.InTaskCode==entityDto.InTaskCode
-                   &&a.MaterialCode==entityDto.MaterialCode
-                   &&a.SuggestLocation==entityDto.LocationCode
-                   &&a.BatchCode==entityDto.BatchCode);
+                a => a.InTaskCode == entityDto.InTaskCode
+                   && a.MaterialCode == entityDto.MaterialCode
+                   && a.SuggestLocation == entityDto.LocationCode
+                   && a.BatchCode == entityDto.BatchCode);
 
-
-
-            if (entityDto.InTaskMaterialQuantity>(entity.Quantity-entity.RealInQuantity))
+            if (entityDto.InTaskMaterialQuantity > (entity.Quantity - entity.RealInQuantity))
             {
                 return DataProcess.Failure("入库数量大于待入库数量，请核查");
             }
 
-            if (entity.Status != (int) Bussiness.Enums.InTaskStatusCaption.WaitingForShelf &&
-                entity.Status != (int) Bussiness.Enums.InTaskStatusCaption.InProgress)
+            if (entity.Status != (int)Bussiness.Enums.InTaskStatusCaption.WaitingForShelf &&
+                entity.Status != (int)Bussiness.Enums.InTaskStatusCaption.InProgress)
             {
                 return DataProcess.Failure("该入库任务明细单状态不为待上架或执行中");
             }
 
             InTask inTaskEntity = InTasks.FirstOrDefault(a => a.Code == entity.InTaskCode);
-            if (inTaskEntity.Status != (int) Bussiness.Enums.InTaskStatusCaption.WaitingForShelf &&
-                inTaskEntity.Status != (int) Bussiness.Enums.InTaskStatusCaption.InProgress )
+            if (inTaskEntity.Status != (int)Bussiness.Enums.InTaskStatusCaption.WaitingForShelf &&
+                inTaskEntity.Status != (int)Bussiness.Enums.InTaskStatusCaption.InProgress)
             {
                 return DataProcess.Failure("入库任务单状态不为待上架或者手动执行中");
             }
@@ -1604,12 +1612,12 @@ namespace Bussiness.Services
             // 如果启用的单包管理，查询库内是否有相同的条码已入库
             if (entityDto.IsPackage)
             {
-                var labelEntity = LabelContract.LabelDtos.FirstOrDefault(a=>a.Code == entityDto.MaterialLabel);
+                var labelEntity = LabelContract.LabelDtos.FirstOrDefault(a => a.Code == entityDto.MaterialLabel);
 
                 // 如果不允许混批
                 if (!entityDto.IsMaxBatch)
                 {
-                    if (labelEntity.BatchCode!= entityDto.BatchCode)
+                    if (labelEntity.BatchCode != entityDto.BatchCode)
                     {
                         return DataProcess.Failure(string.Format("该入库物料批次不正确，请核查{0}", entityDto.BatchCode));
                     }
@@ -1633,7 +1641,7 @@ namespace Bussiness.Services
                     ManufactureDate = string.IsNullOrEmpty(entity.ManufactrueDate.ToString()) ? DateTime.Now : entity.ManufactrueDate,
                     WareHouseCode = location.WareHouseCode,
                     ContainerCode = location.ContainerCode,
-                    TrayId= location.TrayId,
+                    TrayId = location.TrayId,
                     MaterialCode = entityDto.MaterialCode,
                     MaterialLabel = entityDto.MaterialLabel,
                     SupplierCode = entity.SupplierCode,
@@ -1641,7 +1649,7 @@ namespace Bussiness.Services
                     Quantity = entityDto.InTaskMaterialQuantity,
                     SaleBillItemNo = "",
                     SaleBillNo = "",
-                    ShelfTime= DateTime.Now,
+                    ShelfTime = DateTime.Now,
                     StockStatus = 0,
                     LockedQuantity = 0
                 };
@@ -1649,7 +1657,7 @@ namespace Bussiness.Services
             else // 非单包管理
             {
                 // 增加批次管理
-                stock = StockRepository.Query().FirstOrDefault(a => a.MaterialCode == entityDto.MaterialCode && a.LocationCode == location.Code );
+                stock = StockRepository.Query().FirstOrDefault(a => a.MaterialCode == entityDto.MaterialCode && a.LocationCode == location.Code);
                 //entity.Status = (int)Bussiness.Enums.InStatusCaption.Finished;
 
                 if (stock == null)
@@ -1699,7 +1707,7 @@ namespace Bussiness.Services
                     IsExistStock = true;
                     stock.Quantity = stock.Quantity + entityDto.InTaskMaterialQuantity;
                 }
- 
+
             }
             InTaskMaterialRepository.UnitOfWork.TransactionEnabled = true;
 
@@ -1716,7 +1724,7 @@ namespace Bussiness.Services
             entity.RealInQuantity = entity.RealInQuantity + entityDto.InTaskMaterialQuantity;
             if (entity.Status != (int)Bussiness.Enums.InTaskStatusCaption.Finished)
             {
-                entity.Status = (int) Bussiness.Enums.InTaskStatusCaption.InProgress;
+                entity.Status = (int)Bussiness.Enums.InTaskStatusCaption.InProgress;
                 if (entity.RealInQuantity >= entity.Quantity)
                 {
                     entity.Status = (int)Bussiness.Enums.InTaskStatusCaption.Finished;
@@ -1741,7 +1749,7 @@ namespace Bussiness.Services
                 }
             }
 
-   
+
 
             // 释放该储位的数量
             locationEntity.LockQuantity = locationEntity.LockQuantity - entityDto.InTaskMaterialQuantity;
@@ -1815,19 +1823,19 @@ namespace Bussiness.Services
             // 如果全部下发，核查是否完成
             var inEntity = InContract.Ins.FirstOrDefault(a => a.Code == entity.InCode);
             // 核查入库单状态
-            var inMaterialEntity = InContract.InMaterials.FirstOrDefault(a => a.InCode == entity.InCode&&a.ItemNo==entity.ItemNo);
+            var inMaterialEntity = InContract.InMaterials.FirstOrDefault(a => a.InCode == entity.InCode && a.ItemNo == entity.ItemNo);
             inMaterialEntity.RealInQuantity = inMaterialEntity.RealInQuantity + entityDto.InTaskMaterialQuantity;
 
-            if (inMaterialEntity.RealInQuantity>= inMaterialEntity.Quantity)
+            if (inMaterialEntity.RealInQuantity >= inMaterialEntity.Quantity)
             {
-                inMaterialEntity.Status = (int) InStatusCaption.Finished;
+                inMaterialEntity.Status = (int)InStatusCaption.Finished;
 
                 // 如果为三方系统同步创建
                 if (inEntity.OrderType == (int)OrderTypeEnum.Other)
                 {
                     // 查询该中间表实体
-                    var inMaterialIFEntity = InContract.InMaterialIFRepository.Query().FirstOrDefault(a => a.BillCode == inEntity.BillCode && a.ItemNo== inMaterialEntity.ItemNo);
-                    if (inMaterialIFEntity!=null)
+                    var inMaterialIFEntity = InContract.InMaterialIFRepository.Query().FirstOrDefault(a => a.BillCode == inEntity.BillCode && a.ItemNo == inMaterialEntity.ItemNo);
+                    if (inMaterialIFEntity != null)
                     {
                         if (inMaterialIFEntity.Status == (int)OrderEnum.Wait)
                         {
@@ -1856,14 +1864,14 @@ namespace Bussiness.Services
                 inEntity.Status = (int)InStatusCaption.Finished;
 
                 // 如果为三方系统同步创建
-                if (inEntity.OrderType==(int)OrderTypeEnum.Other )
+                if (inEntity.OrderType == (int)OrderTypeEnum.Other)
                 {
                     // 查询该中间表实体
-                   var inIfEntity= InContract.InIFRepository.Query().FirstOrDefault(a=>a.BillCode== inEntity.BillCode);
-                   if (inIfEntity.Status == (int)OrderEnum.Wait)
-                   {
-                       inIfEntity.Status = (int)OrderEnum.Finish;
-                       InContract.InIFRepository.Update(inIfEntity);
+                    var inIfEntity = InContract.InIFRepository.Query().FirstOrDefault(a => a.BillCode == inEntity.BillCode);
+                    if (inIfEntity.Status == (int)OrderEnum.Wait)
+                    {
+                        inIfEntity.Status = (int)OrderEnum.Finish;
+                        InContract.InIFRepository.Update(inIfEntity);
 
                     }
                 }
@@ -1896,7 +1904,7 @@ namespace Bussiness.Services
             if (entityDto.AgeingPeriod > 0)
             {
                 //此刻的时间应大于入库时间+老化时间
-                stock.MaterialStatus = (int) MaterialStatusCaption.Old;
+                stock.MaterialStatus = (int)MaterialStatusCaption.Old;
             }
 
             if (IsExistStock)
@@ -1907,15 +1915,104 @@ namespace Bussiness.Services
             {
                 StockRepository.Insert(stock);
             }
+
+            In inEntityes = Ins.FirstOrDefault(a => a.Code == entity.InCode);
+
+            #region 登录获取token及进行任务反馈
+            try
+            {
+                //上架任务反馈接口url和请求参数
+                string url = "http://192.168.3.224:8181/api/zcdx-wms/v1/wms/wmsEnWareBill/putawayWK";
+                // 构造请求参数
+                List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
+                EnWarehBillShelfModel model = new EnWarehBillShelfModel
+                {
+                    Id = inEntityes.CRRCID,
+                    Qty = (int)entity.RealInQuantity,
+                    WarehBinCode = entity.SuggestLocation
+                };
+                models.Add(model);
+                string json = JsonConvert.SerializeObject(models);
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpWebRequest.ContentType = "application/json; charset=UTF-8";
+                httpWebRequest.Method = "PUT";
+                httpWebRequest.Timeout = 50000;
+                httpWebRequest.ProtocolVersion = HttpVersion.Version10;
+                byte[] btBodys = Encoding.UTF8.GetBytes(json);
+                httpWebRequest.ContentLength = btBodys.Length;
+                httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                string responseContent = streamReader.ReadToEnd();
+                httpWebResponse.Close();
+                streamReader.Close();
+                if (httpWebResponse != null)
+                {
+                    httpWebResponse.Close();
+                }
+                if (httpWebRequest != null)
+                {
+                    httpWebRequest.Abort();
+                }
+
+                // 处理响应结果
+                if (responseContent != null)
+                {
+                    // 解析JSON数据
+                    var resultes = JsonConvert.DeserializeObject<dynamic>(responseContent);
+                    // 获取接口返回的各个字段值
+                    var codees = (int)resultes.code;
+                    var dataes = (string)resultes.data;
+                    var messagees = (string)resultes.message;
+                    var successes = (bool)resultes.success;
+
+                    if (codees == 0)
+                    {
+                        return DataProcess.Failure(dataes, messagees);
+                    }
+                    else if (codees == 2)
+                    {
+                        return DataProcess.Failure(dataes, messagees);
+                    }
+
+                }
+                else
+                {
+                    return DataProcess.Failure("数据传输响应失败！");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return DataProcess.Failure("请求服务失败！", ex.Message);
+            }
+            #endregion
+
             InTaskMaterialRepository.UnitOfWork.Commit();
-            return DataProcess.Success("上架成功");
+
+            return DataProcess.Success("上架成功！");
         }
 
-        /// <summary>
-        /// 启动货柜
-        /// </summary>
-        /// <returns></returns>
-        public DataResult HandStartContainer(InTaskMaterialDto entityDto)
+        
+    public class EnWarehBillShelfModel
+    {
+        //单据id
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        //数量
+        [JsonProperty("qty")]
+        public int Qty { get; set; }
+        //仓位id(物料位置)
+        [JsonProperty("warehBinCode")]
+        public string WarehBinCode { get; set; }
+    }
+
+    /// <summary>
+    /// 启动货柜
+    /// </summary>
+    /// <returns></returns>
+    public DataResult HandStartContainer(InTaskMaterialDto entityDto)
         {
             // 物料实体映射
             InTaskMaterial entity = InTaskMaterials.FirstOrDefault(

@@ -149,13 +149,26 @@ namespace wms.Client.ViewModel
             set { inWeight = value; RaisePropertyChanged(); }
         }
 
-
+        /// <summary>
+        /// 物料单重
+        /// </summary>
         private decimal unitWeight = 0;
         public decimal UnitWeight
         {
             get { return unitWeight; }
             set { unitWeight = value; RaisePropertyChanged(); }
         }
+
+        /// <summary>
+        /// 物料称重数量
+        /// </summary>
+        private decimal weighingQuantity = 0;
+        public decimal WeighingQuantity
+        {
+            get { return weighingQuantity; }
+            set { weighingQuantity = value; RaisePropertyChanged(); }
+        }
+
         private bool isCheckUnitWeight = false;
         public bool IsCheckUnitWeight
         {
@@ -829,6 +842,7 @@ namespace wms.Client.ViewModel
                             if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                             {
                                 GlobalData.IsFocus = true;
+                                isAlarmRaised = true;
                                 Msg.Warning("设备离线状态，无法启动货柜！");
                                 return;
                             }
@@ -839,6 +853,7 @@ namespace wms.Client.ViewModel
                         }
                         else
                         {
+                            isAlarmRaised = true;
                             Msg.Warning("已选择入库行项目");
                             return;
                         }
@@ -858,6 +873,7 @@ namespace wms.Client.ViewModel
                                 // 获取入库行项目明细
                                 if (InTaskMaterialEntity==null)
                                 {
+                                    isAlarmRaised = true;
                                     Msg.Warning("请选择入库行项目明细！");
                                     return;
                                 }
@@ -878,6 +894,7 @@ namespace wms.Client.ViewModel
                                     //dialog.Show();
                                     //await Task.Delay(3000);
                                     //DialogHost.CloseDialogCommand.Execute(null, null);
+                                    isAlarmRaised = true;
                                     Msg.Info("请输入入库数量！");
                                     return;
                                 }
@@ -900,6 +917,7 @@ namespace wms.Client.ViewModel
                                     //dialog.Show();
                                     //await Task.Delay(3000);
                                     //DialogHost.CloseDialogCommand.Execute(null, null);
+                                    isAlarmRaised = true;
                                     Msg.Info("未选择入库行项目，或该储位不属于该明细！");
                                     return;
                                 }
@@ -912,6 +930,7 @@ namespace wms.Client.ViewModel
                             //dialog.Show();
                             //await Task.Delay(3000);
                             //DialogHost.CloseDialogCommand.Execute(null, null);
+                            isAlarmRaised = true;
                             Msg.Info("未获取到条码信息！");
                             return;
                         }
@@ -942,6 +961,67 @@ namespace wms.Client.ViewModel
             }
         }
 
+        private static bool isAlarmRaised = false;
+
+        /// <summary>
+        /// 每隔200毫秒触发一次物料称重刷新
+        /// </summary>
+        /// <returns></returns>
+        public async Task StartGetWeighingQuantity()
+        {
+            while (true)
+            {
+                if (String.IsNullOrEmpty(UnitWeight.ToString()))
+                {
+                    return;
+                }
+                GetWeighingQuantity();
+                if (isAlarmRaised)
+                {
+                    return;
+                }
+                await Task.Delay(200);
+            }
+        }
+
+        /// <summary>
+        /// 返回当前称重物料数量
+        /// </summary>
+        public async void GetWeighingQuantity()
+        {
+
+            //try
+            //{
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    isAlarmRaised = true;
+                    Msg.Warning("货柜PLC离线状态，无法传递物料单重！");
+                    return;
+                }
+                // 读取PLC 状态信息
+                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                // 返回当前称重物料数量
+                var weightResult = await baseControlService.GetBackWeighingQuantity();
+                if (weightResult.Success)
+                {
+                    WeighingQuantity = decimal.Parse(weightResult.Data.ToString());
+                    
+                }
+                //else
+                //{
+                    //GlobalData.IsFocus = true;
+                    //Msg.Error(weightResult.Message);
+                //}
+           // }
+            //catch (Exception ex)
+            //{
+                //Msg.Error(ex.Message);
+            //}
+        }
+
+
         System.Windows.Controls.Button button;
         /// <summary>
         /// 选择任务行项目
@@ -967,12 +1047,14 @@ namespace wms.Client.ViewModel
                 GlobalData.IsFocus = false;
                 if (entity == null)
                 {
+                    isAlarmRaised = true;
                     Msg.Warning("未获取到选中信息");
                     return;
                 }
 
                 if (entity.Status == (int)InTaskStatusCaption.Finished)
                 {
+                    isAlarmRaised = true;
                     Msg.Warning("该物料已完成");
                     return;
                 }
@@ -981,6 +1063,7 @@ namespace wms.Client.ViewModel
                 var authCheck =  user.GetCheckTrayAuth((int)entity.SuggestTrayId);
                 if (!authCheck.Result.Success)
                 {
+                    isAlarmRaised = true;
                     Msg.Warning("抱歉，您无操作该托盘权限！");
                     return;
                 }
@@ -999,6 +1082,8 @@ namespace wms.Client.ViewModel
                 SelectMaterialName = entity.MaterialName;
                 UnitWeight = entity.UnitWeight;
                 GlobalData.IsFocus = true;
+
+                await StartGetWeighingQuantity();
                 //if (await Msg.Question("是否需要开始货柜?") == true)
                 //{
                 //    RunningContainer();
@@ -1026,6 +1111,7 @@ namespace wms.Client.ViewModel
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {
                     GlobalData.IsFocus = true;
+                    isAlarmRaised = true;
                     Msg.Warning("设备离线状态，无法启动货柜！");
                     return;
                 }
@@ -1034,6 +1120,7 @@ namespace wms.Client.ViewModel
                 if (String.IsNullOrEmpty(TrayCode))
                 {
                     GlobalData.IsFocus = true;
+                    isAlarmRaised = true;
                     Msg.Warning("未选择入库的行项目，请先选择一项！");
 
                     return;
@@ -1111,6 +1198,7 @@ namespace wms.Client.ViewModel
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {
                     GlobalData.IsFocus = true;
+                    isAlarmRaised = true;
                     Msg.Warning("设备离线状态，无法启动货柜！");
                     return;
                 }
@@ -1286,7 +1374,7 @@ namespace wms.Client.ViewModel
                 if (String.IsNullOrEmpty(TrayCode))
                 {
                     // 获取入库任务行项目
-                    var selectIntask = InTaskMaterial.FirstOrDefault(a=>a.MaterialCode== LabelEntity.MaterialCode&& (a.Status != (int)InTaskStatusCaption.Finished && a.Status != (int)InTaskStatusCaption.Cancel));
+                    var selectIntask = InTaskMaterial.FirstOrDefault(a=>a.MaterialCode== LabelEntity.MaterialCode && (a.Status != (int)InTaskStatusCaption.Finished && a.Status != (int)InTaskStatusCaption.Cancel));
                     if (selectIntask != null)
                     {
                         object[] obj = new object[2];
@@ -1297,6 +1385,7 @@ namespace wms.Client.ViewModel
                     }
                     else
                     {
+                        isAlarmRaised = true;
                         Msg.Warning("未选择入库的行项目，请先选择一项！");
                         return;
                     }

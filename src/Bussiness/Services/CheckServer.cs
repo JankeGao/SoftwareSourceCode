@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
 using Bussiness.Entitys;
@@ -11,6 +14,8 @@ using HP.Core.Sequence;
 using HP.Data.Orm;
 using HP.Utility.Data;
 using HP.Utility.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bussiness.Services
 {
@@ -77,6 +82,8 @@ namespace Bussiness.Services
         });
 
         public IQuery<CheckDetail> CheckDetails => CheckDetailRepository.Query();
+
+        public IQuery<CheckListDetail> CheckListDetails => CheckListDetailRepository.Query();
 
         public IQuery<CheckDetailDto> CheckDetailDtos => CheckDetails.InnerJoin(MaterialRepository.Query(), (detail, material) => detail.MaterialCode == material.Code)
             .LeftJoin(WareHouseContract.WareHouses, (detail, material, warehouse) => detail.WareHouseCode == warehouse.Code)
@@ -915,16 +922,127 @@ namespace Bussiness.Services
                         CheckListDetailRepository.Update(item);
                     }
                 }
-   
+
+                #region 登录获取token及进行任务反馈
+                try
+                {
+                    CheckListDetail checkListDetailses = CheckListDetails.FirstOrDefault(a => a.CheckCode == entity.CheckListCode);
+                    // 定义登录接口url和请求参数
+                    string loginUrl = "http://192.168.3.224:8181/api/sys/v1/sso/login";
+                    string username = "MOM";
+                    string password = "CRRc@23#";
+                    // 发送登录请求并获取返回值
+                    var clientes = new HttpClient();
+                    var data = new Dictionary<string, string>
+                    {
+                        { "username", username },
+                        { "password", password }
+                    };
+                    var contentes = new FormUrlEncodedContent(data);
+                    var response = clientes.PostAsync(loginUrl, contentes).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseString = response.Content.ReadAsStringAsync().Result;
+                        // 解析返回值并获取token
+                        var responseObject = JObject.Parse(responseString);
+                        var code = (int)responseObject["code"];
+                        var token = (string)responseObject["data"];
+                        var message = (string)responseObject["message"];
+                        if (code == 1)
+                        {
+                            // 登录成功，拼接token到下架任务反馈接口url和请求参数
+                            string url = "http://192.168.3.224:8181/api/zcdx-MOM/v1/MOM/MOMStockCheck/?access-token=" + token;
+                            // 构造请求参数
+                            List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
+                            EnWarehBillShelfModel model = new EnWarehBillShelfModel
+                            {
+                                Id = checkListDetailses.MaterialCode,
+                                Num = (int)checkListDetailses.Quantity,
+                                //WarehBinId = entity.LocationCode,
+                                //MatProduceBatch = entity.BatchCode,
+                            };
+                            models.Add(model);
+                            string json = JsonConvert.SerializeObject(models);
+                            // 构造请求内容
+                            StringContent contented = new StringContent(json, Encoding.UTF8, "application/json");
+                            // 构造HTTP请求
+                            using (var cliented = new HttpClient())
+                            {
+                                cliented.BaseAddress = new Uri(url);
+                                cliented.DefaultRequestHeaders.Accept.Clear();
+                                cliented.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                                // 发送POST请求
+                                HttpResponseMessage responsees = cliented.PostAsync(url, contented).Result;
+                                // 处理响应结果
+                                if (responsees.IsSuccessStatusCode)
+                                {
+                                    string result = responsees.Content.ReadAsStringAsync().Result;
+
+                                    // 解析JSON数据
+                                    var resultes = JsonConvert.DeserializeObject<dynamic>(result);
+                                    // 获取接口返回的各个字段值
+                                    var codees = (int)resultes.code;
+                                    var dataes = (string)resultes.data;
+                                    var messagees = (string)resultes.message;
+                                    var successes = (bool)resultes.success;
+
+                                    if (codees == 0)
+                                    {
+                                        return DataProcess.Failure(dataes, messagees);
+                                    }
+                                    else if (codees == 1)
+                                    {
+                                        return DataProcess.Success(dataes, messagees);
+                                    }
+                                    else if (codees == 2)
+                                    {
+                                        return DataProcess.Failure(dataes, messagees);
+                                    }
+
+                                    //return DataProcess.Success("数据传输响应成功！", result);
+                                }
+                                else
+                                {
+                                    return DataProcess.Failure("数据传输响应失败！", responsees.StatusCode);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    return DataProcess.Failure("请求登录接口失败！", ex.Message);
+                }
+                #endregion
+
                 CheckRepository.UnitOfWork.Commit();
                 return DataProcess.Success("提交成功");
             }
             catch (Exception ex)
             {
-                return null;
+                return DataProcess.Failure("提交失败",ex.Message);
             }
         }
-        
+
+        // 上架任务模型
+        public class EnWarehBillShelfModel
+        {
+            //单据id
+            [JsonProperty("id")]
+            public string Id { get; set; }
+            //数量
+            [JsonProperty("actualQty")]
+            public int Num { get; set; }
+            //仓位id(物料位置)
+            [JsonProperty("warehBinId")]
+            public string WarehBinId { get; set; }
+            //生产批次
+            [JsonProperty("matProduceBatch")]
+            public object MatProduceBatch { get; set; }
+        }
+
+
         /// <summary>
         /// 新增盘点条码 新增表示已盘点完成
         /// </summary>

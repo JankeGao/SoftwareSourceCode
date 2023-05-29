@@ -12,11 +12,11 @@
              xmlns:validationRules="clr-namespace:wms.Client.UiCore.ValidationRules"
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              xmlns:service="clr-namespace:wms.Client.Service"
-             xmlns:common="clr-namespace:wms.Client.Common"
+             xmlns:common="clr-namespace:wms.Client.Common" xmlns:viewmodel="clr-namespace:wms.Client.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:InTaskViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" Background="#D7DF01">
     <UserControl.Resources>
- 
+
         <ResourceDictionary>
             <service:GlobalData x:Key="globalData"/>
             <common:ObjectConvert x:Key="objectConverter"/>
@@ -87,40 +87,40 @@
                     </Grid>
                     <Grid  Grid.Row="1">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding ModuleGroups}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <WrapPanel Orientation="Vertical">
-                                        <GroupBox
+                            <ItemsControl ItemsSource="{Binding ModuleGroups}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel Orientation="Vertical">
+                                            <GroupBox
                                             Header="{Binding GroupName}"
                                             Style="{DynamicResource MaterialDesignCardGroupBox}"
                                             Margin="10"
                                             Width="190"
                                             materialDesign:ColorZoneAssist.Mode="Accent">
-                                            <GroupBox.HeaderTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel
+                                                <GroupBox.HeaderTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel
                                                         Orientation="Horizontal">
-                                                        <materialDesign:PackIcon
+                                                            <materialDesign:PackIcon
                                                             Kind="Collage"
                                                             Height="32"
                                                             Width="32"
                                                             VerticalAlignment="Center" />
-                                                        <TextBlock
+                                                            <TextBlock
                                                             Margin="8,0,0,0"
                                                             VerticalAlignment="Center"
                                                             Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                             Text="{Binding }" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </GroupBox.HeaderTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GroupBox.HeaderTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
                                                     VerticalAlignment="Center"
                                                     Margin="20"
                                                     Width="50"
@@ -132,18 +132,18 @@
                                                         VerticalAlignment="Center"
                                                         HorizontalAlignment="Right" />
                                                 </StackPanel>
-                                        </GroupBox>
-                                        <ItemsControl ItemsSource="{Binding Modules}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <WrapPanel Orientation="Vertical" Margin="10 0 0 5">
-                                                        <StackPanel Width="190" Orientation="Horizontal">
-                                                            <Button
+                                            </GroupBox>
+                                            <ItemsControl ItemsSource="{Binding Modules}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <WrapPanel Orientation="Vertical" Margin="10 0 0 5">
+                                                            <StackPanel Width="190" Orientation="Horizontal">
+                                                                <Button
                                                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                                                 Command="{Binding Path=DataContext.UserLoginCommand,RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" 
                                                                 CommandParameter="{Binding Code}"
@@ -151,23 +151,23 @@
                                                                 Width="190"
                                                                 Click="clickIntask"
                                                                 Content="{Binding InCode}">
-                                                            </Button>
-                                                        </StackPanel>
-                                                    </WrapPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </WrapPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                                                                </Button>
+                                                            </StackPanel>
+                                                        </WrapPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
             </TabItem>
 
             <!--入库任务页面-->
-            <TabItem Visibility="Collapsed" >
+            <TabItem Visibility="Visible" >
                 <Grid  Background="#D7DF01" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
@@ -328,20 +328,32 @@
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
                             Foreground="Red"
-                            Width="60"
+                            Width="100"
                             Text="{Binding UnitWeight,Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="24" />
+                            FontSize="18" />
+                            <StackPanel Margin="10 10 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="数量"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="60"
+                            Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="18" IsEnabled="False" />
+                            </StackPanel>
                             <TextBlock Margin="20 22 0 0"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                         重量：
                             </TextBlock>
                             <TextBlock Margin="10 22 10 0"
                                Text="{Binding InWeight}"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                             </TextBlock>
                             <TextBlock Margin="10 22 10 0"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                         Kg
                             </TextBlock>
                             <Button
@@ -351,15 +363,15 @@
                         ToolTip="Resource name: MaterialDesignRaisedButton" 
                         IsDefault="true" 
                         Background="{Binding WeightCheckColor}"
-                        Command="{Binding WeightCheckCommand}">
+                        Command="{Binding WeightCheckCommand}" Visibility="Collapsed">
                                 重量核验
                             </Button>
                             <CheckBox
                                     IsChecked="{Binding IsCheckUnitWeight}"
-                                    materialDesign:CheckBoxAssist.CheckBoxSize="30">
+                                    materialDesign:CheckBoxAssist.CheckBoxSize="30" Visibility="Collapsed">
                                 是否称量单品重量
                             </CheckBox>
-                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
+                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15 18 15 15"  Foreground="#673AB7"/>
                             <StackPanel>
                                 <TextBlock Margin="10 22 10 0"
                                    Text="{Binding SelectMaterialName}"
@@ -394,13 +406,17 @@
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="77*"/>
+                            <ColumnDefinition Width="321*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="100"/>
                             <RowDefinition/>
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
                         <!--Background="#EDEDED"-->
-                        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal" Width="1800">
+                        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal" Width="1800" Grid.ColumnSpan="2">
                             <Border Background="#EDEDED" BorderThickness="3 0 0 0" BorderBrush="#A3A3A3" />
                             <TextBlock Margin="10 42 10 0"
                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
@@ -451,7 +467,7 @@
                                 Height="100"
                                 Margin="10 0 0 0"
                                 Stretch="Uniform" />-->
-                           
+
                             <Button    Height="80"  Margin="30 0 0 0" FontSize="18"  Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="取出托盘" 
                                     Background="{Binding FirstStepColor}"
                                     CommandParameter="{Binding}"                          
@@ -494,12 +510,12 @@
                                 </materialDesign:Chip>
                             </StackPanel>
                         </StackPanel>
-                        <WrapPanel Grid.Row="1" >
+                        <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" >
                             <!--{StaticResource DefaultBackGround}-->
                             <DataGrid 
                 CanUserSortColumns="True"  Background="#D7DF01"  
                   CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding InTaskMaterial}"
-                      IsReadOnly="True"  >
+                      IsReadOnly="False"  >
                                 <!--CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
                         AncestorType=DataGrid}, Path=SelectedItem}"-->
                                 <DataGrid.InputBindings>
@@ -586,17 +602,17 @@
                             Command="{Binding ReturnCommand}"
                             Click="returnInTask"
                             ToolTip="Resource name: MaterialDesignRaisedLightDarkButton">
-                            返回
-                        </Button>
-                        <Button
+                                返回
+                            </Button>
+                            <Button
                             Style="{StaticResource MaterialDesignRaisedAccentButton}"
                             Width="100"
                             Margin="5"
                             ToolTip="Resource name: MaterialDesignRaisedButton" 
                             Command="{Binding SubmitCommand}"
                             Click="Updateclick">
-                            完成提交
-                        </Button>
+                                完成提交
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>

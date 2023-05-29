@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
 using Bussiness.Entitys;
@@ -9,6 +12,9 @@ using HP.Core.Data;
 using HP.Core.Sequence;
 using HP.Data.Orm;
 using HP.Utility.Data;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Bussiness.Services
 {
@@ -407,6 +413,229 @@ namespace Bussiness.Services
             }
             CheckListRepository.UnitOfWork.Commit();
             return DataProcess.Success("作废成功");
+        }
+
+
+        /// <summary>
+        /// 每隔30秒触发一次获取视图数据
+        /// </summary>
+        /// <returns></returns>
+        public async Task StartCreateOutEntityInterFace()
+        {
+            while (true)
+            {
+
+                #region Oracle数据获取处理
+                var connectionString = "Data Source=192.168.3.224:1521/orcl;User ID=zcdx;Password=Oracle#gCsb#2023";
+                var query = "SELECT * FROM V_WK_WMS_STOCK_CHECK";
+                using (OracleConnection connection = new OracleConnection(connectionString))
+                {
+                    var command = new OracleCommand(query, connection);
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    var resultList = new List<Dictionary<string, object>>();
+                    while (reader.Read())
+                    {
+                        var row = new Dictionary<string, object>();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            row.Add(reader.GetName(i), reader.GetValue(i));
+                        }
+                        resultList.Add(row);
+                    }
+                    reader.Close();
+                    foreach (var dict in resultList)
+                    {
+                        CheckList entity = new CheckList
+                        {
+                            Id = 0,
+                            CheckDict = 2,
+                            Code = dict["BILL_CODE"].ToString(),
+                            CreatedUserCode = "",
+                            CreatedUserName = "",
+                            Remark = "",
+                            WareHouseCode = "",
+                            CreatedTime = (DateTime)dict["Date"],
+                            AddCheckListDetails = new List<CheckListDetail>(),
+                        };
+
+                        CheckListDetail inMaterialObj = new CheckListDetail
+                        {
+                            Id = 0,
+                            IsDeleted = false,
+                            TrayId = (int)dict["TrayId"],
+                        };
+                        if (!CheckLists.Any(a => a.Code == entity.Code))
+                        {
+                            entity.AddCheckListDetails.Add(inMaterialObj);
+                            CreateCheckListEntityView(entity); // 执行需要定时执行的方法
+                        }
+                    }
+                }
+                #endregion
+
+                await Task.Delay(30000); // 设置执行间隔时间为30秒
+            }
+        }
+        /// <summary>
+        /// 视图创建盘点单
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public DataResult CreateCheckListEntityView(CheckList entity)
+        {
+            // 事务
+            CheckListRepository.UnitOfWork.TransactionEnabled = true;
+            {
+
+                // 选中的托盘信息-明细
+                var CheckListDetailList = new List<CheckListDetail>();
+                // 盘点单实例
+                var CheckListEntity = new CheckList();
+
+                foreach (var item in entity.AddCheckListDetails)
+                {
+                    var trayEntity = TrayRepository.Query().FirstOrDefault(a => a.Id == item.TrayId);
+
+                    if (OutTaskContract.OutTaskMaterialDtos.Any(a => (a.Status == (int)OutTaskStatusCaption.Picking || a.Status == (int)OutTaskStatusCaption.WaitingForPicking) && a.SuggestTrayId == trayEntity.Id))
+                    {
+                        return DataProcess.Failure("货柜" + trayEntity.ContainerCode + "托盘" + trayEntity.Code + "尚有正在作业的出库任务");
+                    }
+                    if (InTaskContract.InTaskMaterials.Any(a => (a.Status == (int)InTaskStatusCaption.InProgress || a.Status == (int)InTaskStatusCaption.WaitingForShelf) && a.SuggestTrayId == trayEntity.Id))
+                    {
+                        return DataProcess.Failure("货柜" + trayEntity.ContainerCode + "托盘" + trayEntity.Code + "尚有正在作业的入库任务");
+                    }
+                    if (CheckListDetailDtos.Any(a => (a.Status == (int)CheckListStatusEnum.WaitingForCheck || a.Status == (int)CheckListStatusEnum.Accomplish) && a.TrayId == trayEntity.Id))
+                    {
+                        return DataProcess.Failure("货柜" + trayEntity.ContainerCode + "托盘" + trayEntity.Code + "尚有正在作业的盘点单");
+                    }
+                }
+
+
+                foreach (var item in entity.AddCheckListDetails)
+                {
+                    var trayEntity = TrayRepository.Query().FirstOrDefault(a => a.Id == item.TrayId);
+
+                    var stockList = StockRepository.Query().Where(a => a.TrayId == trayEntity.Id).ToList();
+
+                    // 盘点内容没有物料
+                    if (stockList.Count <= 0)
+                    {
+                        CheckListEntity.WareHouseCode = trayEntity.WareHouseCode;
+                        CheckListEntity.IsDeleted = false;
+                        CheckListEntity.StartTime = DateTime.Now;
+                        CheckListEntity.Remark = entity.Remark;
+                        CheckListEntity.CreatedTime = DateTime.Now;
+                        CheckListEntity.CheckDict = entity.CheckDict;
+                        CheckListEntity.Status = (int)CheckListStatusEnum.WaitingForCheck;
+                        // 生成编码
+                        CheckListEntity.Code = SequenceContract.Create(CheckListEntity.GetType());
+
+                        var LocationList = LocationRepository.Query().Where(a => a.TrayId == trayEntity.Id).ToList();
+                        foreach (var LocationEntity in LocationList)
+                        {
+                            // 盘点单明细
+                            var checkListDetailEntity = new CheckListDetail()
+                            {
+                                CheckCode = CheckListEntity.Code,
+                                IsDeleted = false,
+                                Quantity = 0,
+                                MaterialCode = LocationEntity.SuggestMaterialCode,
+                                MaterialLabel = null,
+                                WareHouseCode = LocationEntity.WareHouseCode,
+                                LocationCode = LocationEntity.Code,
+                                ContainerCode = LocationEntity.ContainerCode,
+                                Status = (int)CheckListStatusEnum.WaitingForCheck,
+                                TrayId = LocationEntity.TrayId
+                            };
+                            CheckListDetailList.Add(checkListDetailEntity);
+                        }
+                    }
+                    else
+                    {
+                        //var stockLists = stockList.GroupBy(a => new { a.LocationCode });
+                        //foreach(var groutbyStok in stockLists)
+                        //{
+                        foreach (var stockEntity in stockList)
+                        {
+                            // 盘点单明细
+                            var checkListDetailEntity = new CheckListDetail()
+                            {
+                                IsDeleted = false,
+                                Quantity = stockEntity.Quantity,
+                                MaterialCode = stockEntity.MaterialCode,
+                                MaterialLabel = stockEntity.MaterialLabel,
+                                WareHouseCode = stockEntity.WareHouseCode,
+                                LocationCode = stockEntity.LocationCode,
+                                ContainerCode = stockEntity.ContainerCode,
+                                Status = (int)CheckListStatusEnum.WaitingForCheck,
+                                TrayId = stockEntity.TrayId
+                            };
+                            CheckListDetailList.Add(checkListDetailEntity);
+                        }
+
+                        //}                     
+                    }
+                }
+
+                // 根据仓库分组
+                var groupList = CheckListDetailList.GroupBy(a => new { a.WareHouseCode });
+
+
+                if (CheckListDetailList.Count <= 0)
+                {
+                    if (!CheckListRepository.Insert(CheckListEntity))
+                    {
+                        return DataProcess.Failure(string.Format("盘点单{0}添加失败", entity.Code));
+                    }
+                }
+
+                // 循环创建盘点单
+                foreach (var item in groupList)
+                {
+                    // 3 查找 是否有正在作业的 入库单
+                    if (InContract.InDtos.Any(a => a.WareHouseCode == entity.WareHouseCode && a.Status != (int)Bussiness.Enums.InStatusCaption.WaitingForShelf && a.Status != (int)Bussiness.Enums.InStatusCaption.Finished))
+                    {
+                        return DataProcess.Failure("该仓库有正在作业的入库单，请先执行完成。");
+                    }
+
+                    // 3 查找 是否有正在作业的 入库单
+                    if (OutContract.OutDtos.Any(a => a.WareHouseCode == entity.WareHouseCode && a.Status != (int)Bussiness.Enums.OutStatusCaption.WaitSending && a.Status != (int)Bussiness.Enums.OutStatusCaption.Finished))
+                    {
+                        return DataProcess.Failure("该仓库有正在作业的出库单，请先执行完成。");
+                    }
+
+                    CheckListDetail temp = item.FirstOrDefault();
+                    var CheckListItem = new CheckList()
+                    {
+                        WareHouseCode = temp.WareHouseCode,
+                        IsDeleted = false,
+                        Remark = entity.Remark,
+                        CheckDict = entity.CheckDict,
+                        Status = (int)CheckListStatusEnum.WaitingForCheck,
+                    };
+
+                    // 生成编码
+                    CheckListItem.Code = SequenceContract.Create(CheckListItem.GetType());
+                    // 增加盘点单明细
+                    foreach (CheckListDetail CheckListMaterial in item)
+                    {
+                        // 创建盘点明细对象
+                        CheckListMaterial.CheckCode = CheckListItem.Code;
+                        // 添加盘点单明细
+                        if (!CheckListDetailRepository.Insert(CheckListMaterial))
+                        {
+                            return DataProcess.Failure(string.Format("盘点单明细{0}新增失败", entity.Code));
+                        }
+                    }
+                    if (!CheckListRepository.Insert(CheckListItem))
+                    {
+                        return DataProcess.Failure(string.Format("盘点单{0}添加失败", entity.Code));
+                    }
+                }
+            }
+            CheckListRepository.UnitOfWork.Commit();
+            return DataProcess.Success(string.Format("盘点单{0}添加成功", entity.Code));
         }
 
 

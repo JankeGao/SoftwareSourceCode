@@ -37,6 +37,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\DF.Web.xml</DocumentationFile>
+    <IncludeIisSettings>false</IncludeIisSettings>
+    <LegacyPublishPropertiesPageEnabled>true</LegacyPublishPropertiesPageEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -77,6 +79,7 @@
       <HintPath>..\packages\HP.AutoMapper.1.0.0\lib\net45\HP.AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="HP.Core, Version=1.3.2.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HP.Core.2.2.0\lib\net45\HP.Core.dll</HintPath>
     </Reference>
     <Reference Include="HP.Data.Entity, Version=1.3.2.3, Culture=neutral, processorArchitecture=MSIL">
@@ -246,6 +249,7 @@
     <Compile Include="Areas\BussinessApi\Controllers\CheckListController.cs" />
     <Compile Include="Areas\BussinessApi\Controllers\ContainerInitializationController.cs" />
     <Compile Include="Areas\BussinessApi\Controllers\ContrainerRunController.cs" />
+    <Compile Include="Areas\BussinessApi\Controllers\CRRCDataController.cs" />
     <Compile Include="Areas\BussinessApi\Controllers\CustomerController.cs" />
     <Compile Include="Areas\BussinessApi\Controllers\DashboardController.cs" />
     <Compile Include="Areas\BussinessApi\Controllers\DeviceAlarmController.cs" />

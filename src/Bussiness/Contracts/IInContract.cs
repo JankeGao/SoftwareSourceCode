@@ -84,5 +84,10 @@ namespace Bussiness.Contracts
         /// </summary>
         /// <returns></returns>
         DataResult CreateInEntityInterFace();
+        /// <summary>
+        /// restful接口同步入库单
+        /// </summary>
+        /// <returns></returns>
+        //object CreateInEntityInterFacedes();
     }
 }

@@ -13,7 +13,7 @@ namespace wms.Client.ViewModel
         // 记录上一次彻底消除的时间
         private DateTime _lastDismissTime = DateTime.MinValue;
         // 定义验证码
-        private const string VerificationCode = "1234";
+        private const string VerificationCode = "666666";
 
         private string verification = string.Empty;
         public string Verification

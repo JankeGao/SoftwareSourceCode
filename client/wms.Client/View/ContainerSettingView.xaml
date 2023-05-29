@@ -394,9 +394,6 @@
                         <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
                             <Button x:Name="btn_Verification"  Width="100" Height="40" Content="验证弹窗" Margin="0" Cursor="Hand" Click="btn_Verification_Click" />
                         </StackPanel>
-                        <StackPanel>
-                            
-                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>

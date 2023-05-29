@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Threading;
 using Bussiness.Entitys;
 using HP.Core.Data;
+using System.Web;
 
 namespace Bussiness.Services
 {
@@ -49,8 +50,7 @@ namespace Bussiness.Services
                         Remark = "",
                         WareHouseCode = dict["WareHouseCode"].ToString(),
                         AddMaterial = new List<InMaterial>(),
-
-                        
+ 
                     };
 
 

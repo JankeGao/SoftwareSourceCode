@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Text.RegularExpressions;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
@@ -14,6 +19,8 @@ using HP.Core.Sequence;
 using HP.Data.Orm;
 using HP.Utility.Data;
 using HP.Utility.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Bussiness.Services
 {
@@ -37,6 +44,8 @@ namespace Bussiness.Services
 
         public IRepository<HPC.BaseService.Models.Dictionary,int> DictionaryRepository { get; set; }
 
+        public IRepository<Out, int> OutRepository { get; set; }
+        public IQuery<Out> Outs => OutRepository.Query();
         public ISequenceContract SequenceContract { set; get; }
 
         /// <summary>
@@ -102,6 +111,7 @@ namespace Bussiness.Services
                         OutDictDescription = dictionary.Name,
                         PictureUrl = equipmentType.PictureUrl,
                         OutDate = outentity.OutDate,
+                        CRRCID = outentity.CRRCID,
                     });
             }
         }
@@ -157,7 +167,7 @@ namespace Bussiness.Services
                       BoxUrl = location.BoxUrl,
                       ContainerType = location.ContainerType,
                       BracketNumber = location.BracketNumber,
-                      BracketTrayNumber = location.BracketTrayNumber
+                      BracketTrayNumber = location.BracketTrayNumber,
                   });
 
 
@@ -208,7 +218,8 @@ namespace Bussiness.Services
                 YLight= location.YLight,
                 BoxName = location.BoxName,
                 BoxUrl = location.BoxUrl,
-                MaterialUrl=material.PictureUrl
+                MaterialUrl=material.PictureUrl,
+
             });
 
 
@@ -376,7 +387,8 @@ namespace Bussiness.Services
                                 WareHouseCode = stock.WareHouseCode,
                                 AreaCode = stock.AreaCode,
                                 XLight = locationEntity.XLight,
-                                YLight = locationEntity.YLight
+                                YLight = locationEntity.YLight,
+
                             };
                             labelList.Add(label);
                             // taskLabelList.Add(label);
@@ -410,7 +422,8 @@ namespace Bussiness.Services
                                 AreaCode = stock.AreaCode,
                                 SupplierCode = stock.SupplierCode,
                                 XLight = locationEntity.XLight,
-                                YLight = locationEntity.YLight
+                                YLight = locationEntity.YLight,
+
                             };
                             needQuantity = needQuantity - aviQuantiy;
                             stock.LockedQuantity = stock.LockedQuantity + aviQuantiy;
@@ -470,6 +483,7 @@ namespace Bussiness.Services
                             IsDeleted=false,
                             OutCode = entity.Code,
                             OutDict = outEntity.OutDict,
+                            CRRCID = entity.CRRCID,
                         };
                         outTask.Code = SequenceContract.Create(outTask.GetType());
 
@@ -858,7 +872,8 @@ namespace Bussiness.Services
                 MaterialLabel = entityDto.MaterialLabel,
                 MaterialCode = entityDto.MaterialCode,
                 LocationCode = entityDto.LocationCode,
-                BillCode = entity.BillCode
+                BillCode = entity.BillCode,
+
 
             };
             OutMaterialLabelRepository.Insert(outMaterialLabel);
@@ -1010,9 +1025,98 @@ namespace Bussiness.Services
             OutContract.OutRepository.Update(outEntity);
             #endregion
 
+            Out outEntityes = Outs.FirstOrDefault(a => a.Code == entity.OutCode);
+            OutTask outTaskEntityes = OutTaskDtos.FirstOrDefault(a => a.Code == entity.OutCode);
+
+            #region 登录获取token及进行任务反馈
+            try
+            {
+                // 登录成功，拼接token到下架任务反馈接口url和请求参数
+                string url = "http://192.168.3.224:8181/api/zcdx-wms/v1/wms/wmsExWareBill/unShelveWK";
+                // 构造请求参数
+                List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
+                EnWarehBillShelfModel model = new EnWarehBillShelfModel
+                {
+                    Id = outEntityes.CRRCID,
+                    Num = (int)entity.RealPickedQuantity,
+                    //WarehBinCode = entity.LocationCode,
+                    //MatProduceBatch = entity.BatchCode,
+                };
+                models.Add(model);
+                string json = JsonConvert.SerializeObject(models);
+
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpWebRequest.ContentType = "application/json; charset=UTF-8";
+                httpWebRequest.Method = "POST";
+                httpWebRequest.Timeout = 50000;
+                httpWebRequest.ProtocolVersion = HttpVersion.Version10;
+                byte[] btBodys = Encoding.UTF8.GetBytes(json);
+                httpWebRequest.ContentLength = btBodys.Length;
+                httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+                string responseContent = streamReader.ReadToEnd();
+                httpWebResponse.Close();
+                streamReader.Close();
+                if (httpWebResponse != null)
+                {
+                    httpWebResponse.Close();
+                }
+                if (httpWebRequest != null)
+                {
+                    httpWebRequest.Abort();
+                }
+                // 处理响应结果
+                if (responseContent != null)
+                {
+                    // 解析JSON数据
+                    var resultes = JsonConvert.DeserializeObject<dynamic>(responseContent);
+                    // 获取接口返回的各个字段值
+                    var codees = (int)resultes.code;
+                    var dataes = (string)resultes.data;
+                    var messagees = (string)resultes.message;
+                    var successes = (bool)resultes.success;
+
+                    if (codees == 0)
+                    {
+                        return DataProcess.Failure(dataes, messagees);
+                    }
+                    else if (codees == 2)
+                    {
+                        return DataProcess.Failure(dataes, messagees);
+                    }
+                }
+                else
+                {
+                    return DataProcess.Failure("数据传输响应失败！");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return DataProcess.Failure("请求登录接口失败！", ex.Message);
+            }
+            #endregion
 
             OutTaskMaterialLabelRepository.UnitOfWork.Commit();
             return DataProcess.Success("操作成功");
+        }
+
+        // 上架任务模型
+        public class EnWarehBillShelfModel
+        {
+            //单据id
+            [JsonProperty("id")]
+            public string Id { get; set; }
+            //数量
+            [JsonProperty("qty")]
+            public int Num { get; set; }
+            ////仓位id(物料位置)
+            //[JsonProperty("warehBinCode")]
+            //public string WarehBinCode { get; set; }
+            ////生产批次
+            //[JsonProperty("matProduceBatch")]
+            //public object MatProduceBatch { get; set; }
         }
 
         public DataResult HandStartContainer(OutTaskMaterialDto entityDto)
@@ -1330,7 +1434,8 @@ namespace Bussiness.Services
                     OutDate = DateTime.Now.ToString(),
                     Status = (int)OutStatusCaption.Finished,
                     OutDict = tempEntity.OutDict,
-                    Remark = outTaskEntityDto.Remark
+                    Remark = outTaskEntityDto.Remark,
+                    CRRCID = outTaskEntityDto.CRRCID,
                 };
                 outBill.Code = SequenceContract.Create(outBill.GetType());
 
@@ -1468,7 +1573,7 @@ namespace Bussiness.Services
                         MaterialLabel = entityDto.MaterialLabel,
                         MaterialCode = entityDto.MaterialCode,
                         LocationCode = entityDto.LocationCode,
-                        BillCode = entity.BillCode
+                        BillCode = entity.BillCode,
 
                     };
                     OutMaterialLabelRepository.Insert(outMaterialLabel);

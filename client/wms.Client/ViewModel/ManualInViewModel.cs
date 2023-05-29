@@ -5,6 +5,9 @@ using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +29,8 @@ using HP.Utility.Data;
 using HPC.BaseService.Contracts;
 using HPC.BaseService.Models;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SearchableTextBox.Models;
 using wms.Client.Common;
 using wms.Client.Core.Interfaces;
@@ -472,6 +477,7 @@ namespace wms.Client.ViewModel
         /// </summary>
         public RelayCommand RunningTakeInCommand { get; private set; }
         public RelayCommand StraightInTrayCommand { get; private set; }
+
 
         /// <summary>
         /// 选择本次入库的物料
@@ -1960,6 +1966,56 @@ namespace wms.Client.ViewModel
                 Msg.Error(runningContainer.Result.Message);
             }
         }
+
+       
+        private async Task<string> GetTokenAsync(string username, string password)
+        {
+            string loginUrl = "http://192.168.3.224:8181/api/sys/v1/sso/login";
+            string jsonBody = JsonConvert.SerializeObject(new
+            {
+                username = username,
+                password = password
+            });
+            using (var clientes = new HttpClient())
+            {
+                clientes.DefaultRequestHeaders.Accept.Clear();
+                clientes.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var contentes = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+                var response = await clientes.PostAsync(loginUrl, contentes);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var responseObject = JObject.Parse(responseString);
+                    var code = (int)responseObject["code"];
+                    var token = (string)responseObject["data"];
+                    var message = (string)responseObject["message"];
+                    if (code == 1)
+                    {
+                        return token;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
+        public class EnWarehBillShelfModel
+        {
+            //单据id
+            [JsonProperty("id")]
+            public string Id { get; set; }
+            //数量
+            [JsonProperty("qty")]
+            public int Qty { get; set; }
+            //仓位id(物料位置)
+            [JsonProperty("warehBinCode")]
+            public string WarehBinCode { get; set; }
+            //生产批次
+            [JsonProperty("MAT_BATCH")]
+            public object MAT_BATCH { get; set; }
+        }
+
         /// <summary>
         /// 直接存入托盘
         /// </summary>

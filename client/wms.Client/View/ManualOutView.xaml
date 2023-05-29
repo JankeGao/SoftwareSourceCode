@@ -405,11 +405,11 @@
                             Width="60"
                             Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="18" IsEnabled="False" />
+                            FontSize="18" IsEnabled="False" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel>
                         <Button VerticalAlignment="Center" 
-                            HorizontalAlignment="Center"  Width="60" Margin="5 20 0 0" Command="{Binding SynchronousQuantityCommand}" Content="同步" IsEnabled="{Binding IsWeighingQuantity}" />
+                            HorizontalAlignment="Center"  Width="60" Margin="5 20 0 0" Command="{Binding SynchronousQuantityCommand}" Content="同步" IsEnabled="{Binding IsWeighingQuantity}" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Margin="10 22 10 0"

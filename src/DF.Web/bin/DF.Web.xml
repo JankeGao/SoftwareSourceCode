@@ -9,6 +9,16 @@
             额外的数据映射
             </summary>
         </member>
+        <member name="T:DF.Web.SwaggerConfig">
+            <summary>
+            Swagger配置
+            </summary>
+        </member>
+        <member name="M:DF.Web.SwaggerConfig.Register">
+            <summary>
+            寄存器配置
+            </summary>
+        </member>
         <member name="T:DF.Web.Areas.BaseApi.Controllers.DepartmentController">
             <summary>
             部门管理
@@ -399,6 +409,13 @@
             <summary>
             分页数据
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.CheckController.PostDoSubmit(Bussiness.Entitys.CheckMain)">
+            <summary>
+            提交盘点单信息
+            </summary>
+            <param name="entity"></param>
             <returns></returns>
         </member>
         <member name="M:DF.Web.Areas.BussinessApi.Controllers.CheckController.GetCheckDetailPageRecords(HP.Web.Mvc.Pagination.MvcPageCondition)">
@@ -864,6 +881,17 @@
             扫描传递物料单重
             </summary>
             <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DF.Web.Areas.BussinessApi.Controllers.CRRCDataController">
+            <summary>
+            获取tb_wms_in表中的数据
+            </summary>
+        </member>
+        <member name="M:DF.Web.Areas.BussinessApi.Controllers.CRRCDataController.Get">
+            <summary>
+            获取tb_wms_in表中的数据
+            </summary>
             <returns></returns>
         </member>
         <member name="P:DF.Web.Areas.BussinessApi.Controllers.CustomerController.CustomerContract">
@@ -1483,6 +1511,11 @@
             </summary>
             <param name="entity"></param>
             <returns></returns>
+        </member>
+        <member name="T:DF.Web.Areas.BussinessApi.Controllers.InController">
+            <summary>
+            入库管理
+            </summary>
         </member>
         <member name="P:DF.Web.Areas.BussinessApi.Controllers.InController.InContract">
             <summary>
