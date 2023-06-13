@@ -15,6 +15,17 @@ namespace wms.Client.Service.Service
             return r;
         }
 
+        public async Task GetInterfaceIn()
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            await baseService.GetRequest<DataResult>(new GetInterfaceInRequest(), RestSharp.Method.GET);
+        }
+
+        public async Task GetInterfaceOut()
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            await baseService.GetRequest<DataResult>(new GetInterfaceOutRequest(), RestSharp.Method.GET);
+        }
 
         public async Task<DataResult> PostClientLocationList(InTaskMaterialDto model)
         {

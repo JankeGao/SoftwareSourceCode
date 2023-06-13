@@ -25,6 +25,20 @@ namespace wms.Client.Model.RequestModel
         public InTaskMaterialDto Entity { get; set; }
     }
 
+    public class GetInterfaceInRequest : BaseRequest
+    {
+
+        public override string route { get => ServerIP + "api/In/GetInterfaceIn"; }
+
+    }
+
+    public class GetInterfaceOutRequest : BaseRequest
+    {
+
+        public override string route { get => ServerIP + "api/Out/GetInterfaceOut"; }
+
+    }
+
     public class PostClientLocationList : BaseRequest
     {
 

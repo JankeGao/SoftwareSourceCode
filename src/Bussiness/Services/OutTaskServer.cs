@@ -27,7 +27,7 @@ namespace Bussiness.Services
     public class OutTaskServer : Contracts.IOutTaskContract
     {
         public IRepository<Material, int> MaterialRepository { get; set; }
-
+        public IRepository<OutMaterial, int> OutMaterialRepository { get; set; }
         public IRepository<Entitys.Tray, int> TrayRepository { get; set; }
         public IRepository<OutTask, int> OutTaskRepository { get; set; }
 
@@ -46,6 +46,8 @@ namespace Bussiness.Services
 
         public IRepository<Out, int> OutRepository { get; set; }
         public IQuery<Out> Outs => OutRepository.Query();
+
+        public IQuery<OutMaterial> OutMaterials => OutMaterialRepository.Query();
         public ISequenceContract SequenceContract { set; get; }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace Bussiness.Services
                         OutDictDescription = dictionary.Name,
                         PictureUrl = equipmentType.PictureUrl,
                         OutDate = outentity.OutDate,
-                        CRRCID = outentity.CRRCID,
+                        //CRRCID = outentity.CRRCID,
                     });
             }
         }
@@ -483,7 +485,7 @@ namespace Bussiness.Services
                             IsDeleted=false,
                             OutCode = entity.Code,
                             OutDict = outEntity.OutDict,
-                            CRRCID = entity.CRRCID,
+                            //CRRCID = entity.CRRCID,
                         };
                         outTask.Code = SequenceContract.Create(outTask.GetType());
 
@@ -1025,7 +1027,7 @@ namespace Bussiness.Services
             OutContract.OutRepository.Update(outEntity);
             #endregion
 
-            Out outEntityes = Outs.FirstOrDefault(a => a.Code == entity.OutCode);
+            OutMaterial outEntityes = OutMaterials.FirstOrDefault(a => a.OutCode == entity.OutCode);
             OutTask outTaskEntityes = OutTaskDtos.FirstOrDefault(a => a.Code == entity.OutCode);
 
             #region 登录获取token及进行任务反馈
@@ -1037,10 +1039,11 @@ namespace Bussiness.Services
                 List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
                 EnWarehBillShelfModel model = new EnWarehBillShelfModel
                 {
-                    Id = outEntityes.CRRCID,
+                    MaterialId = outEntityes.CRRCID,
                     Num = (int)entity.RealPickedQuantity,
-                    //WarehBinCode = entity.LocationCode,
-                    //MatProduceBatch = entity.BatchCode,
+                    WorkStationId = outEntityes.WORKSTATIONID,
+                    WarehBinId = outEntityes.WAREHBINID,
+                    MergeId = outEntityes.MERGEID
                 };
                 models.Add(model);
                 string json = JsonConvert.SerializeObject(models);
@@ -1105,18 +1108,21 @@ namespace Bussiness.Services
         // 上架任务模型
         public class EnWarehBillShelfModel
         {
-            //单据id
-            [JsonProperty("id")]
-            public string Id { get; set; }
+            
+            [JsonProperty("materialId")]
+            public string MaterialId { get; set; }
             //数量
             [JsonProperty("qty")]
             public int Num { get; set; }
-            ////仓位id(物料位置)
-            //[JsonProperty("warehBinCode")]
-            //public string WarehBinCode { get; set; }
-            ////生产批次
-            //[JsonProperty("matProduceBatch")]
-            //public object MatProduceBatch { get; set; }
+            
+            [JsonProperty("workStationId")]
+            public string WorkStationId { get; set; }
+            
+            [JsonProperty("warehBinId")]
+            public object WarehBinId { get; set; }
+
+            [JsonProperty("mergeId")]
+            public object MergeId { get; set; }
         }
 
         public DataResult HandStartContainer(OutTaskMaterialDto entityDto)
@@ -1435,7 +1441,7 @@ namespace Bussiness.Services
                     Status = (int)OutStatusCaption.Finished,
                     OutDict = tempEntity.OutDict,
                     Remark = outTaskEntityDto.Remark,
-                    CRRCID = outTaskEntityDto.CRRCID,
+                    //CRRCID = outTaskEntityDto.CRRCID,
                 };
                 outBill.Code = SequenceContract.Create(outBill.GetType());
 

@@ -19,7 +19,7 @@ namespace Bussiness.Entitys
         /// </summary>
         public string Code { get; set; }
         /// <summary>
-        /// 单据号
+        /// 来源单据号
         /// </summary>
         public string BillCode { get; set; }
         /// <summary>
@@ -78,11 +78,10 @@ namespace Bussiness.Entitys
         /// 0  普通单据 1 调拨生成
         /// </summary>
         public int? OrderType { get; set; }
+
         /// <summary>
         /// MOM传入ID
         /// </summary>
         public string CRRCID { get; set; }
-
-
     }
 }

@@ -106,5 +106,6 @@ namespace Bussiness.Dtos
         //public string LocationCodeses { get; set; }
 
         //public string ManufactureDate { get; set; }
+
     }
 }

@@ -108,5 +108,10 @@ namespace Bussiness.Entitys
         /// </summary>
         public DateTime? ValidityDate { get; set; }
 
+
+        /// <summary>
+        /// MOM传入ID
+        /// </summary>
+        public string CRRCID { get; set; }
     }
 }

@@ -94,5 +94,13 @@ namespace Bussiness.Entitys
         /// </summary>
         public decimal? SendInQuantity { get; set; }
 
+        /// <summary>
+        /// MOM传入ID
+        /// </summary>
+        public string CRRCID { get; set; }
+        public string WORKSTATIONID { get; set; }
+        public string MERGEID { get; set; }
+        public string WAREHBINID { get; set; }
+
     }
 }

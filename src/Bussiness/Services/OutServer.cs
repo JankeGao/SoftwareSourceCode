@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
 using Bussiness.Entitys;
@@ -21,6 +22,10 @@ namespace Bussiness.Services
 {
     public class OutServer : Contracts.IOutContract
     {
+        public IRepository<OutTask, int> OutTaskRepository { get; set; }
+        public IRepository<OutTaskMaterialLabel, int> OutTaskMaterialLabelRepository { get; set; }
+        public IRepository<OutTaskMaterial, int> OutTaskMaterialRepository { get; set; }
+        public IOutContract OutContract { set; get; }
         public IRepository<OutIF, int> OutIFRepository { get; set; }
         public IRepository<OutMaterialIF, int> OutMaterialIFRepository { get; set; }
         public IRepository<WareHouse, int> WareHouseRepository { get; set; }
@@ -122,7 +127,7 @@ namespace Bussiness.Services
             UpdatedTime = outentity.UpdatedTime,
             OutDictDescription = dictionary.Name,
             OrderType= outentity.OrderType,
-            CRRCID= outentity.CRRCID,
+            //CRRCID= outentity.CRRCID,
         });
 
         public IRepository<OutMaterialLabel, int> OutMaterialLabelRepository { get; set; }
@@ -172,7 +177,11 @@ namespace Bussiness.Services
         {
             #region Oracle数据获取处理
             int count = 0;
-            var connectionString = "Data Source=192.168.3.224:1521/orcl;User ID=zcdx;Password=Oracle#gCsb#2023";
+            Out entity = new Out(); // 创建In类型的实体entity
+            List<Out> entityList = new List<Out>(); // 定义一个集合，用于存储遍历得到的实体entityes
+            OutMaterial inMaterialObj = null;
+            string currentBillCode = null;
+            var connectionString = "Data Source=192.168.3.168:1521/orcl;User ID=zcdx;Password=Oracle#gCsb#2023";
             var query = "SELECT * FROM V_WK_WMS_EX_WAREH_BILL";
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
@@ -192,89 +201,465 @@ namespace Bussiness.Services
                 reader.Close();
                 foreach (var dict in resultList)
                 {
-                    Out entity = new Out
+                    Out entityes = new Out
                     {
                         Id = 0,
-                        BillCode = dict["BILL_CODE"].ToString(),
-                        CRRCID = dict["ID"].ToString(),
-                        Code = "",
+                        Code = dict["BILL_CODE"].ToString(),
                         Remark = "",
                         WareHouseCode = "01",
-                        CreatedTime = (DateTime)dict["BILL_DATE"],
+                        CreatedTime = DateTime.Now,
                         AddMaterial = new List<OutMaterial>(),
                     };
 
-                    OutMaterial inMaterialObj = new OutMaterial
+                    inMaterialObj = new OutMaterial
                     {
                         MaterialCode = dict["MATERIALCODE"].ToString(),
                         Quantity = (decimal)dict["QTY"],
-                        //ManufactrueDate = (DateTime?)dict["BILL_DATE"],
+                        CRRCID = dict["MATERIAL_ID"].ToString(),
+                        WORKSTATIONID = dict["WORK_STATION_ID"].ToString(),
+                        MERGEID = dict["MERGE_ID"].ToString(),
+                        WAREHBINID = dict["WAREH_BIN_ID"].ToString(),
                         Status = 0,
-                        //RealInQuantity = 0,
                         BatchCode = "",
 
                     };
 
-                    if (!Outs.Any(a => a.BillCode == entity.BillCode))
+                    if (!Outs.Any(a => a.Code == entityes.Code))
                     {
-                        entity.AddMaterial.Add(inMaterialObj);
-                        OutRepository.UnitOfWork.TransactionEnabled = true;
+
+                        if (currentBillCode != null && dict["BILL_CODE"].ToString() != currentBillCode)
                         {
-                            // 判断是否有出库单号
-                            if (String.IsNullOrEmpty(entity.Code))
+                            continue;
+                        }
+                        else
+                        {
+                            currentBillCode = dict["BILL_CODE"].ToString();
+                            entityes.AddMaterial.Add(inMaterialObj);
+                            entityList.Add(entityes); // 将entityes加入到集合中
+                            entity = new Out
                             {
-                                entity.Code = SequenceContract.Create(entity.GetType());
-                            }
-                            if (Outs.Any(a => a.Code == entity.Code))
-                            {
-                                return DataProcess.Failure("该出库单号已存在");
-                            }
-                            entity.Status = entity.Status == null ? 0 : entity.Status;
-                            entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
+                                Id = 0,
+                                Code = dict["BILL_CODE"].ToString(),
+                                Remark = "",
+                                WareHouseCode = "01",
+                                CreatedTime = DateTime.Now,
+                                AddMaterial = new List<OutMaterial>(),
+                            };
+                        }
+                    }
+                }
 
-                            if (!OutRepository.Insert(entity))
-                            {
-                                return DataProcess.Failure(string.Format("出库单{0}新增失败", entity.Code));
-                            }
-                            if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
-                            {
+                foreach (var tempEntity in entityList)
+                {
+                    entity.AddMaterial.AddRange(tempEntity.AddMaterial); // 将集合中的每个entityes的AddMaterial加入到entity中
+                }
 
-                                foreach (OutMaterial item in entity.AddMaterial)
+                if (entityList.Count <= 0)
+                {
+                    return DataProcess.Failure("暂无新增出库单");
+                }
+
+                OutRepository.UnitOfWork.TransactionEnabled = true;
+                {
+                    // 判断是否有出库单号
+                    if (String.IsNullOrEmpty(entity.Code))
+                    {
+                        entity.Code = SequenceContract.Create(entity.GetType());
+                    }
+                    if (Outs.Any(a => a.Code == entity.Code))
+                    {
+                        return DataProcess.Failure("该出库单号已存在");
+                    }
+                    entity.Status = entity.Status == null ? 0 : entity.Status;
+                    entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
+
+                    if (!OutRepository.Insert(entity))
+                    {
+                        return DataProcess.Failure(string.Format("出库单{0}新增失败", entity.Code));
+                    }
+                    if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
+                    {
+
+                        foreach (OutMaterial item in entity.AddMaterial)
+                        {
+                            item.OutCode = entity.Code;
+                            item.BillCode = entity.BillCode;
+                            item.Status = item.Status == null ? 0 : item.Status;
+                            if (Materials.Any(a => a.Code == inMaterialObj.MaterialCode))
+                            {
+                                DataResult result = CreateOutMaterialEntity(item);
+                                if (!result.Success)
                                 {
-                                    item.OutCode = entity.Code;
-                                    item.BillCode = entity.BillCode;
-                                    item.Status = item.Status == null ? 0 : item.Status;
-                                    if (Materials.Any(a => a.Code == inMaterialObj.MaterialCode))
-                                    {
-                                        DataResult result = CreateOutMaterialEntity(item);
-                                        if (!result.Success)
-                                        {
-                                            return DataProcess.Failure(result.Message);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        return DataProcess.Failure(string.Format("物料编码{0}系统中不存在，请维护！", inMaterialObj.MaterialCode));
-                                    }
-                                    if (inMaterialObj.Quantity <= 0)
-                                    {
-                                        return DataProcess.Failure(string.Format("编码为{0}的物料传入数量需大于零，请维护！", inMaterialObj.MaterialCode));
-                                    }
+                                    return DataProcess.Failure(result.Message);
                                 }
-
+                            }
+                            else
+                            {
+                                return DataProcess.Failure(string.Format("物料编码{0}系统中不存在，请维护！", inMaterialObj.MaterialCode));
+                            }
+                            if (inMaterialObj.Quantity <= 0)
+                            {
+                                return DataProcess.Failure(string.Format("编码为{0}的物料传入数量需大于零，请维护！", inMaterialObj.MaterialCode));
                             }
                         }
-                        count++;
-                        OutRepository.UnitOfWork.Commit();
-                    }
 
+                    }
                 }
-                return DataProcess.Success(string.Format("出库单同步成功,共有{0}条增加", count));
+                count++;
+
+                Thread.Sleep(500);
+
+                try
+                {
+                    if (CheckRepository.Query().Any(a => a.WareHouseCode == entity.WareHouseCode && a.Status != (int)Bussiness.Enums.CheckStatusCaption.Finished && a.Status != (int)Bussiness.Enums.CheckStatusCaption.Cancel))
+                    {
+                        return DataProcess.Failure("该仓库尚有盘点单未完成");
+                    }
+                    //查找可用库存是否满足-出库单明细表
+                    List<OutMaterialDto> list = OutContract.OutMaterialDtos.Where(a => a.OutCode == entity.Code).ToList();
+
+                    // 按照物料编码分组
+                    IEnumerable<IGrouping<string, OutMaterialDto>> group = list.GroupBy(a => a.MaterialCode);
+
+                    // 出库任务明细表
+                    List<OutTaskMaterialLabel> labelList = new List<OutTaskMaterialLabel>();
+
+                    OutContract.OutRepository.UnitOfWork.TransactionEnabled = true;
+
+                    foreach (IGrouping<string, OutMaterialDto> item in group)
+                    {
+                        // 该物料下发数量
+                        decimal sendQuantity = 0;
+
+                        // 获取物料实体
+                        var materialEntity = MaterialContract.MaterialDtos.FirstOrDefault(a => a.Code == item.Key);
+
+                        var queryes = StockRepository.Query()
+                            .Where(a => a.MaterialCode == item.Key &&
+                                        (a.IsCheckLocked == false || a.IsCheckLocked == null) &&
+                                        a.WareHouseCode == entity.WareHouseCode);
+                        // 是否启用老化时间
+                        if (materialEntity.AgeingPeriod > 0)
+                        {
+                            //此刻的时间应大于入库时间+老化时间
+                            var valtime = DateTime.Now.AddDays(-materialEntity.AgeingPeriod);
+                            queryes = queryes.Where(a => valtime > a.ShelfTime);
+                        }
+
+
+                        // 先进先出策略选择
+                        switch (materialEntity.FIFOType)
+                        {
+                            // 无先进先出，根据创建时间
+                            case 0:
+                                queryes.OrderBy(a => a.CreatedTime);
+                                break;
+                            // 入库时间
+                            case 1:
+                                if (materialEntity.FIFOAccuracy == 0 || materialEntity.FIFOAccuracy == 1) //无，秒
+                                {
+                                    queryes.OrderBy(a => a.ShelfTime);
+                                }
+                                else if (materialEntity.FIFOAccuracy == 2) // 分钟
+                                {
+                                    queryes.OrderBy(a => ((DateTime)a.ShelfTime).ToString("g"));//2016/5/9 13:09 短日期 短时间
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ShelfTime).ToString()).ToString("yyyy-MM-dd HH:mm"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else if (materialEntity.FIFOAccuracy == 3) // 小时
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ShelfTime).ToString()).ToString("yyyy-MM-dd HH"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else // 天
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ShelfTime).ToString()).ToString("yyyy-MM-dd"));//2016/5/9 13:09 短日期
+                                }
+                                break;
+                            // 生产日期
+                            case 2:
+                                if (materialEntity.FIFOAccuracy == 0 || materialEntity.FIFOAccuracy == 1) //无，秒
+                                {
+                                    queryes.OrderBy(a => a.ManufactureDate);
+                                }
+                                else if (materialEntity.FIFOAccuracy == 2) // 分钟
+                                {
+                                    queryes.OrderBy(a => ((DateTime)a.ManufactureDate).ToString("g"));//2016/5/9 13:09 短日期 短时间
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ManufactureDate).ToString()).ToString("yyyy-MM-dd HH:mm"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else if (materialEntity.FIFOAccuracy == 3) // 小时
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ManufactureDate).ToString()).ToString("yyyy-MM-dd HH"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else // 天
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((DateTime)a.ManufactureDate).ToString()).ToString("yyyy-MM-dd"));//2016/5/9 13:09 短日期
+                                }
+                                break;
+                            // 保质期日期——生产日期+保质期-当前时间
+                            case 3:
+                                if (materialEntity.FIFOAccuracy == 0 || materialEntity.FIFOAccuracy == 1) //无，秒
+                                {
+                                    queryes.OrderBy(a => (((DateTime)a.ManufactureDate).AddDays(materialEntity.ValidityPeriod) - DateTime.Now));
+                                }
+                                else if (materialEntity.FIFOAccuracy == 2) // 分钟
+                                {
+                                    queryes.OrderBy(a => ((DateTime)a.ManufactureDate).ToString("g"));//2016/5/9 13:09 短日期 短时间
+                                    queryes.OrderBy(a => DateTime.Parse(((((DateTime)a.ManufactureDate).AddDays(materialEntity.ValidityPeriod) - DateTime.Now)).ToString()).ToString("yyyy-MM-dd HH:mm"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else if (materialEntity.FIFOAccuracy == 3) // 小时
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((((DateTime)a.ManufactureDate).AddDays(materialEntity.ValidityPeriod) - DateTime.Now)).ToString()).ToString("yyyy-MM-dd HH"));//2016/5/9 13:09 短日期 短时间
+                                }
+                                else // 天
+                                {
+                                    queryes.OrderBy(a => DateTime.Parse(((((DateTime)a.ManufactureDate).AddDays(materialEntity.ValidityPeriod) - DateTime.Now)).ToString()).ToString("yyyy-MM-dd"));//2016/5/9 13:09 短日期
+                                }
+                                break;
+                        }
+
+                        List<Stock> AvailableStock = queryes.ToList();
+
+                        if (AvailableStock.Sum(a => a.Quantity - a.LockedQuantity) < item.Sum(a => a.Quantity))
+                        {
+                            return DataProcess.Failure("物料" + item.Key + "库存不足");
+                        }
+
+                        // 本次待出库的数量
+                        decimal needQuantity = item.Sum(a => a.Quantity);
+
+
+                        // 分配库存
+                        foreach (Stock stock in AvailableStock)
+                        {
+                            // 库存条码可用数量
+                            decimal aviQuantiy = stock.Quantity - stock.LockedQuantity;
+
+
+                            if (aviQuantiy <= 0)
+                            {
+                                continue;
+                            }
+
+                            // 储位信息
+                            var locationEntity =
+                                WareHouseContract.LocationRepository.GetEntity(a => a.Code == stock.LocationCode);
+
+                            // 如果库存条码大于总共的数量
+                            if (aviQuantiy >= needQuantity)
+                            {
+                                OutTaskMaterialLabel label = new OutTaskMaterialLabel
+                                {
+                                    BatchCode = stock.BatchCode,
+                                    BillCode = entity.BillCode,
+                                    IsDeleted = false,
+                                    LocationCode = stock.LocationCode,
+                                    OriginalQuantity = stock.Quantity,
+                                    MaterialCode = item.Key,
+                                    MaterialLabel = stock.MaterialLabel,
+                                    SupplierCode = stock.SupplierCode,
+                                    OutCode = entity.Code,
+                                    ContainerCode = stock.ContainerCode,
+                                    TrayId = stock.TrayId,
+                                    OutMaterialId = 0,
+                                    Quantity = needQuantity,
+                                    Status = (int)Bussiness.Enums.OutStatusCaption.WaitSending,
+                                    WareHouseCode = stock.WareHouseCode,
+                                    AreaCode = stock.AreaCode,
+                                    XLight = locationEntity.XLight,
+                                    YLight = locationEntity.YLight,
+
+                                };
+                                labelList.Add(label);
+                                // taskLabelList.Add(label);
+                                stock.LockedQuantity = stock.LockedQuantity + needQuantity;
+                                stock.IsLocked = true;
+                                StockRepository.Update(stock);
+                                // 本次分配的数量
+                                sendQuantity = sendQuantity + label.Quantity;
+                                break;
+
+                            }
+                            else
+                            {
+                                // 如果出库的物料数量小于库存条码数量
+                                OutTaskMaterialLabel label = new OutTaskMaterialLabel
+                                {
+                                    BatchCode = stock.BatchCode,
+                                    BillCode = entity.BillCode,
+                                    ContainerCode = stock.ContainerCode,
+                                    OriginalQuantity = stock.Quantity,
+                                    TrayId = stock.TrayId,
+                                    IsDeleted = false,
+                                    LocationCode = stock.LocationCode,
+                                    MaterialCode = item.Key,
+                                    OutCode = entity.Code,
+                                    MaterialLabel = stock.MaterialLabel,
+                                    OutMaterialId = 0,
+                                    Quantity = aviQuantiy,
+                                    Status = (int)Bussiness.Enums.OutStatusCaption.WaitSending,
+                                    WareHouseCode = stock.WareHouseCode,
+                                    AreaCode = stock.AreaCode,
+                                    SupplierCode = stock.SupplierCode,
+                                    XLight = locationEntity.XLight,
+                                    YLight = locationEntity.YLight,
+
+                                };
+                                needQuantity = needQuantity - aviQuantiy;
+                                stock.LockedQuantity = stock.LockedQuantity + aviQuantiy;
+                                stock.IsLocked = true;//锁定住 不允许移库。。
+                                StockRepository.Update(stock);
+                                // 本次分配的数量
+                                sendQuantity = sendQuantity + label.Quantity;
+                                labelList.Add(label);
+                            }
+                        }
+
+                        // 出库单明细
+                        foreach (OutMaterialDto outMaterial in item)
+                        {
+                            outMaterial.Status = (int)Bussiness.Enums.OutStatusCaption.WaitSending;
+                            // 计算下发数量
+                            if (sendQuantity > outMaterial.Quantity)
+                            {
+                                // 如果分配数量还大于出库单行项目数量
+                                outMaterial.SendInQuantity = outMaterial.Quantity;
+                                sendQuantity = sendQuantity - outMaterial.Quantity;
+                            }
+                            else
+                            {
+                                // 如果分配数量还已不足出单行项目数量
+                                outMaterial.SendInQuantity = sendQuantity;
+                                sendQuantity = 0;
+                            }
+
+                            // 物料实体映射
+                            OutMaterial outMaterialEntity = Mapper.MapTo<OutMaterial>(outMaterial);
+
+                            OutContract.OutMaterialRepository.Update(outMaterialEntity);
+                        }
+                    }
+                    entity.Status = (int)Bussiness.Enums.OutStatusCaption.WaitSending;
+
+                    OutContract.OutRepository.Update(entity);
+
+                    if (labelList.Count > 0)
+                    {
+
+                        // 生成出库任务单
+                        var groupList = labelList.GroupBy(a => new { a.WareHouseCode, a.ContainerCode });
+
+                        var outEntity = OutContract.OutDtos.FirstOrDefault(a => a.Code == entity.Code);
+
+
+                        foreach (var item in groupList)
+                        {
+                            OutTaskMaterialLabel temp = item.FirstOrDefault();
+                            var outTask = new OutTask()
+                            {
+                                Status = (int)OutTaskStatusCaption.WaitingForPicking,
+                                WareHouseCode = temp.WareHouseCode,
+                                ContainerCode = temp.ContainerCode,
+                                IsDeleted = false,
+                                OutCode = entity.Code,
+                                OutDict = outEntity.OutDict,
+                                //CRRCID = entity.CRRCID,
+                            };
+                            outTask.Code = SequenceContract.Create(outTask.GetType());
+
+
+                            var materialList = item.GroupBy(a => new
+                            { a.WareHouseCode, a.TrayId, a.ContainerCode, a.LocationCode, a.MaterialCode, a.BatchCode }).ToList();
+
+                            foreach (var OutMaterial in materialList)
+                            {
+                                decimal pickQuantity = OutMaterial.Sum(a => a.Quantity);
+                                var OutMaterialEntity = new OutTaskMaterial()
+                                {
+                                    Status = (int)OutTaskStatusCaption.WaitingForPicking,
+                                    WareHouseCode = temp.WareHouseCode,
+                                    ContainerCode = temp.ContainerCode,
+                                    OutCode = entity.Code,
+                                    OutDict = outEntity.OutDict,
+                                    Quantity = pickQuantity,
+                                    BatchCode = OutMaterial.Key.BatchCode,
+                                    SuggestLocation = OutMaterial.Key.LocationCode,
+                                    SuggestContainerCode = OutMaterial.Key.ContainerCode,
+                                    SuggestTrayId = OutMaterial.Key.TrayId,
+                                    RealPickedQuantity = 0,
+                                    MaterialCode = OutMaterial.Key.MaterialCode
+                                };
+                                OutMaterialEntity.OutTaskCode = outTask.Code;
+
+                                if (!OutTaskMaterialRepository.Insert(OutMaterialEntity))
+                                {
+                                    return DataProcess.Failure(string.Format("出库库任务明细{0}新增失败", entity.Code));
+                                }
+                            }
+
+                            foreach (OutTaskMaterialLabel OutMaterialLabel in item)
+                            {
+                                OutMaterialLabel.TaskCode = outTask.Code;
+                                if (!OutTaskMaterialLabelRepository.Insert(OutMaterialLabel))
+                                {
+                                    return DataProcess.Failure(string.Format("出库库任务明细{0}新增失败", entity.Code));
+                                }
+                            }
+
+                            if (!OutTaskRepository.Insert(outTask))
+                            {
+                                return DataProcess.Failure(string.Format("入库任务单{0}下发失败", entity.Code));
+                            }
+                        }
+
+                        // 更新出库物料单
+                        foreach (var item in list)
+                        {
+                            if (item.SendInQuantity >= item.Quantity)
+                            {
+                                item.Status = (int)OutStatusCaption.SendedPickOrder;
+                            }
+                            else if (item.SendInQuantity > 0)
+                            {
+                                item.Status = (int)OutStatusCaption.PartSending;
+                            }
+                        }
+                        entity.Status = (int)OutStatusCaption.PartSending;
+
+                        if (OutContract.OutMaterials.Any(a => a.OutCode == entity.Code && a.Status != (int)OutStatusCaption.SendedPickOrder))
+                        {
+                            entity.Status = (int)OutStatusCaption.SendedPickOrder;
+                        }
+                        if (OutContract.OutRepository.Update(entity) < 0)
+                        {
+                            return DataProcess.Failure("任务下发，出库单更新失败");
+                        }
+
+                        foreach (var item in list)
+                        {
+                            // 物料实体映射
+                            OutMaterial outMaterialEntity = Mapper.MapTo<OutMaterial>(item);
+                            if (OutContract.OutMaterialRepository.Update(outMaterialEntity) < 0)
+                            {
+                                return DataProcess.Failure("任务下发，出库物料明细更新失败");
+                            }
+                        }
+
+                    }
+                    OutContract.OutRepository.UnitOfWork.Commit();
+
+                    OutRepository.UnitOfWork.Commit();
+
+                    return DataProcess.Success(string.Format("出库单同步成功,共有{0}条增加", count));
+                }
+                catch (Exception ex)
+                {
+
+                    return DataProcess.Failure("拣货任务生成失败:" + ex.Message);
+                }
             }
             #endregion
 
 
-                #region 原同步代码
+            #region 原同步代码
             //    try
             //{
             //    OutIFRepository.UnitOfWork.TransactionEnabled = true;

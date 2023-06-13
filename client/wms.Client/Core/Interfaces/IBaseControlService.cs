@@ -45,12 +45,20 @@ namespace wms.Client.Core.Interfaces
         /// <param name="model"></param>
         /// <returns></returns>
         Task<DataResult> PostStartRunningContainer(RunningContainer model);
+
+        /// <summary>
+        /// 再次控制货柜运转(取出货柜)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<DataResult> PostStartRunningContainerAgain(RunningContainer model);
+
         /// <summary>
         /// 存入货柜
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-       Task<DataResult> PostStartRestoreContainer(RunningContainer model);
+        Task<DataResult> PostStartRestoreContainer(RunningContainer model);
         /// <summary>
         /// 熄灭X轴灯号
         /// </summary>

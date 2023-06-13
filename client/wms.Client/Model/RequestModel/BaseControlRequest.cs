@@ -25,6 +25,7 @@ namespace wms.Client.Model.RequestModel
     {
         public override string route { get => DeviceIP + "ResetAlarm"; }
     }
+
     /// <summary>
     /// 扫描按钮
     /// </summary>
@@ -38,6 +39,14 @@ namespace wms.Client.Model.RequestModel
     public class GetBackWeighingQuantityRequest : BaseRequest
     {
         public override string route { get => DeviceIP + "GetBackWeighingQuantity"; }
+    }
+
+    /// <summary>
+    /// 再次控制货柜运转
+    /// </summary>
+    public class StartRunningContainerAgainRequest : BaseRequest
+    {
+        public override string route { get => DeviceIP + "StartRunningContainerAgain"; }
     }
 
     /// <summary>

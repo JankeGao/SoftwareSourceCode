@@ -14,7 +14,7 @@
              xmlns:service="clr-namespace:wms.Client.Service"
              xmlns:common="clr-namespace:wms.Client.Common" xmlns:viewmodel="clr-namespace:wms.Client.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:InTaskViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800" Background="#D7DF01">
+             d:DesignHeight="450" d:DesignWidth="800" Background="BlanchedAlmond">
     <UserControl.Resources>
 
         <ResourceDictionary>
@@ -168,7 +168,7 @@
 
             <!--入库任务页面-->
             <TabItem Visibility="Visible" >
-                <Grid  Background="#D7DF01" >
+                <Grid  Background="BlanchedAlmond" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
                         <RowDefinition Height="60"/>
@@ -214,14 +214,14 @@
                                 IsDefault="true" 
                                 Background="{Binding ScanColor}"
                                 Command="{Binding ScanBarcodeCommand}"
-                                CommandParameter="{Binding SearchBarcode}">
+                                CommandParameter="{Binding SearchBarcode}" Visibility="Collapsed">
                                 扫描
                             </Button>
                             <StackPanel
                                 Margin="8 15">
                                 <CheckBox
                                     IsChecked="{Binding AutoOprate}"
-                                    materialDesign:CheckBoxAssist.CheckBoxSize="30">
+                                    materialDesign:CheckBoxAssist.CheckBoxSize="30" Visibility="Collapsed">
                                     自动存入
                                 </CheckBox>
                             </StackPanel>
@@ -244,7 +244,7 @@
                                 Content="{Binding LabelEntity.MaterialName}"
                                 Margin="5"
                                 IconBackground="{DynamicResource PrimaryHueDarkBrush}"
-                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Collapsed" >
                                     <materialDesign:Chip.Icon>
                                         <materialDesign:PackIcon
                                         Kind="Apps"></materialDesign:PackIcon>
@@ -254,7 +254,7 @@
                                 Content="{Binding LabelEntity.BatchCode}"
                                 Margin="5"
                                 IconBackground="{DynamicResource PrimaryHueDarkBrush}"
-                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Collapsed">
                                     <materialDesign:Chip.Icon>
                                         <materialDesign:PackIcon
                                         Kind="AlphaBCircle"></materialDesign:PackIcon>
@@ -264,7 +264,7 @@
                                 Content="{Binding LabelEntity.Quantity}"
                                 Margin="5"
                                 IconBackground="{DynamicResource PrimaryHueDarkBrush}"
-                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Collapsed">
                                     <materialDesign:Chip.Icon>
                                         <materialDesign:PackIcon
                                         Kind="Numeric1Circle"></materialDesign:PackIcon>
@@ -274,10 +274,26 @@
                                 Content="{Binding LabelEntity.SupplyName}"
                                 Margin="5"
                                 IconBackground="{DynamicResource PrimaryHueDarkBrush}"
-                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                IconForeground="{DynamicResource PrimaryHueDarkForegroundBrush}" Visibility="Collapsed">
                                     <materialDesign:Chip.Icon>
                                         <materialDesign:PackIcon
                                         Kind="AccountBox"></materialDesign:PackIcon>
+                                    </materialDesign:Chip.Icon>
+                                </materialDesign:Chip>
+                            </StackPanel>
+                            <!-- 人员登录图标-->
+                            <StackPanel  Margin="100 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <!--<Border Background="#EDEDED" BorderThickness="3 0 0 0" BorderBrush="#A3A3A3" />-->
+                                <materialDesign:Chip
+                                    Content="{Binding Source={StaticResource globalData},Path=UserName}"
+                                    IsDeletable="True"
+                                    DeleteCommand="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=DataContext.LoginOutCommand}"
+                                    DeleteCommandParameter="{Binding Source={StaticResource globalData},Path=UserName}"
+                                    ToolTip="Just a tool tip"
+                                    DeleteToolTip="Your friendly neighbor delete button">
+                                    <materialDesign:Chip.Icon>
+                                        <Image
+                                            Source="{Binding Source={StaticResource globalData},Path=PictureUrl}"></Image>
                                     </materialDesign:Chip.Icon>
                                 </materialDesign:Chip>
                             </StackPanel>
@@ -304,35 +320,119 @@
                                 ToolTip="Resource name: MaterialDesignRaisedButton" 
                                 IsDefault="true" 
                                    Background="{Binding ClearDataColor}"
-                                Command="{Binding ClearCommand}">
+                                Command="{Binding ClearCommand}" Visibility="Collapsed">
                                 清空数据
                             </Button>
-                            <TextBlock Margin="20 22 0 0"
-                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
-                                料号：
-                            </TextBlock>
-                            <TextBlock Margin="10 22 10 0"
-                                       Text="{Binding SelectMaterialCode}"
-                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
-                            </TextBlock>
+                            
                         </WrapPanel>
                     </Grid>
                     <Grid Grid.Row="2">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Margin="20 22 0 0"
-                               Foreground="Black"
-                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
-                        单品重量(g)：
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
+                            <!--<TextBlock Margin="10 22 0 0"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                名称：
                             </TextBlock>
-                            <TextBox
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0 0 0 10">
+                                <TextBlock Margin="5 22 0 0"
+                                   Text="{Binding SelectMaterialName}"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                </TextBlock>
+                            </Border>-->
+
+                            <StackPanel Margin="5 9 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="物料名称"
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
-                            Foreground="Red"
-                            Width="100"
-                            Text="{Binding UnitWeight,Mode=TwoWay}"
+                            Width="auto"
+                            Text="{Binding SelectMaterialName}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="18" />
-                            <StackPanel Margin="10 10 0 0">
+                            FontSize="16"  
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="BlanchedAlmond"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}" />
+                            </StackPanel>
+
+                            <!--<TextBlock Margin="10 22 0 0"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                料号：
+                            </TextBlock>
+
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0 0 0 10">
+                                <TextBlock Margin="5 22 10 0"
+                                       Text="{Binding SelectMaterialCode}"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                </TextBlock>
+                            </Border>-->
+
+                            <StackPanel Margin="5 9 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="物料编码"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="auto"
+                            Text="{Binding SelectMaterialCode}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="16" 
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="BlanchedAlmond"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                            </StackPanel>
+
+                            <!--<TextBlock Margin="10 22 0 0"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                            库存：
+                            </TextBlock>
+                            <Border BorderThickness="0,0,0,1" BorderBrush="Black" Margin="0 0 0 10">
+                                <TextBlock Margin="5 22 0 0" 
+                               Text="{Binding AllQuantity,Mode=TwoWay}"
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                                </TextBlock>
+                            </Border>-->
+
+                            <StackPanel Margin="5 9 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="库存数量"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="auto"
+                            Text="{Binding AllQuantity}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="16" 
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="BlanchedAlmond"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                            </StackPanel>
+                            
+                            <materialDesign:PackIcon Kind="W3c" Width="30" Height="30"  Margin="20 15 0 15"  Foreground="#673AB7"/>
+                            <StackPanel Margin="5 9 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="单品重量(g)"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="90"
+                            Text="{Binding UnitWeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="16" 
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="BlanchedAlmond"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                            </StackPanel>
+                            
+                            <StackPanel Margin="10 9 0 0">
                                 <TextBox
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center" 
@@ -342,7 +442,11 @@
                             Width="60"
                             Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="18" IsEnabled="False" />
+                            FontSize="16" 
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="BlanchedAlmond"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
                             </StackPanel>
                             <TextBlock Margin="20 22 0 0"
                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
@@ -371,12 +475,9 @@
                                     materialDesign:CheckBoxAssist.CheckBoxSize="30" Visibility="Collapsed">
                                 是否称量单品重量
                             </CheckBox>
-                            <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15 18 15 15"  Foreground="#673AB7"/>
+                            
                             <StackPanel>
-                                <TextBlock Margin="10 22 10 0"
-                                   Text="{Binding SelectMaterialName}"
-                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
-                                </TextBlock>
+                                
                                 <!--<StackPanel>
                             <ComboBox
                                 ItemsSource="{Binding ModuleGroups}" 
@@ -471,53 +572,36 @@
                             <Button    Height="80"  Margin="30 0 0 0" FontSize="18"  Style="{StaticResource MaterialDesignRaisedButton}" ToolTip="取出托盘" 
                                     Background="{Binding FirstStepColor}"
                                     CommandParameter="{Binding}"                          
-                                    Command="{Binding RunningCommand}" >
+                                    Command="{Binding RunningCommand}" Visibility="Collapsed" >
                                 ①取出托盘
                             </Button>
                             <Button
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                Height="80"
+                                Height="60"
                                 Margin="5"
                                 FontSize="18"
                                 ToolTip="Resource name: MaterialDesignRaisedButton" 
                                 IsDefault="true" 
                                 Background="{Binding SecondStepColor}"
                                 IsEnabled="{Binding IsCancel}"
-                                Command="{Binding HandShelfCommand}"
-                                CommandParameter="{Binding InQuantity}">
-                                ②确认存入
+                                Command="{Binding ScanBarcodeCommand}"
+                                CommandParameter="{Binding SearchBarcode}">
+                                ①确认存入
                             </Button>
-                            <Button    Height="80"  Margin="10 0 0 0" FontSize="18"  Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="存入托盘" 
+                            <Button    Height="60"  Margin="10 0 0 0" FontSize="18"  Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="存入托盘" 
                                     CommandParameter="{Binding}"      
                                     Background="{Binding ThirdStepColor}"
                                     Command="{Binding RunningTakeInCommand}" >
-                                ③存入托盘
+                                ②存入托盘
                             </Button>
-                            <!-- 人员登录图标-->
-                            <StackPanel  Margin="45 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <!--<Border Background="#EDEDED" BorderThickness="3 0 0 0" BorderBrush="#A3A3A3" />-->
-                                <materialDesign:Chip
-                                    Content="{Binding Source={StaticResource globalData},Path=UserName}"
-                                    IsDeletable="True"
-                                    DeleteCommand="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TabControl}, Path=DataContext.LoginOutCommand}"
-                                    DeleteCommandParameter="{Binding Source={StaticResource globalData},Path=UserName}"
-                                    ToolTip="Just a tool tip"
-                                    DeleteToolTip="Your friendly neighbor delete button">
-                                    <materialDesign:Chip.Icon>
-                                        <Image
-                                            Source="{Binding Source={StaticResource globalData},Path=PictureUrl}"></Image>
-                                    </materialDesign:Chip.Icon>
-                                </materialDesign:Chip>
-                            </StackPanel>
+                            
                         </StackPanel>
                         <WrapPanel Grid.Row="1" Grid.ColumnSpan="2" >
                             <!--{StaticResource DefaultBackGround}-->
                             <DataGrid 
-                CanUserSortColumns="True"  Background="#D7DF01"  
+                CanUserSortColumns="True"  Background="BlanchedAlmond"  
                   CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding InTaskMaterial}"
-                      IsReadOnly="False"  >
-                                <!--CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
-                        AncestorType=DataGrid}, Path=SelectedItem}"-->
+                      IsReadOnly="True"  >
                                 <DataGrid.InputBindings>
                                     <MouseBinding MouseAction="LeftDoubleClick"  
            
@@ -560,7 +644,7 @@
                         AncestorType=DataGrid}, Path=SelectedItem}"-->
                                                     <Button Margin="5 0 0 0" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="打印条码" 
 
-                                                        Command="{Binding DataContext.PrintItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" >
+                                                        Command="{Binding DataContext.PrintItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" Visibility="Collapsed">
                                                         <Button.CommandParameter>
                                                             <MultiBinding Converter="{ StaticResource ResourceKey=objectConverter}">
                                                                 <Binding RelativeSource="{RelativeSource Mode=FindAncestor, 
@@ -610,7 +694,7 @@
                             Margin="5"
                             ToolTip="Resource name: MaterialDesignRaisedButton" 
                             Command="{Binding SubmitCommand}"
-                            Click="Updateclick">
+                            Click="Updateclick" Visibility="Collapsed">
                                 完成提交
                             </Button>
                         </StackPanel>

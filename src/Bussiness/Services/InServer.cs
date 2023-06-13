@@ -5,7 +5,9 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Bussiness.Contracts;
 using Bussiness.Dtos;
 using Bussiness.Entitys;
@@ -24,10 +26,17 @@ namespace Bussiness.Services
 {
     public class InServer : Contracts.IInContract
     {
+        
         /// <summary>
         /// 入库单中间表
         /// </summary>
         public IRepository<InIF, int> InIFRepository { get; set; }
+        /// <summary>
+        /// 入库单契约
+        /// </summary>
+        public IInContract InContract { set; get; }
+        public IRepository<InTaskMaterial, int> InTaskMaterialRepository { get; set; }
+        public IRepository<InTask, int> InTaskRepository { get; set; }
         public IRepository<InMaterialIF, int> InMaterialIFRepository { get; set; }
         public IRepository<Material, int> MaterialRepository { get; set; }
         public IRepository<In, int> InRepository { get; set; } 
@@ -146,7 +155,7 @@ namespace Bussiness.Services
 
         public IWareHouseContract WareHouseContract { get; set; }
 
-        
+
         /// <summary>
         /// 轮训接口--创建WMS入库单
         /// </summary>
@@ -155,7 +164,11 @@ namespace Bussiness.Services
         {
             #region Oracle数据获取处理
             int count = 0;
-            var connectionString = "Data Source=192.168.3.224:1521/orcl;User ID=zcdx;Password=Oracle#gCsb#2023";
+            In entity = new In(); // 创建In类型的实体entity
+            List<In> entityList = new List<In>(); // 定义一个集合，用于存储遍历得到的实体entityes
+            InMaterial inMaterialObj = null;
+            string currentBillCode = null;
+            var connectionString = "Data Source=192.168.3.168:1521/orcl;User ID=zcdx;Password=Oracle#gCsb#2023";
             var query = "SELECT * FROM V_WK_WMS_EN_WAREH_BILL";
             using (OracleConnection connection = new OracleConnection(connectionString))
             {
@@ -173,296 +186,840 @@ namespace Bussiness.Services
                     resultList.Add(row);
                 }
                 reader.Close();
-                if(resultList.Count > 0)
+                if (resultList.Count > 0)
                 {
+
                     foreach (var dict in resultList)
                     {
-                        In entity = new In
+                        In entityes = new In
                         {
                             Id = 0,
-                            BillCode = dict["BILL_CODE"].ToString(),
-                            CRRCID = dict["ID"].ToString(),
-                            Code = "",
+                            Code = dict["BILL_CODE"].ToString(),
                             Remark = "",
                             WareHouseCode = "01",
                             CreatedTime = (DateTime)dict["BILL_DATE"],
                             AddMaterial = new List<InMaterial>(),
                         };
 
-                        InMaterial inMaterialObj = new InMaterial
+                        inMaterialObj = new InMaterial
                         {
                             MaterialCode = dict["MATERIALCODE"].ToString(),
                             Quantity = (decimal)dict["QTY"],
                             ManufactrueDate = (DateTime?)dict["BILL_DATE"],
+                            CRRCID = dict["ID"].ToString(),
                             Status = 0,
                             RealInQuantity = 0,
                             BatchCode = "",
 
                         };
 
-                        if (!Ins.Any(a => a.BillCode == entity.BillCode))
+                        if (!Ins.Any(a => a.Code == entityes.Code))
                         {
-                            entity.AddMaterial.Add(inMaterialObj);
-                            InRepository.UnitOfWork.TransactionEnabled = true;
+
+                            if (currentBillCode != null && dict["BILL_CODE"].ToString() != currentBillCode)
                             {
-                                // 判断是否有入库单号
-                                if (String.IsNullOrEmpty(entity.Code))
+                                continue;
+                            }
+                            else
+                            {
+                                currentBillCode = dict["BILL_CODE"].ToString();
+                                entityes.AddMaterial.Add(inMaterialObj);
+                                entityList.Add(entityes); // 将entityes加入到集合中
+                                entity = new In
                                 {
-                                    entity.Code = SequenceContract.Create(entity.GetType());
-                                }
-                                if (Ins.Any(a => a.Code == entity.Code))
+                                    Id = 0,
+                                    Code = dict["BILL_CODE"].ToString(),
+                                    Remark = "",
+                                    WareHouseCode = "01",
+                                    CreatedTime = (DateTime)dict["BILL_DATE"],
+                                    AddMaterial = new List<InMaterial>(),
+                                };
+                            }
+                        }
+                    }
+
+                    foreach (var tempEntity in entityList)
+                    {
+                        entity.AddMaterial.AddRange(tempEntity.AddMaterial); // 将集合中的每个entityes的AddMaterial加入到entity中
+                    }
+
+                    if(entityList.Count <= 0)
+                    {
+                        return DataProcess.Failure("暂无新增入库单");
+                    }
+
+                    InRepository.UnitOfWork.TransactionEnabled = true;
+                    {
+                        // 判断是否有入库单号
+                        if (String.IsNullOrEmpty(entity.Code))
+                        {
+                            entity.Code = SequenceContract.Create(entity.GetType());
+                        }
+                        if (Ins.Any(a => a.Code == entity.Code))
+                        {
+                            return DataProcess.Failure("该入库单号已存在");
+                        }
+                        foreach (var inMaterial in entity.AddMaterial)
+                        {
+                            if (!Regex.IsMatch(inMaterial.Quantity.ToString(), @"^[0-9]*(\.[0-9]{1,2})?$"))
+                            {
+                                return DataProcess.Failure("请输入正确的数字格式（包含两位小数的数字或者不包含小数的数字）");
+                            }
+                        }
+                        entity.Status = entity.Status == null ? 0 : entity.Status; // 手动入库，状态为已完成
+                        entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
+
+                        if (!InRepository.Insert(entity))
+                        {
+                            return DataProcess.Failure(string.Format("入库单{0}新增失败", entity.Code));
+                        }
+
+                        if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
+                        {
+                            foreach (InMaterial item in entity.AddMaterial)
+                            {
+                                item.InCode = entity.Code;
+                                item.BillCode = entity.BillCode;
+                                item.SendInQuantity = item.SendInQuantity.GetValueOrDefault(0) == 0 ? 0 : item.SendInQuantity;
+                                item.Status = item.Status == null ? 0 : item.Status;
+                                item.InDict = entity.InDict;
+                                item.ItemNo = (entity.AddMaterial.IndexOf(item) + 1).ToString();
+                                if (Materials.Any(a => a.Code == inMaterialObj.MaterialCode))
                                 {
-                                    return DataProcess.Failure("该入库单号已存在");
-                                }
-                                foreach (var inMaterial in entity.AddMaterial)
-                                {
-                                    if (!Regex.IsMatch(inMaterial.Quantity.ToString(), @"^[0-9]*(\.[0-9]{1,2})?$"))
+                                    DataResult result = CreateInMaterialEntity(item);
+                                    if (!result.Success)
                                     {
-                                        return DataProcess.Failure("请输入正确的数字格式（包含两位小数的数字或者不包含小数的数字）");
+                                        return DataProcess.Failure(result.Message);
                                     }
                                 }
-                                entity.Status = entity.Status == null ? 0 : entity.Status; // 手动入库，状态为已完成
-                                entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
-
-                                if (!InRepository.Insert(entity))
+                                else
                                 {
-                                    return DataProcess.Failure(string.Format("入库单{0}新增失败", entity.Code));
+                                    return DataProcess.Failure(string.Format("物料编码{0}系统中不存在，请维护！", inMaterialObj.MaterialCode));
                                 }
-
-                                if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
+                                if (inMaterialObj.Quantity <= 0)
                                 {
-                                    foreach (InMaterial item in entity.AddMaterial)
+                                    return DataProcess.Failure(string.Format("编码为{0}的物料传入数量需大于零，请维护！", inMaterialObj.MaterialCode));
+                                }
+                            }
+                        }
+                    }
+                    count++;
+
+                    Thread.Sleep(500);
+
+                    InTaskRepository.UnitOfWork.TransactionEnabled = true;
+                    {
+                        // 获取入库仓库
+                        var inEntity = InContract.Ins.FirstOrDefault(a => a.Code == entity.Code);
+                        // 获取入库物料明细
+                        var inMaterailList = InContract.InMaterials.Where(a => a.InCode == inEntity.Code).ToList();//.OrderBy(a=>a.MaterialCode).
+                                                                                                                   // 入库任务物料明细表
+                        var inTaskMaterialList = new List<InTaskMaterial>();
+
+                        //验证入库物料收维护载具
+                        foreach (var item in inMaterailList)
+                        {
+                            var inQuantity = item.Quantity - item.SendInQuantity.GetValueOrDefault(0);
+                            decimal sendInQuantity = 0;
+                            var mateialEntity = MaterialContract.MaterialRepository.GetEntity(a => a.Code == item.MaterialCode);
+
+                            //验证该物料是否维护了载具信息
+                            if (!MaterialContract.MaterialBoxMaps.Any(a => a.MaterialCode == item.MaterialCode))
+                            {
+                                return DataProcess.Failure(string.Format("物料{0}未维护存放载具，请先维护", item.MaterialCode));
+                            }
+
+                            // 验证该物料属性组是否为存储锁定，如果是存储锁定
+                            if (mateialEntity.IsNeedBlock)
+                            {
+                                if (!WareHouseContract.Locations.Any(a =>
+                                    a.SuggestMaterialCode == item.MaterialCode && a.WareHouseCode == inEntity.WareHouseCode))
+                                {
+                                    return DataProcess.Failure(string.Format("物料{0}在仓库{1}中未维护存放储位，请先维护", item.MaterialCode,
+                                        inEntity.WareHouseCode));
+                                }
+                            }
+
+                            /* 储位分配逻辑
+                             1、查找该物料可存放的载具,确定全部可存放储位
+                             2、查看该物料是存储锁定
+                             3、查看是否混批
+                             4、分配货柜及托盘时，查看是否超重
+                            */
+
+                            // 可存放的载具列表，库位绑定载具，载具绑定物料，库位码关联库存表
+
+                            var queryes = WareHouseContract.LocationVIEWs.Where(a => a.WareHouseCode == entity.WareHouseCode);
+
+                            // 查询可存放库位
+                            // 本身已经了存放该物料-MaterialCode是中关联的MaterialCode
+                            // 不存放该物料，但是不是存储锁定的
+                            // 建议物料是该物料-SuggestMaterialCode是储位绑定的物料
+                            queryes = queryes.Where(a => (a.MaterialCode == item.MaterialCode));
+                            var a1 = queryes.ToList();
+                            // 入库是存储锁定，则必须存放在所绑定的载具中,及该载具维护的物料即为待入库物料
+                            if (mateialEntity.IsNeedBlock)
+                            {
+                                queryes = queryes.Where(a => a.SuggestMaterialCode == item.MaterialCode);
+                            }
+                            var a2 = queryes.ToList();
+                            //如果不允许混批
+                            if (!mateialEntity.IsMaxBatch)
+                            {
+                                // 批次相等，或者库存中没有存放物料
+                                queryes = queryes.Where(a => a.BatchCode == item.BatchCode || string.IsNullOrEmpty(a.MaterialLabel));
+                                var a4 = queryes.ToList();
+                                // 并且不是锁定批次的盒子
+                                queryes = queryes.Where(a => !a.IsLocked);
+                            }
+                            var a3 = queryes.ToList();
+                            //判断此批物料的重量，进行储位筛选
+                            // 是否维护单包数量
+                            decimal? packageWeight = mateialEntity.UnitWeight; // 单个的重量
+                            decimal packCount = 1; // 单包数量
+                            if (mateialEntity.IsPackage && mateialEntity.PackageQuantity > 0)
+                            {
+                                packageWeight = mateialEntity.UnitWeight * mateialEntity.PackageQuantity; // 单包数量的重量
+                                packCount = (decimal)mateialEntity.PackageQuantity;
+                            }
+
+                            // 根据载具可存放的数量进行储位筛选，分配数量，明确哪个储位存放多少数量，以重量做限制
+                            var locationList = queryes.ToList();
+
+                            var stockLocatonList = queryes.Where(a => a.Quantity > 0).OrderBy(a => a.Code).ToList();//有库存的库位
+
+                            var NoStockLocationList = queryes.Where(a => a.Quantity == null && (a.LockMaterialCode == item.MaterialCode || string.IsNullOrEmpty(a.LockMaterialCode))).OrderBy(a => a.Code).ToList();//没有库存的库位;
+
+
+                            //1 优先分配有库存
+
+                            foreach (var locationEntity in stockLocatonList)
+                            {
+                                if (inQuantity > 0)
+                                {
+                                    /* 计算储位可存放的数量*/
+                                    // 储位实体
+
+                                    // 当前储位已存放的数量
+                                    decimal lockQuantity =
+                                        WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code).Sum(a => a.Quantity) ==
+                                        null
+                                            ? 0
+                                            : (decimal)WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code)
+                                                .Sum(a => a.Quantity);
+
+                                    // 当前储位可存放的数量
+                                    var available = (decimal)locationEntity.BoxCount - lockQuantity - (decimal)locationEntity.LockQuantity;
+
+                                    // 当前储位可存放的单包数量
+                                    decimal aviCount = Math.Floor(available / packCount);
+
+                                    // 本次需要入库的单包数量
+                                    decimal inCount = Math.Floor(inQuantity / packCount);
+
+                                    // 确定本储位入库单包数量
+                                    if (inCount > aviCount)
                                     {
-                                        item.InCode = entity.Code;
-                                        item.BillCode = entity.BillCode;
-                                        item.SendInQuantity = item.SendInQuantity.GetValueOrDefault(0) == 0 ? 0 : item.SendInQuantity;
-                                        item.Status = item.Status == null ? 0 : item.Status;
-                                        item.InDict = entity.InDict;
-                                        item.ItemNo = (entity.AddMaterial.IndexOf(item) + 1).ToString();
-                                        if (Materials.Any(a => a.Code == inMaterialObj.MaterialCode))
+                                        inCount = aviCount;
+                                    }
+
+                                    //如果剩余不足一个单包
+                                    if (Math.Floor(inQuantity / packCount) == 0)
+                                    {
+                                        packageWeight = mateialEntity.UnitWeight;
+                                        inCount = inQuantity;
+                                        packCount = 1;
+                                    }
+
+                                    // 入库可存放一个单包
+                                    if (available >= packCount)
+                                    {
+                                        // 本次入库的单包总重量
+                                        decimal? inWeight = inCount * packageWeight;
+
+                                        /* 计算托盘是否可承重*/
+                                        //  托盘实体
+                                        var trayEntity =
+                                            WareHouseContract.TrayWeightMapRepository.GetEntity(a =>
+                                                a.TrayId == locationEntity.TrayId);
+
+
+                                        bool isFlag = false;
+                                        // 如果托盘称重为0 ，则默认不开启托盘承重校验
+                                        if (trayEntity.MaxWeight == 0)
                                         {
-                                            DataResult result = CreateInMaterialEntity(item);
-                                            if (!result.Success)
-                                            {
-                                                return DataProcess.Failure(result.Message);
-                                            }
+                                            isFlag = true;
                                         }
                                         else
                                         {
-                                            return DataProcess.Failure(string.Format("物料编码{0}系统中不存在，请维护！", inMaterialObj.MaterialCode));
+                                            var availabelTray = trayEntity.MaxWeight - trayEntity.LockWeight -
+                                                                trayEntity.TempLockWeight;
+
+                                            // 如果托盘重量可存放
+                                            if (availabelTray >= inWeight)
+                                            {
+                                                isFlag = true;
+                                            }
+                                            else
+                                            {
+                                                // 如果可存放下一个单包重量
+                                                if (availabelTray >= packageWeight)
+                                                {
+                                                    // 计算可以存放几个单包
+                                                    var tempInCount =
+                                                        Math.Floor((decimal)availabelTray / (decimal)packageWeight);
+                                                    // 确保是当前载具可存放的数量
+                                                    if (tempInCount < inCount)
+                                                    {
+                                                        inCount = tempInCount;
+                                                        isFlag = true;
+                                                    }
+                                                }
+                                            }
                                         }
-                                        if(inMaterialObj.Quantity <= 0)
+
+
+                                        // 判断是满足生成任务的条件
+                                        if (isFlag)
                                         {
-                                            return DataProcess.Failure(string.Format("编码为{0}的物料传入数量需大于零，请维护！", inMaterialObj.MaterialCode));
+                                            var inTaskMaterialItem = new InTaskMaterial()
+                                            {
+                                                InCode = item.InCode,
+                                                BatchCode = item.BatchCode,
+                                                ItemNo = item.ItemNo,
+                                                SuggestContainerCode = locationEntity.ContainerCode,
+                                                InDict = item.InDict,
+                                                WareHouseCode = locationEntity.WareHouseCode,
+                                                SuggestLocation = locationEntity.Code, // 建议入库位置
+                                                SuggestTrayId = locationEntity.TrayId,
+                                                Status = (int)InTaskStatusCaption.WaitingForShelf,
+                                                Quantity = inCount * packCount, // 入库数量乘以单包数量
+                                                SupplierCode = item.SupplierCode,
+                                                CustomCode = item.CustomCode,
+                                                MaterialCode = item.MaterialCode,
+                                                XLight = locationEntity.XLight,
+                                                YLight = locationEntity.YLight
+                                            };
+                                            inTaskMaterialList.Add(inTaskMaterialItem);
+                                            inQuantity = inQuantity - inTaskMaterialItem.Quantity; // 减去入库数量
+                                            sendInQuantity = sendInQuantity + inTaskMaterialItem.Quantity;
+
+                                            // 如果托盘维护的承重信息
+                                            if (trayEntity.MaxWeight > 0)
+                                            {
+                                                trayEntity.TempLockWeight = trayEntity.TempLockWeight + inTaskMaterialItem.Quantity * mateialEntity.UnitWeight;
+
+                                                // 更新托盘储位推荐锁定的重量
+                                                if (WareHouseContract.TrayWeightMapRepository.Update(trayEntity) <= 0)
+                                                {
+                                                    return DataProcess.Failure(string.Format("托盘重量锁定失败"));
+                                                }
+                                            }
+
+                                            // 锁定该储位的数量
+                                            locationEntity.LockQuantity = locationEntity.LockQuantity + inTaskMaterialItem.Quantity;
+                                            // 如果不允许混批，则锁定该储位
+                                            if (!mateialEntity.IsMaxBatch)
+                                            {
+                                                locationEntity.IsLocked = true;
+                                            }
+                                            // 物料实体映射
+                                            Location LocationItem = Mapper.MapTo<Location>(locationEntity);
+
+                                            // 更新托盘储位推荐锁定的重量
+                                            if (WareHouseContract.LocationRepository.Update(LocationItem) <= 0)
+                                            {
+                                                return DataProcess.Failure(string.Format("储位数量锁定失败"));
+                                            }
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    break;
+                                }
                             }
-                            count++;
-                            InRepository.UnitOfWork.Commit();
+
+                            foreach (var locationEntity in NoStockLocationList)
+                            {
+                                if (inQuantity > 0)
+                                {
+                                    /* 计算储位可存放的数量*/
+
+                                    // 当前储位已存放的数量
+                                    decimal lockQuantity =
+                                        WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code).Sum(a => a.Quantity) ==
+                                        null
+                                            ? 0
+                                            : (decimal)WareHouseContract.LocationVIEWs.Where(a => a.Code == locationEntity.Code)
+                                                .Sum(a => a.Quantity);
+
+                                    // 当前储位可存放的数量
+                                    var available = (decimal)locationEntity.BoxCount - lockQuantity - (decimal)locationEntity.LockQuantity;
+
+                                    // 当前储位可存放的单包数量
+                                    decimal aviCount = Math.Floor(available / packCount);
+
+                                    // 本次需要入库的单包数量
+                                    decimal inCount = Math.Floor(inQuantity / packCount);
+
+                                    // 确定本储位入库单包数量
+                                    if (inCount > aviCount)
+                                    {
+                                        inCount = aviCount;
+                                    }
+
+                                    //如果剩余不足一个单包
+                                    if (Math.Floor(inQuantity / packCount) == 0)
+                                    {
+                                        packageWeight = mateialEntity.UnitWeight;
+                                        inCount = inQuantity;
+                                        packCount = 1;
+                                    }
+
+                                    // 入库可存放一个单包
+                                    if (available >= packCount)
+                                    {
+                                        // 本次入库的单包总重量
+                                        decimal? inWeight = inCount * packageWeight;
+
+                                        /* 计算托盘是否可承重*/
+                                        //  托盘实体
+                                        var trayEntity =
+                                            WareHouseContract.TrayWeightMapRepository.GetEntity(a =>
+                                                a.TrayId == locationEntity.TrayId);
+
+
+                                        bool isFlag = false;
+                                        // 如果托盘称重为0 ，则默认不开启托盘承重校验
+                                        if (trayEntity.MaxWeight == 0)
+                                        {
+                                            isFlag = true;
+                                        }
+                                        else
+                                        {
+                                            var availabelTray = trayEntity.MaxWeight - trayEntity.LockWeight -
+                                                                trayEntity.TempLockWeight;
+
+                                            // 如果托盘重量可存放
+                                            if (availabelTray >= inWeight)
+                                            {
+                                                isFlag = true;
+                                            }
+                                            else
+                                            {
+                                                // 如果可存放下一个单包重量
+                                                if (availabelTray >= packageWeight)
+                                                {
+                                                    // 计算可以存放几个单包
+                                                    var tempInCount =
+                                                        Math.Floor((decimal)availabelTray / (decimal)packageWeight);
+                                                    // 确保是当前载具可存放的数量
+                                                    if (tempInCount < inCount)
+                                                    {
+                                                        inCount = tempInCount;
+                                                        isFlag = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // 判断是满足生成任务的条件
+                                        if (isFlag)
+                                        {
+                                            var inTaskMaterialItem = new InTaskMaterial()
+                                            {
+                                                InCode = item.InCode,
+                                                BatchCode = item.BatchCode,
+                                                ItemNo = item.ItemNo,
+                                                SuggestContainerCode = locationEntity.ContainerCode,
+                                                InDict = item.InDict,
+                                                WareHouseCode = locationEntity.WareHouseCode,
+                                                SuggestLocation = locationEntity.Code, // 建议入库位置
+                                                SuggestTrayId = locationEntity.TrayId,
+                                                Status = (int)InTaskStatusCaption.WaitingForShelf,
+                                                Quantity = inCount * packCount, // 入库数量乘以单包数量
+                                                SupplierCode = item.SupplierCode,
+                                                CustomCode = item.CustomCode,
+                                                MaterialCode = item.MaterialCode,
+                                                XLight = locationEntity.XLight,
+                                                YLight = locationEntity.YLight
+                                            };
+                                            inTaskMaterialList.Add(inTaskMaterialItem);
+                                            inQuantity = inQuantity - inTaskMaterialItem.Quantity; // 减去入库数量
+                                            sendInQuantity = sendInQuantity + inTaskMaterialItem.Quantity;
+
+                                            // 如果托盘维护的承重信息
+                                            if (trayEntity.MaxWeight > 0)
+                                            {
+                                                trayEntity.TempLockWeight = trayEntity.TempLockWeight + inTaskMaterialItem.Quantity * mateialEntity.UnitWeight;
+
+                                                // 更新托盘储位推荐锁定的重量
+                                                if (WareHouseContract.TrayWeightMapRepository.Update(trayEntity) <= 0)
+                                                {
+                                                    return DataProcess.Failure(string.Format("托盘重量锁定失败"));
+                                                }
+                                            }
+
+                                            // 锁定该储位的数量
+                                            locationEntity.LockQuantity = locationEntity.LockQuantity + inTaskMaterialItem.Quantity;
+                                            locationEntity.LockMaterialCode = inTaskMaterialItem.MaterialCode;
+                                            // 如果不允许混批，则锁定该储位
+                                            if (!mateialEntity.IsMaxBatch)
+                                            {
+                                                locationEntity.IsLocked = true;
+                                            }
+                                            // 物料实体映射
+                                            Location LocationItem = Mapper.MapTo<Location>(locationEntity);
+
+                                            // 更新托盘储位推荐锁定的重量
+                                            if (WareHouseContract.LocationRepository.Update(LocationItem) <= 0)
+                                            {
+                                                return DataProcess.Failure(string.Format("储位数量锁定失败"));
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+
+                            // 计算已下发数量
+                            item.SendInQuantity = item.SendInQuantity + sendInQuantity;
                         }
+
+                        // 生成储位任务
+                        if (inTaskMaterialList.Count > 0)
+                        {
+                            var groupList = inTaskMaterialList.GroupBy(a => new { a.WareHouseCode, a.SuggestContainerCode });
+
+                            foreach (var item in groupList)
+                            {
+                                InTaskMaterial temp = item.FirstOrDefault();
+                                var inTask = new InTask()
+                                {
+                                    Status = (int)InTaskStatusCaption.WaitingForShelf,
+                                    WareHouseCode = temp.WareHouseCode,
+                                    ContainerCode = temp.SuggestContainerCode,
+                                    InCode = temp.InCode,
+                                    InDict = temp.InDict,
+                                    BillCode = inEntity.BillCode,
+                                    Remark = inEntity.Remark
+                                };
+                                inTask.Code = SequenceContract.Create(inTask.GetType());
+
+                                var inMaterialGroup = item.GroupBy(a => new { a.SuggestLocation, a.MaterialCode, a.BatchCode });
+
+                                foreach (var inTaskMaterial in inMaterialGroup)
+                                {
+                                    InTaskMaterial tempMaterial = inTaskMaterial.FirstOrDefault();
+
+                                    var quantity = inTaskMaterial.Sum(a => a.Quantity);
+                                    var inTaskMaterialEntity = new InTaskMaterial()
+                                    {
+                                        InTaskCode = inTask.Code,
+                                        Status = (int)InTaskStatusCaption.WaitingForShelf,
+                                        WareHouseCode = tempMaterial.WareHouseCode,
+                                        InCode = tempMaterial.InCode,
+                                        InDict = tempMaterial.InDict,
+                                        BillCode = tempMaterial.BillCode,
+                                        BatchCode = tempMaterial.BatchCode,
+                                        ItemNo = tempMaterial.ItemNo,
+                                        SuggestContainerCode = tempMaterial.SuggestContainerCode,
+                                        SuggestLocation = tempMaterial.SuggestLocation, // 建议入库位置
+                                        SuggestTrayId = tempMaterial.SuggestTrayId,
+                                        Quantity = quantity, // 入库数量乘以单包数量
+                                        SupplierCode = tempMaterial.SupplierCode,
+                                        CustomCode = tempMaterial.CustomCode,
+                                        MaterialCode = tempMaterial.MaterialCode,
+                                        XLight = tempMaterial.XLight,
+                                        YLight = tempMaterial.YLight
+                                    };
+                                    if (!InTaskMaterialRepository.Insert(inTaskMaterialEntity))
+                                    {
+                                        return DataProcess.Failure(string.Format("入库任务明细{0}新增失败", entity.Code));
+                                    }
+                                }
+
+                                if (!InTaskRepository.Insert(inTask))
+                                {
+                                    return DataProcess.Failure(string.Format("入库任务单{0}下发失败", entity.Code));
+                                }
+                            }
+
+
+                            // 更新入库物料单
+                            foreach (var item in inMaterailList)
+                            {
+                                if (item.SendInQuantity >= item.Quantity)
+                                {
+                                    item.Status = (int)InStatusCaption.HandShelf;
+                                }
+                                else if (item.SendInQuantity > 0)
+                                {
+                                    item.Status = (int)InStatusCaption.Sheling;
+                                }
+                                if (InContract.InMaterialRepository.Update(item) < 0)
+                                {
+                                    return DataProcess.Failure("任务下发，入库物料明细更新失败");
+                                }
+                            }
+
+                            // 更新入库单
+                            inEntity.Status = (int)InStatusCaption.Sheling;
+
+                            if (!InContract.InMaterials.Any(a => a.InCode == inEntity.Code && a.Status != (int)InStatusCaption.HandShelf))
+                            {
+                                inEntity.Status = (int)InStatusCaption.HandShelf;
+                            }
+                            if (InContract.InRepository.Update(inEntity) < 0)
+                            {
+                                return DataProcess.Failure("任务下发，入库单更新失败");
+                            }
+                        }
+                        else
+                        {
+                            InTaskRepository.UnitOfWork.Commit();
+                            return DataProcess.Failure("当前物料无可存放储位");
+                        }
+
                     }
+                    InTaskRepository.UnitOfWork.Commit();
+
+                    InRepository.UnitOfWork.Commit();
+
                 }
+
+                return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
+                #endregion
+
+                #region ADO.NET 数据获取处理
+                //int count = 0;
+                //In entity = null; // 创建In类型的实体entity
+                //List<In> entityList = new List<In>(); // 定义一个集合，用于存储遍历得到的实体entityes
+                //InMaterial inMaterialObjes = null;
+                //string currentBillCode = null;
+                //var createdTime = Ins.Max(a => a.CreatedTime);
+                //var connectionString = "Data Source=DESKTOP-71I0RDA;Initial Catalog=SMDB;User ID=sa;Password=123456";
+                //var query = "SELECT * FROM View_ConnectionTest";
+
+                //using (var connection = new SqlConnection(connectionString))
+                //{
+                //    var command = new SqlCommand(query, connection);
+                //    connection.Open();
+                //    var reader = command.ExecuteReader();
+                //    var resultList = new List<Dictionary<string, object>>();
+                //    while (reader.Read())
+                //    {
+                //        var row = new Dictionary<string, object>();
+                //        for (int i = 0; i < reader.FieldCount; i++)
+                //        {
+                //            row.Add(reader.GetName(i), reader.GetValue(i));
+                //        }
+                //        resultList.Add(row);
+                //    }
+                //    reader.Close();
+                //    if (resultList.Count > 0)
+                //    {
+
+                //        foreach (var dict in resultList)
+                //        {
+                //            entity = new In
+                //            {
+                //                Id = 0,
+                //                Code = dict["BILL_CODE"].ToString(),
+                //                Remark = "",
+                //                WareHouseCode = "01",
+                //                CreatedTime = (DateTime)dict["BILL_DATE"],
+                //                AddMaterial = new List<InMaterial>(),
+                //            };
+
+                //            In entityes = new In
+                //            {
+                //                Id = 0,
+                //                Code = dict["BILL_CODE"].ToString(),
+                //                Remark = "",
+                //                WareHouseCode = "01",
+                //                CreatedTime = (DateTime)dict["BILL_DATE"],
+                //                AddMaterial = new List<InMaterial>(),
+                //            };
+
+                //            inMaterialObjes = new InMaterial
+                //            {
+                //                MaterialCode = dict["MATERIALCODE"].ToString(),
+                //                Quantity = (decimal)dict["QTY"],
+                //                ManufactrueDate = (DateTime?)dict["BILL_DATE"],
+                //                CRRCID = dict["ID"].ToString(),
+                //                Status = 0,
+                //                RealInQuantity = 0,
+                //                BatchCode = "",
+
+                //            };
+
+                //            if (!Ins.Any(a => a.Code == entityes.Code))
+                //            {
+
+                //                if (currentBillCode != null && dict["BILL_CODE"].ToString() != currentBillCode)
+                //                {
+                //                    continue;
+                //                }
+                //                else
+                //                {
+                //                    currentBillCode = dict["BILL_CODE"].ToString();
+                //                    entityes.AddMaterial.Add(inMaterialObjes);
+                //                    entityList.Add(entityes); // 将entityes加入到集合中
+                //                }
+                //            }
+
+                //        }
+
+                //        foreach (var tempEntity in entityList)
+                //        {
+                //            entity.AddMaterial.AddRange(tempEntity.AddMaterial); // 将集合中的每个entityes的AddMaterial加入到entity中
+                //        }
+
+                //        InRepository.UnitOfWork.TransactionEnabled = true;
+                //        {
+                //            // 判断是否有入库单号
+                //            if (String.IsNullOrEmpty(entity.Code))
+                //            {
+                //                entity.Code = SequenceContract.Create(entity.GetType());
+                //            }
+                //            if (Ins.Any(a => a.Code == entity.Code))
+                //            {
+                //                return DataProcess.Failure("该入库单号已存在");
+                //            }
+                //            foreach (var inMaterial in entity.AddMaterial)
+                //            {
+                //                if (!Regex.IsMatch(inMaterial.Quantity.ToString(), @"^[0-9]*(\.[0-9]{1,2})?$"))
+                //                {
+                //                    return DataProcess.Failure("请输入正确的数字格式（包含两位小数的数字或者不包含小数的数字）");
+                //                }
+                //            }
+                //            entity.Status = entity.Status == null ? 0 : entity.Status; // 手动入库，状态为已完成
+                //            entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
+
+                //            if (!InRepository.Insert(entity))
+                //            {
+                //                return DataProcess.Failure(string.Format("入库单{0}新增失败", entity.Code));
+                //            }
+
+                //            if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
+                //            {
+                //                foreach (InMaterial item in entity.AddMaterial)
+                //                {
+                //                    item.InCode = entity.Code;
+                //                    item.BillCode = entity.BillCode;
+                //                    item.SendInQuantity = item.SendInQuantity.GetValueOrDefault(0) == 0 ? 0 : item.SendInQuantity;
+                //                    item.Status = item.Status == null ? 0 : item.Status;
+                //                    item.InDict = entity.InDict;
+                //                    item.ItemNo = (entity.AddMaterial.IndexOf(item) + 1).ToString();
+                //                    DataResult result = CreateInMaterialEntity(item);
+                //                    if (!result.Success)
+                //                    {
+                //                        return DataProcess.Failure(result.Message);
+                //                    }
+                //                }
+                //            }
+                //        }
+                //        count++;
+
+                //        InRepository.UnitOfWork.Commit();
+
+                //    }
+
+                //    return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
+
+                #endregion
+
+                #region 原同步代码
+                //try
+                //{
+                //    InIFRepository.UnitOfWork.TransactionEnabled = true;
+                //    var list = InIFRepository.Query().Where(a => a.Status == (int)InterFaceBCaption.Waiting).ToList();
+                //    int count = 0;
+                //    foreach (var item in list)
+                //    {
+                //        // 判断该来源单据号是否已存在入库单
+                //        if (Ins.Any(a => a.BillCode == item.BillCode))
+                //        {
+                //            item.Status = (int)OrderEnum.Error;
+                //            item.Remark = "来源单据号" + item.BillCode + "已存在";
+                //            InIFRepository.Update(item);
+                //            break;
+                //        }
+                //        int errorflag = 0;
+                //        var inEnity = new In()
+                //        {
+                //            BillCode = item.BillCode,
+                //            WareHouseCode = item.WareHouseCode,
+                //            InDict = item.InDict,
+                //            InDate = item.InDate,
+                //            Status = (int)InStatusCaption.WaitingForShelf,
+                //            AddMaterial = new List<Bussiness.Entitys.InMaterial>(),
+                //            OrderType = (int)OrderTypeEnum.Other,
+                //            //Remark = item.Remark
+                //        };
+                //        var materialList = InMaterialIFRepository.Query().Where(a => a.BillCode == item.BillCode).ToList();
+                //        foreach (var inMaterial in materialList)
+                //        {
+                //            inMaterial.Status = (int)OrderEnum.Wait;
+                //            if (MaterialContract.Materials.FirstOrDefault(a => a.Code == inMaterial.MaterialCode) == null)
+                //            {
+                //                item.Status = (int)OrderEnum.Error;
+                //                errorflag = 1;
+                //                inMaterial.Status = (int)OrderEnum.Error;
+                //                inMaterial.Remark = "物料编码" + inMaterial.MaterialCode + "不存在!";
+                //                InMaterialIFRepository.Update(inMaterial);
+                //                break;
+                //            }
+
+                //            var inMaterialEntity = new InMaterial()
+                //            {
+                //                BillCode = inMaterial.BillCode,
+                //                Status = 0,
+                //                InDict = inMaterial.InDict,
+                //                SendInQuantity = 0,
+                //                MaterialCode = inMaterial.MaterialCode,
+                //                Quantity = inMaterial.Quantity,
+                //                ManufactrueDate = inMaterial.ManufactrueDate,
+                //                BatchCode = inMaterial.BatchCode,
+                //                SupplierCode = inMaterial.SupplierCode,
+                //                SupplierName = inMaterial.SupplierName,
+                //                ItemNo = inMaterial.ItemNo
+                //            };
+                //            inEnity.AddMaterial.Add(inMaterialEntity);
+                //            InMaterialIFRepository.Update(inMaterial);
+                //        }
+
+                //        if (errorflag == 1)
+                //        {
+                //            InIFRepository.Update(item);
+                //        }
+                //        else
+                //        {
+                //            if (!CreateInEntity(inEnity).Success)
+                //            {
+                //                return DataProcess.Failure("该入库单号已存在");
+                //            }
+                //            item.Status = (int)OrderEnum.Wait;
+                //            InIFRepository.Update(item);
+                //            count += 0;
+                //        }
+                //    }
+                //    InIFRepository.UnitOfWork.Commit();
+                //    return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
+                //}
+                //catch (Exception ex)
+                //{
+                //    return null;
+                //}
+                #endregion
+
             }
-            return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
-            #endregion
-
-            #region ADO.NET 数据获取处理
-            //int count = 0;
-            //var createdTime = Ins.Max(a => a.CreatedTime);
-            //var connectionString = "Data Source=DESKTOP-71I0RDA;Initial Catalog=SMDB;User ID=sa;Password=123456";
-            //var query = "SELECT * FROM View_ConnectionTest";
-            //using (var connection = new SqlConnection(connectionString))
-            //{
-            //    var command = new SqlCommand(query, connection);
-            //    connection.Open();
-            //    var reader = command.ExecuteReader();
-            //    var resultList = new List<Dictionary<string, object>>();
-            //    while (reader.Read())
-            //    {
-            //        var row = new Dictionary<string, object>();
-            //        for (int i = 0; i < reader.FieldCount; i++)
-            //        {
-            //            row.Add(reader.GetName(i), reader.GetValue(i));
-            //        }
-            //        resultList.Add(row);
-            //    }
-            //    reader.Close();
-            //    foreach (var dict in resultList)
-            //    {
-            //        In entity = new In
-            //        {
-            //            Id = 0,
-            //            BillCode = "",
-            //            Code = "",
-            //            Remark = "",
-            //            WareHouseCode = dict["WareHouseCode"].ToString(),
-            //            CreatedTime = (DateTime)dict["CreatedTime"],
-            //            AddMaterial = new List<InMaterial>(),
-            //        };
-
-            //        InMaterial inMaterialObj = new InMaterial
-            //        {
-            //            Id = (int)dict["Id"],
-            //            MaterialCode = dict["MaterialCode"].ToString(),
-            //            Quantity = (decimal)dict["Quantity"],
-            //            ManufactrueDate = (DateTime?)dict["ManufactrueDate"],
-            //            Status = 0,
-            //            RealInQuantity = 0,
-            //            BatchCode = "",
-
-            //        };
-
-            //        //如果视图任务创建时间大于上次最近生成的任务时间
-            //        if (entity.CreatedTime > createdTime)
-            //        {
-            //            entity.AddMaterial.Add(inMaterialObj);
-            //        }
-            //        else
-            //        {
-            //            return DataProcess.Failure("未发现需要添加的入库单！");
-            //        }
-
-            //        InRepository.UnitOfWork.TransactionEnabled = true;
-            //        {
-            //            // 判断是否有入库单号
-            //            if (String.IsNullOrEmpty(entity.Code))
-            //            {
-            //                entity.Code = SequenceContract.Create(entity.GetType());
-            //            }
-            //            if (Ins.Any(a => a.Code == entity.Code))
-            //            {
-            //                return DataProcess.Failure("该入库单号已存在");
-            //            }
-            //            foreach (var inMaterial in entity.AddMaterial)
-            //            {
-            //                if (!Regex.IsMatch(inMaterial.Quantity.ToString(), @"^[0-9]*(\.[0-9]{1,2})?$"))
-            //                {
-            //                    return DataProcess.Failure("请输入正确的数字格式（包含两位小数的数字或者不包含小数的数字）");
-            //                }
-            //            }
-            //            entity.Status = entity.Status == null ? 0 : entity.Status; // 手动入库，状态为已完成
-            //            entity.OrderType = entity.OrderType == null ? 0 : entity.OrderType; // 单据来源
-
-            //            if (!InRepository.Insert(entity))
-            //            {
-            //                return DataProcess.Failure(string.Format("入库单{0}新增失败", entity.Code));
-            //            }
-
-            //            if (entity.AddMaterial != null && entity.AddMaterial.Count() > 0)
-            //            {
-            //                foreach (InMaterial item in entity.AddMaterial)
-            //                {
-            //                    item.InCode = entity.Code;
-            //                    item.BillCode = entity.BillCode;
-            //                    item.SendInQuantity = item.SendInQuantity.GetValueOrDefault(0) == 0 ? 0 : item.SendInQuantity;
-            //                    item.Status = item.Status == null ? 0 : item.Status;
-            //                    item.InDict = entity.InDict;
-            //                    item.ItemNo = (entity.AddMaterial.IndexOf(item) + 1).ToString();
-            //                    DataResult result = CreateInMaterialEntity(item);
-            //                    if (!result.Success)
-            //                    {
-            //                        return DataProcess.Failure(result.Message);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //        count = entity.AddMaterial.Count();
-            //        InRepository.UnitOfWork.Commit();
-
-            //    }
-
-            //    return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
-
-            //}
-            #endregion
-
-            #region 原同步代码
-            //try
-            //{
-            //    InIFRepository.UnitOfWork.TransactionEnabled = true;
-            //    var list = InIFRepository.Query().Where(a => a.Status == (int)InterFaceBCaption.Waiting).ToList();
-            //    int count = 0;
-            //    foreach (var item in list)
-            //    {
-            //        // 判断该来源单据号是否已存在入库单
-            //        if (Ins.Any(a => a.BillCode == item.BillCode))
-            //        {
-            //            item.Status = (int)OrderEnum.Error;
-            //            item.Remark = "来源单据号" + item.BillCode + "已存在";
-            //            InIFRepository.Update(item);
-            //            break;
-            //        }
-            //        int errorflag = 0;
-            //        var inEnity = new In()
-            //        {
-            //            BillCode = item.BillCode,
-            //            WareHouseCode = item.WareHouseCode,
-            //            InDict = item.InDict,
-            //            InDate = item.InDate,
-            //            Status = (int)InStatusCaption.WaitingForShelf,
-            //            AddMaterial = new List<Bussiness.Entitys.InMaterial>(),
-            //            OrderType = (int)OrderTypeEnum.Other,
-            //            //Remark = item.Remark
-            //        };
-            //        var materialList = InMaterialIFRepository.Query().Where(a => a.BillCode == item.BillCode).ToList();
-            //        foreach (var inMaterial in materialList)
-            //        {
-            //            inMaterial.Status = (int)OrderEnum.Wait;
-            //            if (MaterialContract.Materials.FirstOrDefault(a => a.Code == inMaterial.MaterialCode) == null)
-            //            {
-            //                item.Status = (int)OrderEnum.Error;
-            //                errorflag = 1;
-            //                inMaterial.Status = (int)OrderEnum.Error;
-            //                inMaterial.Remark = "物料编码" + inMaterial.MaterialCode + "不存在!";
-            //                InMaterialIFRepository.Update(inMaterial);
-            //                break;
-            //            }
-
-            //            var inMaterialEntity = new InMaterial()
-            //            {
-            //                BillCode = inMaterial.BillCode,
-            //                Status = 0,
-            //                InDict = inMaterial.InDict,
-            //                SendInQuantity = 0,
-            //                MaterialCode = inMaterial.MaterialCode,
-            //                Quantity = inMaterial.Quantity,
-            //                ManufactrueDate = inMaterial.ManufactrueDate,
-            //                BatchCode = inMaterial.BatchCode,
-            //                SupplierCode = inMaterial.SupplierCode,
-            //                SupplierName = inMaterial.SupplierName,
-            //                ItemNo = inMaterial.ItemNo
-            //            };
-            //            inEnity.AddMaterial.Add(inMaterialEntity);
-            //            InMaterialIFRepository.Update(inMaterial);
-            //        }
-
-            //        if (errorflag == 1)
-            //        {
-            //            InIFRepository.Update(item);
-            //        }
-            //        else
-            //        {
-            //            if (!CreateInEntity(inEnity).Success)
-            //            {
-            //                return DataProcess.Failure("该入库单号已存在");
-            //            }
-            //            item.Status = (int)OrderEnum.Wait;
-            //            InIFRepository.Update(item);
-            //            count += 0;
-            //        }
-            //    }
-            //    InIFRepository.UnitOfWork.Commit();
-            //    return DataProcess.Success(string.Format("入库单同步成功,共有{0}条增加", count));
-            //}
-            //catch (Exception ex)
-            //{
-            //    return null;
-            //}
-            #endregion
-
         }
-
 
         public DataResult CreateInEntity(In entity)
         {

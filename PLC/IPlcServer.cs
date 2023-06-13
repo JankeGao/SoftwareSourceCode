@@ -36,6 +36,15 @@ namespace PLCServer
         DataResult StartRunningContainer(Command.RunningContainer runningContainer);
 
         /// <summary>
+        /// 货柜再次自动运行
+        /// </summary>
+        /// <param name="runningContainer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "StartRunningContainerAgain", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult StartRunningContainerAgain(Command.RunningContainer runningContainer);
+
+        /// <summary>
         /// 货柜存入托盘
         /// </summary>
         /// <param name="runningContainer"></param>

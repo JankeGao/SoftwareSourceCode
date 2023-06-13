@@ -29,6 +29,7 @@ namespace Bussiness.Services
     public class InTaskServer : Contracts.IInTaskContract
     {
         public IRepository<Material, int> MaterialRepository { get; set; }
+        public IRepository<InMaterial, int> InMaterialRepository { get; set; }
         public IRepository<InTask, int> InTaskRepository { get; set; }
         public IRepository<InTaskMaterial, int> InTaskMaterialRepository { get; set; }
 
@@ -66,7 +67,7 @@ namespace Bussiness.Services
         public IMapper Mapper { set; get; }
 
         public IRepository<In, int> InRepository { get; set; }
-        public IQuery<In> Ins => InRepository.Query();
+        public IQuery<InMaterial> InMaterials => InMaterialRepository.Query();
 
         public IQuery<InTask> InTasks => InTaskRepository.Query();
 
@@ -1916,7 +1917,7 @@ namespace Bussiness.Services
                 StockRepository.Insert(stock);
             }
 
-            In inEntityes = Ins.FirstOrDefault(a => a.Code == entity.InCode);
+            InMaterial inEntityes = InMaterials.FirstOrDefault(a => a.InCode == entity.InCode);
 
             #region 登录获取token及进行任务反馈
             try

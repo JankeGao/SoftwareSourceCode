@@ -91,6 +91,47 @@ namespace wms.Client.Service.Service
         }
 
         /// <summary>
+        /// 再次控制货柜运转
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task<DataResult> PostStartRunningContainerAgain(RunningContainer model)
+        {
+            BaseServiceRequest<DataResult> baseService = new BaseServiceRequest<DataResult>();
+            string CurrentRunningTray = "";
+            bool IsTakeIn = false;
+            string cfgINI = AppDomain.CurrentDomain.BaseDirectory + wms.Client.LogicCore.Configuration.SerivceFiguration.INI_CFG;
+            if (System.IO.File.Exists(cfgINI))
+            {
+                wms.Client.LogicCore.Helpers.Files.IniFile ini = new wms.Client.LogicCore.Helpers.Files.IniFile(cfgINI);
+                CurrentRunningTray = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
+                IsTakeIn = Convert.ToBoolean(ini.IniReadValue("ClientInfo", "IsTakeIn").ToString());
+            }
+            if (!string.IsNullOrEmpty(CurrentRunningTray))
+            {
+                if (int.TryParse(CurrentRunningTray, out int trayNumber) == true)
+                {
+                    if (trayNumber != model.TrayCode)
+                    {
+                        model.LastTrayCode = CurrentRunningTray;
+                    }
+                }
+            }
+
+            var r = await baseService.GetRequest<DataResult>(new StartRunningContainerAgainRequest(), model, RestSharp.Method.POST);
+            if (r.Success)
+            {
+                if (System.IO.File.Exists(cfgINI))
+                {
+                    wms.Client.LogicCore.Helpers.Files.IniFile ini = new wms.Client.LogicCore.Helpers.Files.IniFile(cfgINI);
+                    ini.IniWriteValue("ClientInfo", "CurrentRunningTray", model.TrayCode.ToString());
+                    ini.IniWriteValue("ClientInfo", "IsTakeIn", "False");
+                }
+            }
+            return r;
+        }
+
+        /// <summary>
         /// 控制货柜运转
         /// </summary>
         /// <param name="model"></param>

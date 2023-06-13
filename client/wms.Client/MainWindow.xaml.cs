@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Interactivity;
 using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
+using wms.Client.Core.Interfaces;
 using wms.Client.LogicCore.Configuration;
 using wms.Client.LogicCore.Enums;
 using wms.Client.LogicCore.Helpers.Files;
@@ -28,7 +29,8 @@ namespace wms.Client
         private Timer _timer;
         // 第一次触发弹窗的起始计算时间
         private DateTime _lastDismissTime;
-        
+
+        private Timer _dateTime;
 
         public MainWindow()
         {
@@ -47,7 +49,23 @@ namespace wms.Client
             _timer = new Timer(60000);
             _timer.Elapsed += OnTimerElapsed;
             _timer.Start();
-            
+
+            _dateTime = new Timer(10000);
+            _dateTime.Elapsed += DateTimeElapsed;
+            _dateTime.Start();
+
+
+        }
+        /// <summary>
+        /// 定时10秒获取一次出入库任务
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DateTimeElapsed(object sender, ElapsedEventArgs e)
+        {
+            var intaskService = ServiceProvider.Instance.Get<IInTaskService>();
+            intaskService.GetInterfaceIn();
+            intaskService.GetInterfaceOut();
         }
 
         public void ReadConfigInfo()

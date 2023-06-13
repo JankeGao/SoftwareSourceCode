@@ -19,7 +19,7 @@ namespace Bussiness.Entitys
         /// </summary>
         public string Code { get; set; }
         /// <summary>
-        /// 单据号
+        /// 来源单据号
         /// </summary>
         public string BillCode { get; set; }
         /// <summary>

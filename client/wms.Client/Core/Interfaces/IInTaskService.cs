@@ -10,6 +10,10 @@ namespace wms.Client.Core.Interfaces
 
         Task<DataResult> PostClientLocationList(InTaskMaterialDto model);
 
+        Task GetInterfaceIn();
+
+        Task GetInterfaceOut();
+
         /// <summary>
         /// 手动入库提交
         /// </summary>

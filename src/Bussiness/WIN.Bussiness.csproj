@@ -299,6 +299,7 @@
     <Compile Include="Resources\DictionaryResource.cs" />
     <Compile Include="Resources\FileResource.cs" />
     <Compile Include="Services\AlarmServer.cs" />
+    <Compile Include="Services\AutoTimer.cs" />
     <Compile Include="Services\BoxServer.cs" />
     <Compile Include="Services\CheckListServer.cs" />
     <Compile Include="Services\CheckServer.cs" />

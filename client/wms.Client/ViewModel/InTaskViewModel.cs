@@ -30,6 +30,8 @@ using wms.Client.View;
 using wms.Client.ViewModel.Base;
 using wms.Client.ViewModel;
 using RunningContainer = wms.Client.Model.Entity.RunningContainer;
+using System.Threading;
+using System.Windows.Controls;
 
 namespace wms.Client.ViewModel
 {
@@ -45,6 +47,11 @@ namespace wms.Client.ViewModel
         /// 入库任务契约
         /// </summary>
         private readonly IInTaskContract InTaskContract;
+
+        /// <summary>
+        /// 仓库契约
+        /// </summary>
+        private readonly IStockContract StockContract;
 
         /// <summary>
         /// 仓库契约
@@ -80,6 +87,7 @@ namespace wms.Client.ViewModel
         {
             ContainerRepository = IocResolver.Resolve<IRepository<Bussiness.Entitys.Container, int>>();
             InTaskContract = IocResolver.Resolve<IInTaskContract>();
+            StockContract = IocResolver.Resolve<IStockContract>();
             LabelContract = IocResolver.Resolve<ILabelContract>();
             WareHouseContract = IocResolver.Resolve<IWareHouseContract>();
             Mapper = IocResolver.Resolve<IMapper>();
@@ -487,8 +495,15 @@ namespace wms.Client.ViewModel
             get { return boxName; }
             set { boxName = value; RaisePropertyChanged(); }
         }
-
-
+        /// <summary>
+        /// 全部库存
+        /// </summary>
+        private decimal _AllQuantity = 0;
+        public decimal AllQuantity
+        {
+            get { return _AllQuantity; }
+            set { _AllQuantity = value; RaisePropertyChanged(); }
+        }
 
         /// <summary>
         /// 当前操作储位
@@ -556,6 +571,13 @@ namespace wms.Client.ViewModel
             set { _WeightCheckColor = value; RaisePropertyChanged(); }
         }
 
+        private string _SelectItemColor = "MediumPurple";
+
+        public string SelectItemColor
+        {
+            get { return _SelectItemColor; }
+            set { _SelectItemColor= value; RaisePropertyChanged(); }
+        }
 
 
 
@@ -821,6 +843,15 @@ namespace wms.Client.ViewModel
         /// </summary>
         public async void ScanBarcode(string code)
         {
+            //DataGrid dataGrid = new DataGrid();
+
+            //int index = dataGrid.SelectedIndex;
+            //if (index < dataGrid.Items.Count - 1)
+            //{
+            //    dataGrid.SelectedIndex = index + 1;
+            //}
+            //dataGrid.Items.Refresh();
+
             try
             {
                 ChangeColor("Scan");
@@ -890,10 +921,6 @@ namespace wms.Client.ViewModel
                                 else
                                 {
                                     Clear();
-                                    //dialog.BindDataContext(new MsgBox(), new MsgBoxViewModel() { Msg = "请输入入库数量！", Icon = "CommentProcessingOutline", Color = "#FF4500", BtnHide = true });
-                                    //dialog.Show();
-                                    //await Task.Delay(3000);
-                                    //DialogHost.CloseDialogCommand.Execute(null, null);
                                     isAlarmRaised = true;
                                     Msg.Info("请输入入库数量！");
                                     return;
@@ -1031,13 +1058,14 @@ namespace wms.Client.ViewModel
             try
             {
                 ChangeColor("SelectItem");
- 
+
+                
+
                 object[] multiObj = obj as object[];
                 Bussiness.Dtos.InTaskMaterialDto entity = multiObj[0] as Bussiness.Dtos.InTaskMaterialDto;
-                if (multiObj[1]!=null)
+                if (multiObj[1] != null)
                 {
                     button = multiObj[1] as System.Windows.Controls.Button;
-                    //System.Windows.Controls.Button button = GetControlObject<System.Windows.Controls.Button>(entity.Id.ToString());
 
                     System.Windows.Media.Color color = (
                     System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("Green");
@@ -1061,6 +1089,22 @@ namespace wms.Client.ViewModel
                 // 核查用户是否有此模块操作权限
                 var user = ServiceProvider.Instance.Get<IUserService>();
                 var authCheck =  user.GetCheckTrayAuth((int)entity.SuggestTrayId);
+                if (StockContract.StockDtos != null && StockContract.StockDtos.Any())
+                {
+                    var stockEntity = StockContract.StockDtos.FirstOrDefault(a => a.MaterialCode == entity.MaterialCode);
+                    if (stockEntity != null)
+                    {
+                        AllQuantity = stockEntity.Quantity;
+                    }
+                    else
+                    {
+                        AllQuantity = 0;
+                    }
+                }
+                else
+                {
+                    // 数据集合为空，进行相应的操作
+                }
                 if (!authCheck.Result.Success)
                 {
                     isAlarmRaised = true;
@@ -1075,15 +1119,23 @@ namespace wms.Client.ViewModel
                 LabelEntity.MaterialUrl = _basePath + entity.MaterialUrl;
                 XLight = entity.XLight;
                 YLight = entity.YLight;
-                
+
                 BoxName = entity.BoxName;
                 InQuantity = entity.Quantity- entity.RealInQuantity;
                 SelectMaterialCode = entity.MaterialCode;
                 SelectMaterialName = entity.MaterialName;
                 UnitWeight = entity.UnitWeight;
+                SearchBarcode = entity.SuggestLocation;
                 GlobalData.IsFocus = true;
 
+                RunningContainer();
+
+                TransferWeight();
+
                 await StartGetWeighingQuantity();
+
+                
+
                 //if (await Msg.Question("是否需要开始货柜?") == true)
                 //{
                 //    RunningContainer();
@@ -1099,6 +1151,53 @@ namespace wms.Client.ViewModel
             }
         }
 
+        /// <summary>
+        /// 扫描传递物料单重
+        /// </summary>
+        public async void TransferWeight()
+        {
+            try
+            {
+                if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Warning("货柜PLC离线状态，无法传递物料单重！");
+                    return;
+                }
+                // 读取PLC 状态信息
+                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                var runingEntity = new RunningContainer()
+                {
+                    ContainerCode = ContainerCode,
+                    UnitWeight = UnitWeight
+                };
+                var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                if (container != null)
+                {
+                    runingEntity.ContainerType = container.ContainerType;
+                    runingEntity.IpAddress = container.Ip;
+                    runingEntity.Port = int.Parse(container.Port);
+                }
+
+                // 向货柜PLC传递物料单重
+                var runningContainer = await baseControlService.PostStartScanBarcodeKeyDown(runingEntity);
+                if (runningContainer.Success)
+                {
+                    //weighingQuantity = (decimal)runningContainer.Data;
+                    //TakeInTrayNumber = runingEntity.TrayCode.ToString();
+                }
+                else
+                {
+                    GlobalData.IsFocus = true;
+                    Msg.Error(runningContainer.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Msg.Error(ex.Message);
+            }
+        }
 
         /// <summary>
         /// 启动货柜
@@ -1107,7 +1206,7 @@ namespace wms.Client.ViewModel
         {
             try
             {
-                ChangeColor("FirstStep");
+                //ChangeColor("FirstStep");
                 if (GlobalData.DeviceStatus == (int)DeviceStatusEnum.Fault)
                 {
                     GlobalData.IsFocus = true;
@@ -1135,60 +1234,123 @@ namespace wms.Client.ViewModel
                     }
                 }
 
-                // await dialog.c
-                // 读取PLC 状态信息
-                var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
-
-                var runingEntity = new RunningContainer()
+                string cfgINI = AppDomain.CurrentDomain.BaseDirectory + SerivceFiguration.INI_CFG;
+                string CurrentRunningTray = string.Empty;
+                string CurrentIsTakeIn = string.Empty;
+                if (File.Exists(cfgINI))
                 {
-                    ContainerCode = ContainerCode,
-                    TrayCode = Convert.ToInt32(TrayCode),
-                    XLight = XLight,
-                    YLight = YLight
-                };
-                var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
-                if (container!=null)
-                {
-                    runingEntity.ContainerType = container.ContainerType;
-                    runingEntity.IpAddress = container.Ip;
-                    runingEntity.Port = int.Parse(container.Port);
+                    IniFile ini = new IniFile(cfgINI);
+                    CurrentRunningTray = ini.IniReadValue("ClientInfo", "CurrentRunningTray");
+                    CurrentIsTakeIn = ini.IniReadValue("ClientInfo", "IsTakeIn");
                 }
-                if (!string.IsNullOrEmpty(LocationCode))
+
+                if(CurrentRunningTray == TrayCode && CurrentIsTakeIn == "False")
                 {
-                    var locationEntity = WareHouseContract.Locations.FirstOrDefault(a => a.Code == LocationCode);
-                    if (locationEntity != null)
+                    // await dialog.c
+                    // 读取PLC 状态信息
+                    var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                    var runingEntity = new RunningContainer()
                     {
-                        runingEntity.XLenght = locationEntity.XLenght.GetValueOrDefault(0);
+                        ContainerCode = ContainerCode,
+                        TrayCode = Convert.ToInt32(TrayCode),
+                        XLight = XLight,
+                        YLight = YLight
+                    };
+                    var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                    if (container != null)
+                    {
+                        runingEntity.ContainerType = container.ContainerType;
+                        runingEntity.IpAddress = container.Ip;
+                        runingEntity.Port = int.Parse(container.Port);
                     }
-                }
-                // 货柜运行
-                var runningContainer = baseControlService.PostStartRunningContainer(runingEntity);
+                    if (!string.IsNullOrEmpty(LocationCode))
+                    {
+                        var locationEntity = WareHouseContract.Locations.FirstOrDefault(a => a.Code == LocationCode);
+                        if (locationEntity != null)
+                        {
+                            runingEntity.XLenght = locationEntity.XLenght.GetValueOrDefault(0);
+                        }
+                    }
+                    // 货柜运行
+                    var runningContainer = baseControlService.PostStartRunningContainerAgain(runingEntity);
 
-                if (runningContainer.Result.Success)//
-                {
-                    GlobalData.IsFocus = true;
-                    //Msg.Warning("货柜运行中");
-                    //var dialog = ServiceProvider.Instance.Get<IShowContent>();
-                    //dialog.BindDataContext(new MsgBox(), new MsgBoxViewModel() { Msg = "货柜运行中", Icon = "CommentProcessingOutline", Color = "#FF4500", BtnHide = true });
-                    //dialog.Show();
-                    //await Task.Delay(1000);
-                    //DialogHost.CloseDialogCommand.Execute(null, null);
-                    CurTratCode = TrayCode;
-                    Msg.Info("正在取出托盘,请确认托盘到达指定位置后再关闭窗口");
+                    if (runningContainer.Result.Success)//
+                    {
+                        GlobalData.IsFocus = true;
+                        //Msg.Warning("货柜运行中");
+                        //var dialog = ServiceProvider.Instance.Get<IShowContent>();
+                        //dialog.BindDataContext(new MsgBox(), new MsgBoxViewModel() { Msg = "货柜运行中", Icon = "CommentProcessingOutline", Color = "#FF4500", BtnHide = true });
+                        //dialog.Show();
+                        //await Task.Delay(1000);
+                        //DialogHost.CloseDialogCommand.Execute(null, null);
+                        CurTratCode = TrayCode;
+                        //Msg.Info("正在取出托盘,请确认托盘到达指定位置后再关闭窗口");
 
+                    }
+                    else
+                    {
+                        GlobalData.IsFocus = true;
+                        Msg.Error(runningContainer.Result.Message);
+                    }
                 }
                 else
                 {
-                    GlobalData.IsFocus = true;
-                    Msg.Error(runningContainer.Result.Message);
+                    // await dialog.c
+                    // 读取PLC 状态信息
+                    var baseControlService = ServiceProvider.Instance.Get<IBaseControlService>();
+
+                    var runingEntity = new RunningContainer()
+                    {
+                        ContainerCode = ContainerCode,
+                        TrayCode = Convert.ToInt32(TrayCode),
+                        XLight = XLight,
+                        YLight = YLight
+                    };
+                    var container = ContainerRepository.Query().FirstOrDefault(a => a.Code == ContainerCode);
+                    if (container != null)
+                    {
+                        runingEntity.ContainerType = container.ContainerType;
+                        runingEntity.IpAddress = container.Ip;
+                        runingEntity.Port = int.Parse(container.Port);
+                    }
+                    if (!string.IsNullOrEmpty(LocationCode))
+                    {
+                        var locationEntity = WareHouseContract.Locations.FirstOrDefault(a => a.Code == LocationCode);
+                        if (locationEntity != null)
+                        {
+                            runingEntity.XLenght = locationEntity.XLenght.GetValueOrDefault(0);
+                        }
+                    }
+                    // 货柜运行
+                    var runningContainer = baseControlService.PostStartRunningContainer(runingEntity);
+
+                    if (runningContainer.Result.Success)//
+                    {
+                        GlobalData.IsFocus = true;
+                        //Msg.Warning("货柜运行中");
+                        //var dialog = ServiceProvider.Instance.Get<IShowContent>();
+                        //dialog.BindDataContext(new MsgBox(), new MsgBoxViewModel() { Msg = "货柜运行中", Icon = "CommentProcessingOutline", Color = "#FF4500", BtnHide = true });
+                        //dialog.Show();
+                        //await Task.Delay(1000);
+                        //DialogHost.CloseDialogCommand.Execute(null, null);
+                        CurTratCode = TrayCode;
+                        //Msg.Info("正在取出托盘,请确认托盘到达指定位置后再关闭窗口");
+
+                    }
+                    else
+                    {
+                        GlobalData.IsFocus = true;
+                        Msg.Error(runningContainer.Result.Message);
+                    }
                 }
+                
             }
             catch (Exception ex)
             {
                 Msg.Error(ex.Message);
             }
         }
-
 
         public async void RunningTakeInContainer()
         {
@@ -1470,6 +1632,7 @@ namespace wms.Client.ViewModel
                             SelectInTaskItem(obj);
                         }
                     }
+
                 }
                 else
                 {

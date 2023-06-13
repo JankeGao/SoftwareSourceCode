@@ -389,6 +389,205 @@ namespace PLCServer
             return DataProcess.Success();
         }
 
+        /// <summary>
+        ///启动货柜逻辑-再次自动运行
+        /// </summary>
+        /// <param name="runningContainer">货柜信息</param>
+        /// <returns></returns>
+        public DataResult StartRunningContainerAgain(Command.RunningContainer runningContainer)
+        {
+            try
+            {
+                if (runningContainer.TrayCode <= 0)
+                {
+                    return DataProcess.Failure("托盘序号不可为0，请核查数据");
+                }
+                //  runningContainer.ContainerType = 3;//正泰
+                if (isConnected || runningContainer.ContainerType == 1 || runningContainer.ContainerType == 2)
+                {
+                    int SignalDelay = 500;//Convert.ToInt32(ConfigurationManager.AppSettings["SignalDelay"].ToString());
+                    //runningContainer.ContainerType = 3;
+                    if (runningContainer.ContainerType == 3)
+                    {
+                        var M65111Result = melsec_net.ReadBool("M651");
+                        if (M65111Result.IsSuccess)
+                        {
+                            if (M65111Result.Content == true)
+                            {
+                                return DataProcess.Failure("取出动作尚未结束");
+                            }
+                        }
+                        var M654Result = melsec_net.ReadBool("M654");
+                        if (M654Result.IsSuccess)
+                        {
+                            if (M654Result.Content == true)
+                            {
+                                return DataProcess.Failure("存入动作尚未结束");
+                            }
+                        }
+                        var M900Result = melsec_net.ReadBool("M900");
+                        if (M900Result.IsSuccess)
+                        {
+                            if (M900Result.Content == true)
+                            {
+                                return DataProcess.Failure("更换托盘动作尚未结束");
+                            }
+                        }
+                        var TrayResult = melsec_net.Write("D650", runningContainer.TrayCode);
+                        if (TrayResult.IsSuccess)
+                        {
+                            //2.	写入D218 十进制 X轴灯号 
+                            //var XResult = melsec_net.Write("D219", runningContainer.XLight);
+                            var XResult = melsec_net.Write("D251", runningContainer.XLight);
+                            Thread.Sleep(SignalDelay);
+                            var XLenghtResult = melsec_net.Write("D250", runningContainer.XLenght);
+                            if (XResult.IsSuccess)
+                            {
+                                var M280Result = melsec_net.Write("M280",true);
+                                if (M280Result.IsSuccess)
+                                {
+                                    Thread.Sleep(100);
+                                    M280Result = melsec_net.Write("M280", false);
+                                    if (!M280Result.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M280置为OFF失败" + M280Result.Message);
+                                    }
+                                    Thread.Sleep(500);
+                                    var M281Result = melsec_net.Write("M281", true);
+                                    if (M281Result.IsSuccess)
+                                    {
+                                        Thread.Sleep(100);
+                                        M281Result = melsec_net.Write("M281", false);
+                                        if (!M281Result.IsSuccess)
+                                        {
+                                            return DataProcess.Failure("M281置为OFF失败" + M280Result.Message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return DataProcess.Failure("M281置为ON失败" + M280Result.Message);
+
+                                    }
+                                }
+                                else
+                                {
+                                    return DataProcess.Failure("M280置为ON失败" + M280Result.Message);
+                                }
+
+                                //发送 3.	M651 bit  置为 ON
+                                var M650Result = melsec_net.Write("M650", true);
+                                if (M650Result.IsSuccess)
+                                {
+                                    Thread.Sleep(SignalDelay);
+                                    M650Result = melsec_net.Write("M650", false);
+                                    if (!M650Result.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M650置为OFF失败" + M650Result.Message);
+                                    }
+
+                                    var M651Result = melsec_net.Write("M651", true);
+                                    if (!M651Result.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M651置为ON失败" + M651Result.Message);
+                                    }
+                                    //Thread.Sleep(SignalDelay);
+
+                                    //M651Result = melsec_net.Write("M651", false);
+                                    //if (!M651Result.IsSuccess)
+                                    //{
+                                    //    return DataProcess.Failure("M651置为OFF失败" + M651Result.Message);
+                                    //}
+                                }
+                                else
+                                {
+                                    return DataProcess.Failure("M650置为ON失败" + M650Result.Message);
+                                }
+                            }
+                            else
+                            {
+                                return DataProcess.Failure("写入X轴灯号失败:" + XResult.Message);
+                            }
+                        }
+                        else
+                        {
+                            return DataProcess.Failure("写入托盘序号失败:" + TrayResult.Message);
+                        }
+                    }
+                    else if (runningContainer.ContainerType == 1)
+                    {
+                        return StartRunningC3000Container(runningContainer);
+                    }
+                    else if (runningContainer.ContainerType == 2)
+                    {
+                        return StartRunningHanelContainer(runningContainer);
+                    }
+                    else
+                    {
+                        //1.	写入D490  十进制 运行货柜的托盘序号
+                        var TrayResult = melsec_net.Write("D490", runningContainer.TrayCode);
+                        if (TrayResult.IsSuccess)
+                        {
+                            //2.	写入R218 十进制 X轴灯号 
+                            //var XResult = melsec_net.Write("R218", runningContainer.XLight);
+                            var XResult = melsec_net.Write("D251", runningContainer.XLight);
+                            Thread.Sleep(SignalDelay);
+                            var XLenghtResult = melsec_net.Write("D250", runningContainer.XLenght);
+                            if (XResult.IsSuccess)
+                            {
+                                //发送 3.	M50  bit  置为 ON
+                                var M5OResult = melsec_net.Write("M50", true);
+                                if (M5OResult.IsSuccess)
+                                {
+                                    Thread.Sleep(SignalDelay);
+                                    M5OResult = melsec_net.Write("M50", false);
+                                    if (!M5OResult.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M50置为OFF失败" + M5OResult.Message);
+                                    }
+
+                                    var M30Result = melsec_net.Write("M30", true);
+                                    if (!M30Result.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M30置为ON失败" + M5OResult.Message);
+                                    }
+                                    Thread.Sleep(SignalDelay);
+
+                                    M30Result = melsec_net.Write("M30", false);
+                                    if (!M30Result.IsSuccess)
+                                    {
+                                        return DataProcess.Failure("M30置为OFF失败" + M5OResult.Message);
+                                    }
+                                }
+                                else
+                                {
+                                    return DataProcess.Failure("M50置为ON失败" + M5OResult.Message);
+                                }
+                            }
+                            else
+                            {
+                                return DataProcess.Failure("写入X轴灯号失败:" + XResult.Message);
+                            }
+                        }
+                        else
+                        {
+                            return DataProcess.Failure("写入托盘序号失败:" + TrayResult.Message);
+                        }
+                    }
+
+                }
+                else
+                {
+                    return DataProcess.Failure("PLC未连接");
+                }
+            }
+            catch (Exception EX)
+            {
+
+                return DataProcess.Failure(EX.Message);
+            }
+            return DataProcess.Success();
+        }
+
         public DataResult StartRestoreContainer(Command.RunningContainer runningContainer)
         {
             if (isConnected || runningContainer.ContainerType == 1 || runningContainer.ContainerType == 2)
