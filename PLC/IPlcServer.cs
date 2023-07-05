@@ -27,6 +27,14 @@ namespace PLCServer
         DataResult GetBackWeighingQuantity();
 
         /// <summary>
+        /// 返回M684状态
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "GetBackDoubleTrayMethod", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult GetBackDoubleTrayMethod();
+
+        /// <summary>
         /// 货柜自动运行
         /// </summary>
         /// <param name="runningContainer"></param>
@@ -43,6 +51,24 @@ namespace PLCServer
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "StartRunningContainerAgain", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         DataResult StartRunningContainerAgain(Command.RunningContainer runningContainer);
+
+        /// <summary>
+        /// 双托盘货柜自动运行
+        /// </summary>
+        /// <param name="runningContainer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DoubleTrayStartRunningContainer", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult DoubleTrayStartRunningContainer(Command.RunningContainer runningContainer);
+
+        /// <summary>
+        /// 双托盘货柜再次自动运行
+        /// </summary>
+        /// <param name="runningContainer"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DoubleTrayStartRunningContainerAgain", BodyStyle = WebMessageBodyStyle.Bare, RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        DataResult DoubleTrayStartRunningContainerAgain(Command.RunningContainer runningContainer);
 
         /// <summary>
         /// 货柜存入托盘

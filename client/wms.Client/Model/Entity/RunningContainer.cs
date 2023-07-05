@@ -13,6 +13,12 @@ namespace wms.Client.Model.Entity
         /// 托盘序号
         /// </summary>
         public int TrayCode { get; set; }
+
+        /// <summary>
+        /// 双托盘托盘序号
+        /// </summary>
+        public int DoubleTrayCode { get; set; }
+
         /// <summary>
         /// X轴灯号
         /// </summary>

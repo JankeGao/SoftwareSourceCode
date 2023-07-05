@@ -736,16 +736,21 @@ export default {
     this.getOutDictTypeList()
     //   this.timer()
   },
-  mounted() {
-    this.timer = setInterval(() => {
-      this.handleInterfaceCreate();
-    }, 10000);
-  },
-  deactivated() {
-    clearInterval(this.timer);
-  },
-  beforeDestroy() {
-    clearInterval(this.timer);
+  // mounted() {
+  //   this.timer = setInterval(() => {
+  //     this.handleInterfaceCreate();
+  //   }, 10000);
+  // },
+  // deactivated() {
+  //   clearInterval(this.timer);
+  // },
+  // beforeDestroy() {
+  //   clearInterval(this.timer);
+  // },
+  destroyed() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
   },
   methods: {
     timer() {

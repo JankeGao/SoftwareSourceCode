@@ -1031,74 +1031,74 @@ namespace Bussiness.Services
             OutTask outTaskEntityes = OutTaskDtos.FirstOrDefault(a => a.Code == entity.OutCode);
 
             #region 登录获取token及进行任务反馈
-            try
-            {
-                // 登录成功，拼接token到下架任务反馈接口url和请求参数
-                string url = "http://192.168.3.224:8181/api/zcdx-wms/v1/wms/wmsExWareBill/unShelveWK";
-                // 构造请求参数
-                List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
-                EnWarehBillShelfModel model = new EnWarehBillShelfModel
-                {
-                    MaterialId = outEntityes.CRRCID,
-                    Num = (int)entity.RealPickedQuantity,
-                    WorkStationId = outEntityes.WORKSTATIONID,
-                    WarehBinId = outEntityes.WAREHBINID,
-                    MergeId = outEntityes.MERGEID
-                };
-                models.Add(model);
-                string json = JsonConvert.SerializeObject(models);
+            //try
+            //{
+            //    // 登录成功，拼接token到下架任务反馈接口url和请求参数
+            //    string url = "http://192.168.3.224:8181/api/zcdx-wms/v1/wms/wmsExWareBill/unShelveWK";
+            //    // 构造请求参数
+            //    List<EnWarehBillShelfModel> models = new List<EnWarehBillShelfModel>();
+            //    EnWarehBillShelfModel model = new EnWarehBillShelfModel
+            //    {
+            //        MaterialId = outEntityes.CRRCID,
+            //        Num = (int)entity.RealPickedQuantity,
+            //        WorkStationId = outEntityes.WORKSTATIONID,
+            //        WarehBinId = outEntityes.WAREHBINID,
+            //        MergeId = outEntityes.MERGEID
+            //    };
+            //    models.Add(model);
+            //    string json = JsonConvert.SerializeObject(models);
 
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                httpWebRequest.ContentType = "application/json; charset=UTF-8";
-                httpWebRequest.Method = "POST";
-                httpWebRequest.Timeout = 50000;
-                httpWebRequest.ProtocolVersion = HttpVersion.Version10;
-                byte[] btBodys = Encoding.UTF8.GetBytes(json);
-                httpWebRequest.ContentLength = btBodys.Length;
-                httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
-                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
-                string responseContent = streamReader.ReadToEnd();
-                httpWebResponse.Close();
-                streamReader.Close();
-                if (httpWebResponse != null)
-                {
-                    httpWebResponse.Close();
-                }
-                if (httpWebRequest != null)
-                {
-                    httpWebRequest.Abort();
-                }
-                // 处理响应结果
-                if (responseContent != null)
-                {
-                    // 解析JSON数据
-                    var resultes = JsonConvert.DeserializeObject<dynamic>(responseContent);
-                    // 获取接口返回的各个字段值
-                    var codees = (int)resultes.code;
-                    var dataes = (string)resultes.data;
-                    var messagees = (string)resultes.message;
-                    var successes = (bool)resultes.success;
+            //    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            //    httpWebRequest.ContentType = "application/json; charset=UTF-8";
+            //    httpWebRequest.Method = "POST";
+            //    httpWebRequest.Timeout = 50000;
+            //    httpWebRequest.ProtocolVersion = HttpVersion.Version10;
+            //    byte[] btBodys = Encoding.UTF8.GetBytes(json);
+            //    httpWebRequest.ContentLength = btBodys.Length;
+            //    httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
+            //    HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            //    StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            //    string responseContent = streamReader.ReadToEnd();
+            //    httpWebResponse.Close();
+            //    streamReader.Close();
+            //    if (httpWebResponse != null)
+            //    {
+            //        httpWebResponse.Close();
+            //    }
+            //    if (httpWebRequest != null)
+            //    {
+            //        httpWebRequest.Abort();
+            //    }
+            //    // 处理响应结果
+            //    if (responseContent != null)
+            //    {
+            //        // 解析JSON数据
+            //        var resultes = JsonConvert.DeserializeObject<dynamic>(responseContent);
+            //        // 获取接口返回的各个字段值
+            //        var codees = (int)resultes.code;
+            //        var dataes = (string)resultes.data;
+            //        var messagees = (string)resultes.message;
+            //        var successes = (bool)resultes.success;
 
-                    if (codees == 0)
-                    {
-                        return DataProcess.Failure(dataes, messagees);
-                    }
-                    else if (codees == 2)
-                    {
-                        return DataProcess.Failure(dataes, messagees);
-                    }
-                }
-                else
-                {
-                    return DataProcess.Failure("数据传输响应失败！");
-                }
-            }
-            catch (Exception ex)
-            {
+            //        if (codees == 0)
+            //        {
+            //            return DataProcess.Failure(dataes, messagees);
+            //        }
+            //        else if (codees == 2)
+            //        {
+            //            return DataProcess.Failure(dataes, messagees);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return DataProcess.Failure("数据传输响应失败！");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-                return DataProcess.Failure("请求登录接口失败！", ex.Message);
-            }
+            //    return DataProcess.Failure("请求登录接口失败！", ex.Message);
+            //}
             #endregion
 
             OutTaskMaterialLabelRepository.UnitOfWork.Commit();

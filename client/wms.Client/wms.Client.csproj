@@ -598,6 +598,7 @@
     <Compile Include="ViewModel\Base\DataProcess.cs" />
     <Compile Include="ViewModel\Base\BaseView.cs" />
     <Compile Include="ViewModel\Base\BaseViewDialog.cs" />
+    <Compile Include="Common\AlternationIndexConverter.cs" />
     <Compile Include="View\ContainerSettingView.xaml.cs">
       <DependentUpon>ContainerSettingView.xaml</DependentUpon>
     </Compile>

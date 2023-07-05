@@ -40,6 +40,12 @@ namespace wms.Client.Core.Interfaces
         Task<DataResult> GetBackWeighingQuantity();
 
         /// <summary>
+        /// 返回M684的状态
+        /// </summary>
+        /// <returns></returns>
+        Task<DataResult> GetBackDoubleTrayMethod();
+
+        /// <summary>
         /// 控制货柜运转(取出货柜)
         /// </summary>
         /// <param name="model"></param>
@@ -52,6 +58,20 @@ namespace wms.Client.Core.Interfaces
         /// <param name="model"></param>
         /// <returns></returns>
         Task<DataResult> PostStartRunningContainerAgain(RunningContainer model);
+
+        /// <summary>
+        /// 双托盘再次控制货柜运转(取出货柜)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<DataResult> DoubleTrayPostStartRunningContainerAgain(RunningContainer model);
+
+        /// <summary>
+        /// 双托盘控制货柜运转(取出货柜)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<DataResult> DoubleTrayPostStartRunningContainer(RunningContainer model);
 
         /// <summary>
         /// 存入货柜

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:wms.Client.View"
+             xmlns:local1="clr-namespace:wms.Client.Common"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:template="clr-namespace:wms.Client.Template"
@@ -13,11 +14,12 @@
              xmlns:service="clr-namespace:wms.Client.Service"
              xmlns:common="clr-namespace:wms.Client.Common" xmlns:viewmodel="clr-namespace:wms.Client.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:OutTaskViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="580" d:DesignWidth="960">
     <UserControl.Resources>
         <ResourceDictionary>
             <service:GlobalData x:Key="globalData"/>
             <common:ObjectConvert x:Key="objectConverter"/>
+            <local1:AlternationIndexConverter x:Key="AlternationIndexConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -169,9 +171,8 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60" />
                         <RowDefinition Height="60"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="320" />
-                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="400"></RowDefinition>
+                        <RowDefinition Height="60" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0"  >
                         <StackPanel Orientation="Horizontal">
@@ -191,7 +192,7 @@
                                     VerticalAlignment="Top"
                                     Margin="10"  
                                     Name="BarCode"
-                                    Width="200"
+                                    Width="230"
                                     Height="40"
                                     AcceptsReturn="False"
                                     TextWrapping="Wrap"
@@ -202,6 +203,20 @@
                                     </TextBox.InputBindings>
                                 </TextBox>
                             </StackPanel>
+                            <StackPanel>
+                                <TextBox
+                                Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                                VerticalAlignment="Top"
+                                Margin="10"  
+                                Width="200"
+                                Height="40"
+                                AcceptsReturn="False"
+                                TextWrapping="Wrap"
+                                VerticalScrollBarVisibility="Auto"
+                                Text="{Binding OutQuantity,Mode=TwoWay}"
+                                materialDesign:HintAssist.Hint="输入出库数量"/>
+                            </StackPanel>
+
                             <Button
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                 Width="90"
@@ -278,7 +293,7 @@
                                 </materialDesign:Chip>
                             </StackPanel>
                             <!-- 人员登录图标-->
-                            <StackPanel  Margin="100 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <StackPanel  Margin="40 0 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <!--<Border Background="#EDEDED" BorderThickness="3 0 0 0" BorderBrush="#A3A3A3" />-->
                                 <materialDesign:Chip
                                     Content="{Binding Source={StaticResource globalData},Path=UserName}"
@@ -297,18 +312,8 @@
                     </Grid>
                     <Grid Grid.Row="1">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Numeric1BoxMultipleOutline" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
-                            <TextBox
-                                Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
-                                VerticalAlignment="Top"
-                                Margin="10"  
-                                Width="200"
-                                Height="40"
-                                AcceptsReturn="False"
-                                TextWrapping="Wrap"
-                                VerticalScrollBarVisibility="Auto"
-                                Text="{Binding OutQuantity,Mode=TwoWay}"
-                                materialDesign:HintAssist.Hint="输入出库数量"/>
+                            <materialDesign:PackIcon Kind="Numeric1BoxMultipleOutline" Width="30" Height="30"  Margin="15"  Foreground="#673AB7" Visibility="Collapsed"/>
+                            
                             <Button
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                 Width="90"
@@ -322,7 +327,7 @@
                             
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="2">
+                    <Grid Grid.Row="1">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <materialDesign:PackIcon Kind="Apps" Width="30" Height="30"  Margin="15"  Foreground="#673AB7"/>
                             <!--<TextBlock Margin="10 22 0 0"
@@ -341,11 +346,28 @@
                                 <TextBox
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center" 
-                            materialDesign:HintAssist.Hint="物料名称"
+                            materialDesign:HintAssist.Hint="单品重量(g)"
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
-                            Width="auto"
-                            Text="{Binding SelectMaterialName}"
+                            Width="90"
+                            Text="{Binding UnitWeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                            FontSize="16" 
+                            IsReadOnly="True"
+                            Foreground="Black"
+                            Background="LightSkyBlue"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
+                            </StackPanel>
+
+                            <StackPanel Margin="10 9 0 0">
+                                <TextBox
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            materialDesign:HintAssist.Hint="称重数量"
+                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
+                            materialDesign:HintAssist.FloatingScale="0.50"
+                            Width="65"
+                            Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             FontSize="16" 
                             IsReadOnly="True"
@@ -365,23 +387,6 @@
                                 </TextBlock>
                             </Border>-->
 
-                            <StackPanel Margin="5 9 0 0">
-                                <TextBox
-                            VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" 
-                            materialDesign:HintAssist.Hint="物料编码"
-                            materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
-                            materialDesign:HintAssist.FloatingScale="0.50"
-                            Width="auto"
-                            Text="{Binding SelectMaterialCode}"
-                            Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                            FontSize="16" 
-                            IsReadOnly="True"
-                            Foreground="Black"
-                            Background="LightSkyBlue"
-                            BorderBrush="{DynamicResource MaterialDesignDivider}"/>
-                            </StackPanel>
-                            
                             <!--<TextBlock Margin="10 22 0 0"
                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
                             库存：
@@ -410,16 +415,17 @@
                             BorderBrush="{DynamicResource MaterialDesignDivider}"/>
                             </StackPanel>
                             
-                            <materialDesign:PackIcon Kind="W3c" Width="30" Height="30"  Margin="20 15 0 0"  Foreground="#673AB7"/>
+                            <materialDesign:PackIcon Kind="W3c" Width="30" Height="30"  Margin="15 15 0 15"  Foreground="#673AB7"/>
+
                             <StackPanel Margin="5 9 0 0">
                                 <TextBox
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center" 
-                            materialDesign:HintAssist.Hint="单品重量(g)"
+                            materialDesign:HintAssist.Hint="物料名称"
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
-                            Width="90"
-                            Text="{Binding UnitWeight, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Width="auto"
+                            Text="{Binding SelectMaterialName}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             FontSize="16" 
                             IsReadOnly="True"
@@ -427,16 +433,16 @@
                             Background="LightSkyBlue"
                             BorderBrush="{DynamicResource MaterialDesignDivider}"/>
                             </StackPanel>
-                            
-                            <StackPanel Margin="10 9 0 0">
+
+                            <StackPanel Margin="5 9 0 0">
                                 <TextBox
                             VerticalAlignment="Center" 
                             HorizontalAlignment="Center" 
-                            materialDesign:HintAssist.Hint="数量"
+                            materialDesign:HintAssist.Hint="物料编码"
                             materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0"
                             materialDesign:HintAssist.FloatingScale="0.50"
-                            Width="70"
-                            Text="{Binding WeighingQuantity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                            Width="auto"
+                            Text="{Binding SelectMaterialCode}"
                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                             FontSize="16" 
                             IsReadOnly="True"
@@ -444,6 +450,7 @@
                             Background="LightSkyBlue"
                             BorderBrush="{DynamicResource MaterialDesignDivider}"/>
                             </StackPanel>
+
                             <TextBlock Margin="20 22 0 0"
                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Visibility="Collapsed">
                         重量：
@@ -474,7 +481,7 @@
                             
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="3">
+                    <Grid Grid.Row="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="100"/>
                             <RowDefinition/>
@@ -541,17 +548,18 @@
                             <Button
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                 Height="60"
-                                Margin="5"
+                                Margin="170 5 5 5"
                                 FontSize="18"
                                 ToolTip="Resource name: MaterialDesignRaisedButton" 
                                 IsDefault="true" 
+                                Foreground="White"
                                 Background="{Binding SecondStepColor}"
                                 IsEnabled="{Binding IsCancel}"
                                 Command="{Binding ScanBarcodeCommand}"
                                 CommandParameter="{Binding SearchBarcode}">
                                 ①确认取出
                             </Button>
-                            <Button Margin="10 0 0 0"  Height="60" FontSize="18" Background="{Binding ThirdStepColor}" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="存入托盘" 
+                            <Button Margin="10 0 0 0"  Height="60" FontSize="18" Background="{Binding ThirdStepColor}" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="存入托盘" Foreground="White"
                                     CommandParameter="{Binding}"                          
                                     Command="{Binding RunningTakeInCommand}" >
                                 ②存入托盘
@@ -562,7 +570,7 @@
                             <DataGrid 
                 CanUserSortColumns="True"  Background="{StaticResource DefaultBackGround}"  
                   CanUserAddRows="False" AutoGenerateColumns="False" ItemsSource="{Binding OutTaskMaterial}"
-                      IsReadOnly="True"  >
+                      IsReadOnly="True" AlternationCount="10" >
                                 <DataGrid.InputBindings>
                                     <!--<MouseBinding MouseAction="LeftDoubleClick"  
                                   CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, 
@@ -581,8 +589,13 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                    <Button Margin="5 0 0 0" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="启动货柜" 
+                                                    <Button Margin="5 0 0 0" Style="{StaticResource MaterialDesignRaisedLightButton}" ToolTip="启动货柜" Foreground="White"
                                                         Command="{Binding DataContext.SelectItemCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" >
+                                                        <Button.Visibility>
+                                                            <Binding RelativeSource="{RelativeSource AncestorType={x:Type DataGridRow}}"
+                                     Path="(ItemsControl.AlternationIndex)"
+                                     Converter="{StaticResource AlternationIndexConverter}" />
+                                                        </Button.Visibility>
                                                         <Button.CommandParameter>
                                                             <MultiBinding Converter="{ StaticResource ResourceKey=objectConverter}">
                                                                 <Binding RelativeSource="{RelativeSource Mode=FindAncestor, 
@@ -626,7 +639,7 @@
                         <!--<template1:UcDataPager VerticalAlignment="Top" Grid.Row="2"/>-->
                     </Grid>
 
-                    <Grid Grid.Row="4"  HorizontalAlignment="Left" >
+                    <Grid Grid.Row="3"  HorizontalAlignment="Left" >
                         <StackPanel Orientation="Horizontal">
                             <Button
                             Style="{StaticResource MaterialDesignRaisedDarkButton}"

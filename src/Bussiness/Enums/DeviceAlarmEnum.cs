@@ -52,7 +52,7 @@ namespace Bussiness.Enums
         StartingUpReset = 214,
 
         [Description("货柜空间不足")]
-        Affirm = 215,
+        Affirm = 241,
         [Description("物料遮挡高度光栅")]
         MaterialHigher = 216,
         [Description("物料超重")]
@@ -196,7 +196,7 @@ namespace Bussiness.Enums
         StartingUpReset = 214,
 
         [Description("触摸屏确认按钮")]
-        Affirm = 215,
+        Affirm = 241,
 
     }
 }

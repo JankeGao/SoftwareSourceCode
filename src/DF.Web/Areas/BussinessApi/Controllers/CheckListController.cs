@@ -189,7 +189,7 @@ namespace DF.Web.Areas.BussinessApi.Controllers
             foreach (var item in wareList)
             {
                 item.Name = item.Name;
-                // 根据仓库或许每个仓库下所有的货柜
+                // 根据仓库获取每个仓库下所有的货柜
                 List<ContainerDto> containers = WareHouseContract.ContainerDtos.Where(a => a.WareHouseCode == item.Code).ToList();
                 foreach (var con in containers)
                 {
